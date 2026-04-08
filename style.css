@@ -72,7 +72,7 @@ ul {
     right: 0;
     z-index: 1000;
     padding: 20px 0;
-    transition: all var(--transition);
+    transition: all var(--transition), transform 0.3s ease;
 }
 
 .header.scrolled {
@@ -794,6 +794,8 @@ ul {
 }
 
 /* ===== Responsive ===== */
+
+/* --- Tablet (max 900px) --- */
 @media (max-width: 900px) {
     .about-grid {
         grid-template-columns: 1fr;
@@ -817,23 +819,31 @@ ul {
         grid-template-columns: 1fr;
     }
 
-    .project-featured .image-placeholder {
-        min-height: 200px;
+    .project-featured .project-img {
+        min-height: 220px;
+        max-height: 300px;
     }
 
     .contact-grid {
         grid-template-columns: 1fr;
         gap: 40px;
     }
+
+    .event-meta {
+        flex-wrap: wrap;
+        gap: 8px 20px;
+    }
 }
 
+/* --- Mobile (max 680px) --- */
 @media (max-width: 680px) {
+    /* Navigation */
     .nav {
         position: fixed;
         top: 0;
         right: -100%;
         width: 100%;
-        height: 100vh;
+        height: 100dvh;
         background: rgba(10, 10, 10, 0.98);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
@@ -842,6 +852,7 @@ ul {
         justify-content: center;
         gap: 28px;
         transition: right var(--transition);
+        z-index: 999;
     }
 
     .nav.open {
@@ -849,37 +860,140 @@ ul {
     }
 
     .nav-link {
-        font-size: 1rem;
+        font-size: 1.1rem;
         letter-spacing: 0.2em;
+        padding: 8px 0;
     }
 
     .menu-toggle {
         display: flex;
     }
 
+    /* Hero */
+    .hero {
+        min-height: 100dvh;
+    }
+
+    .hero-bg {
+        object-position: center center;
+    }
+
+    .hero-content {
+        padding: 100px 0 60px;
+    }
+
+    .hero-subtitle {
+        font-size: 0.7rem;
+        letter-spacing: 0.2em;
+    }
+
     .hero-title {
-        font-size: clamp(2.5rem, 10vw, 4rem);
+        font-size: clamp(2.5rem, 12vw, 4rem);
+        margin-bottom: 32px;
+    }
+
+    .hero-quote {
+        max-width: 100%;
+        padding: 0 8px;
     }
 
     .hero-quote p {
-        font-size: 1rem;
+        font-size: 0.95rem;
+        line-height: 1.7;
     }
 
+    /* Sections */
     .section {
-        padding: 72px 0;
+        padding: 60px 0;
+    }
+
+    .container {
+        padding: 0 20px;
+    }
+
+    .section-header {
+        margin-bottom: 40px;
     }
 
     .section-title {
-        font-size: 2rem;
+        font-size: 1.8rem;
     }
 
+    .section-intro {
+        font-size: 0.95rem;
+        margin: -16px auto 36px;
+    }
+
+    /* About */
+    .about-image {
+        max-width: 260px;
+    }
+
+    .about-quote {
+        font-size: 1.1rem;
+        padding-left: 16px;
+    }
+
+    .about-text p {
+        font-size: 0.9rem;
+    }
+
+    .about-stations li {
+        font-size: 0.82rem;
+        flex-wrap: wrap;
+        gap: 2px 16px;
+    }
+
+    .year {
+        font-size: 0.75rem;
+    }
+
+    /* Offerings */
     .offerings-grid {
         grid-template-columns: 1fr;
+        gap: 16px;
     }
 
+    .offering-card {
+        padding: 28px 24px;
+    }
+
+    .offering-card h3 {
+        font-size: 1.1rem;
+    }
+
+    .methods {
+        padding: 20px 16px;
+        font-size: 0.8rem;
+    }
+
+    /* Projects */
+    .project-featured .project-img {
+        min-height: 180px;
+        max-height: 240px;
+    }
+
+    .project-content {
+        padding: 24px 20px;
+    }
+
+    .project-content h3 {
+        font-size: 1.3rem;
+    }
+
+    .project-content p {
+        font-size: 0.85rem;
+    }
+
+    /* Events */
     .event-item {
         flex-direction: column;
         gap: 12px;
+        padding: 24px 0;
+    }
+
+    .event-item:hover {
+        padding-left: 0;
     }
 
     .event-date {
@@ -892,9 +1006,137 @@ ul {
         font-size: 1.8rem;
     }
 
+    .event-details h3 {
+        font-size: 1.1rem;
+    }
+
+    .event-meta {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .event-details > p {
+        font-size: 0.85rem;
+    }
+
+    /* Contact */
+    .contact-text h3 {
+        font-size: 1.4rem;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        font-size: 16px; /* prevents iOS zoom on focus */
+        padding: 14px 16px;
+    }
+
+    .btn {
+        width: 100%;
+        text-align: center;
+        padding: 16px 24px;
+    }
+
+    /* Footer */
+    .footer {
+        padding: 32px 0;
+    }
+
     .footer-inner {
         flex-direction: column;
-        gap: 16px;
+        gap: 12px;
         text-align: center;
+    }
+
+    .footer-links {
+        gap: 16px;
+    }
+}
+
+/* --- Small phones (max 380px) --- */
+@media (max-width: 380px) {
+    .container {
+        padding: 0 16px;
+    }
+
+    .hero-title {
+        font-size: 2.2rem;
+    }
+
+    .hero-quote p {
+        font-size: 0.85rem;
+    }
+
+    .section-title {
+        font-size: 1.6rem;
+    }
+
+    .about-stations li {
+        font-size: 0.78rem;
+    }
+
+    .offering-card {
+        padding: 24px 18px;
+    }
+
+    .project-content {
+        padding: 20px 16px;
+    }
+}
+
+/* --- Touch device optimizations --- */
+@media (hover: none) {
+    .offering-card:hover,
+    .project-card:hover {
+        transform: none;
+        box-shadow: none;
+    }
+
+    .event-item:hover {
+        padding-left: 0;
+    }
+
+    /* Larger touch targets */
+    .nav-link {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+
+    .footer-links a {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+    }
+}
+
+/* --- Safe area for notched devices --- */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+    .footer {
+        padding-bottom: calc(32px + env(safe-area-inset-bottom));
+    }
+
+    .nav {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+}
+
+/* --- Landscape mobile --- */
+@media (max-height: 500px) and (orientation: landscape) {
+    .hero {
+        min-height: auto;
+        padding: 80px 0 40px;
+    }
+
+    .hero-content {
+        padding: 60px 0 20px;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+        margin-bottom: 16px;
+    }
+
+    .scroll-indicator {
+        display: none;
     }
 }
