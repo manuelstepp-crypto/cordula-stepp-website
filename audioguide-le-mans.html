@@ -296,6 +296,13 @@
                     Ihr Browser unterstützt leider keine Sprachausgabe (Web Speech API).
                     Sie können die Texte der Stationen unten in Ruhe selbst lesen.
                 </p>
+                <p class="ag-unsupported" id="agSpeechWarn">
+                    Die Sprachausgabe scheint nicht zu starten. Bitte prüfen Sie: Ist der Ton eingeschaltet?
+                    Öffnen Sie die Seite direkt in Chrome, Edge oder Safari (nicht in einer Vorschau-Ansicht).
+                    Unter Windows muss ggf. eine deutsche Stimme installiert sein
+                    (Einstellungen &rarr; Zeit und Sprache &rarr; Sprache &rarr; Deutsch &rarr; Sprachausgabe).
+                    Die Texte aller Stationen können Sie jederzeit unten mitlesen.
+                </p>
             </div>
 
             <!-- Intro -->
@@ -540,6 +547,8 @@
         var spokenWords = 0;       // Bereits gesprochene Wörter der aktuellen Station
         var playing = false;
         var germanVoice = null;
+        var playToken = 0;         // Entwertet Callbacks alter Utterances nach cancel()
+        var engineOk = false;      // Wird true, sobald die Sprachausgabe je gestartet ist
 
         var playBtn = document.getElementById('agPlay');
         var prevBtn = document.getElementById('agPrev');
@@ -554,6 +563,10 @@
         var totalLabel = document.getElementById('agTotalLabel');
         var voiceHint = document.getElementById('agVoiceHint');
         var toc = document.getElementById('agToc');
+        var speechWarn = document.getElementById('agSpeechWarn');
+
+        function showSpeechWarn() { speechWarn.style.display = 'block'; }
+        function hideSpeechWarn() { speechWarn.style.display = 'none'; }
 
         function rate() { return parseFloat(rateInput.value); }
 
@@ -664,36 +677,69 @@
             stationLabel.textContent = 'Station ' + st.num + ' von ' + stations.length;
         }
 
+        function finishStation() {
+            setPlayingUI(false);
+            clearHighlights();
+            bar.style.width = '100%';
+            if (autoChk.checked && current < stations.length - 1) {
+                var next = current + 1;
+                stations[next].el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                setTimeout(function () { playStation(next); }, 900);
+            } else if (current === stations.length - 1) {
+                nowTitle.textContent = 'Ende der Führung';
+                nowMeta.textContent = 'Vielen Dank fürs Zuhören. Au revoir!';
+            }
+        }
+
+        function stopWithWarning() {
+            playToken++;
+            playing = false;
+            synth.cancel();
+            setPlayingUI(false);
+            showSpeechWarn();
+        }
+
         function speakNextChunk() {
             if (!playing) return;
-            if (!chunkQueue.length) {
-                // Station beendet
-                setPlayingUI(false);
-                clearHighlights();
-                bar.style.width = '100%';
-                if (autoChk.checked && current < stations.length - 1) {
-                    var next = current + 1;
-                    stations[next].el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    setTimeout(function () { playStation(next); }, 900);
-                } else if (current === stations.length - 1) {
-                    nowTitle.textContent = 'Ende der Führung';
-                    nowMeta.textContent = 'Vielen Dank fürs Zuhören. Au revoir!';
-                }
-                return;
-            }
-            var chunk = chunkQueue.shift();
+            if (!chunkQueue.length) { finishStation(); return; }
+            var token = playToken;
+            var chunk = chunkQueue[0]; // erst nach erfolgreichem Ende entfernen, damit Pause hier wieder einsetzen kann
             var u = new SpeechSynthesisUtterance(chunk.text);
             u.lang = 'de-DE';
             if (germanVoice) u.voice = germanVoice;
             u.rate = rate();
-            u.onstart = function () { highlightParagraph(chunk.para); };
+            var started = false;
+            u.onstart = function () {
+                if (token !== playToken) return;
+                started = true;
+                engineOk = true;
+                hideSpeechWarn();
+                highlightParagraph(chunk.para);
+            };
             u.onend = function () {
+                if (token !== playToken || !playing) return;
+                chunkQueue.shift();
                 spokenWords += chunk.text.split(/\s+/).length;
                 updateProgress();
                 speakNextChunk();
             };
-            u.onerror = function () { speakNextChunk(); };
+            u.onerror = function (e) {
+                if (token !== playToken || !playing) return;
+                var kind = e && e.error;
+                if (kind === 'interrupted' || kind === 'canceled') return;
+                if (!engineOk) { stopWithWarning(); return; }
+                chunkQueue.shift();
+                speakNextChunk();
+            };
+            // Chrome bleibt nach Tab-Wechseln gern im paused-Zustand hängen
+            try { synth.resume(); } catch (err) {}
             synth.speak(u);
+            // Watchdog: manche Browser schlucken speak() stillschweigend (z. B. ohne installierte Stimme)
+            setTimeout(function () {
+                if (token !== playToken || !playing || started || engineOk) return;
+                showSpeechWarn();
+                if (!synth.speaking) stopWithWarning();
+            }, 3000);
         }
 
         function playStation(i) {
@@ -701,6 +747,7 @@
                 stations[i].el.scrollIntoView({ behavior: 'smooth' });
                 return;
             }
+            playToken++;
             synth.cancel();
             clearHighlights();
             current = i;
@@ -709,25 +756,34 @@
             updateNowPlaying();
             updateProgress();
             setPlayingUI(true);
-            speakNextChunk();
+            // Kurz warten: Chrome ignoriert ein speak() unmittelbar nach cancel()
+            var token = playToken;
+            setTimeout(function () {
+                if (token === playToken && playing) speakNextChunk();
+            }, 150);
+        }
+
+        function pausePlayback() {
+            // cancel() statt pause(): pause() funktioniert auf Android/iOS unzuverlässig.
+            // Beim Fortsetzen wird der aktuelle Satz von vorn gesprochen.
+            playToken++;
+            playing = false;
+            synth.cancel();
+            setPlayingUI(false);
         }
 
         function togglePlay() {
             if (!supported) return;
             if (current < 0) { playStation(0); return; }
             if (playing) {
-                synth.pause();
-                setPlayingUI(false);
-                playing = false;
-                playBtn.textContent = '▶';
-            } else if (synth.paused) {
-                synth.resume();
-                playing = true;
-                setPlayingUI(true);
+                pausePlayback();
             } else {
-                playing = true;
+                playToken++;
                 setPlayingUI(true);
-                speakNextChunk();
+                var token = playToken;
+                setTimeout(function () {
+                    if (token === playToken && playing) speakNextChunk();
+                }, 150);
             }
         }
 
