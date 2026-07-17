@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Audioguide für die Kathedrale Saint-Julien in Le Mans – 13 Stationen, über 30 Minuten Hörführung auf Deutsch.">
+    <meta property="og:title" content="Audioguide – Kathedrale Saint-Julien, Le Mans">
+    <meta property="og:description" content="Hörführung durch die Kathedrale von Le Mans: 13 Stationen, über 30 Minuten, auf Deutsch.">
+    <meta property="og:type" content="website">
+    <title>Audioguide – Kathedrale Saint-Julien, Le Mans</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ===== Audioguide page ===== */
+        .ag-hero {
+            position: relative;
+            padding: 8rem 0 5rem;
+            background: linear-gradient(160deg, var(--secondary) 0%, var(--primary) 100%);
+            color: var(--text-light);
+            text-align: center;
+        }
+        .ag-eyebrow {
+            font-size: 0.8rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+        .ag-hero h1 {
+            font-family: var(--font-serif);
+            font-weight: 600;
+            font-size: clamp(2rem, 5vw, 3.4rem);
+            line-height: 1.1;
+            margin-bottom: 1rem;
+        }
+        .ag-hero .ag-sub {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+        .ag-narrow { max-width: 860px; margin: 0 auto; }
+        .ag-section { padding: 3rem 0 5rem; }
+
+        /* Sticky player */
+        .ag-player {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: var(--bg-card-dark);
+            border: 1px solid var(--border-dark);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem 1.5rem;
+            margin-top: -3rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+            color: var(--text-light);
+        }
+        .ag-player-title {
+            font-family: var(--font-serif);
+            font-size: 1.2rem;
+            margin-bottom: 0.15rem;
+        }
+        .ag-player-meta {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-bottom: 0.9rem;
+        }
+        .ag-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .ag-btn {
+            appearance: none;
+            border: 1px solid var(--border-dark);
+            background: transparent;
+            color: var(--text-light);
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-size: 1rem;
+        }
+        .ag-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .ag-btn-play {
+            width: 56px;
+            height: 56px;
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+        .ag-btn-play:hover { background: var(--accent-light); color: var(--primary); }
+        .ag-progress-wrap { flex: 1 1 180px; min-width: 140px; }
+        .ag-progress {
+            height: 6px;
+            background: var(--border-dark);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .ag-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--accent);
+            border-radius: 3px;
+            transition: width 0.4s linear;
+        }
+        .ag-progress-label {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 0.35rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        .ag-options {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+            margin-top: 0.9rem;
+            padding-top: 0.9rem;
+            border-top: 1px solid var(--border-dark);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .ag-options label { display: inline-flex; align-items: center; gap: 0.45rem; cursor: pointer; }
+        .ag-options input[type="range"] { accent-color: var(--accent); width: 110px; }
+        .ag-options input[type="checkbox"] { accent-color: var(--accent); }
+        .ag-voice-hint { font-size: 0.72rem; color: var(--text-muted); }
+        .ag-unsupported {
+            display: none;
+            margin-top: 0.9rem;
+            font-size: 0.8rem;
+            color: #e0a0a0;
+        }
+
+        /* Intro / overview */
+        .ag-intro { margin: 2.5rem 0 1.5rem; color: var(--text-dark-muted); }
+        .ag-intro strong { color: var(--text-dark); }
+        .ag-toc {
+            margin: 1.5rem 0 3rem;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        .ag-toc-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+            text-align: left;
+            appearance: none;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border-light);
+            padding: 0.8rem 1.1rem;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            transition: background var(--transition);
+        }
+        .ag-toc-item:last-child { border-bottom: none; }
+        .ag-toc-item:hover { background: #f0ece3; }
+        .ag-toc-item .num {
+            flex-shrink: 0;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .ag-toc-item .dur { margin-left: auto; color: var(--text-dark-muted); font-size: 0.78rem; white-space: nowrap; }
+        .ag-toc-item.active { background: #f0ece3; }
+        .ag-toc-item.active .num { background: var(--accent); color: #fff; }
+
+        /* Stations */
+        .ag-station {
+            margin-bottom: 3.5rem;
+            scroll-margin-top: 220px;
+        }
+        .ag-station-head {
+            display: flex;
+            align-items: baseline;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        .ag-station-num {
+            font-family: var(--font-serif);
+            font-size: 2.4rem;
+            color: var(--accent);
+            line-height: 1;
+        }
+        .ag-station h2 {
+            font-family: var(--font-serif);
+            font-size: 1.7rem;
+            color: var(--text-dark);
+            line-height: 1.2;
+        }
+        .ag-station-loc {
+            font-size: 0.78rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-dark-muted);
+            margin-bottom: 1rem;
+        }
+        .ag-station-actions { margin-bottom: 1rem; }
+        .ag-play-station {
+            appearance: none;
+            border: 1px solid var(--accent);
+            background: transparent;
+            color: var(--accent);
+            border-radius: var(--radius);
+            padding: 0.45rem 1rem;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .ag-play-station:hover { background: var(--accent); color: #fff; }
+        .ag-station.playing .ag-play-station { background: var(--accent); color: #fff; }
+        .ag-text p { margin-bottom: 1.05rem; color: var(--text-dark-muted); }
+        .ag-text p.spoken-now { color: var(--text-dark); }
+        .ag-station.playing .ag-station-num { animation: ag-pulse 2s ease-in-out infinite; }
+        @keyframes ag-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.45; }
+        }
+
+        .ag-footer-note {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-light);
+            font-size: 0.8rem;
+            color: var(--text-dark-muted);
+        }
+        .ag-back {
+            display: inline-block;
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+        }
+
+        @media (max-width: 600px) {
+            .ag-player { padding: 1rem; margin-left: -0.5rem; margin-right: -0.5rem; }
+            .ag-station { scroll-margin-top: 260px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero -->
+    <header class="ag-hero">
+        <div class="container ag-narrow">
+            <p class="ag-eyebrow">Audioguide · Le Mans</p>
+            <h1>Kathedrale Saint-Julien</h1>
+            <p class="ag-sub">13 Stationen · Gesamtdauer über 30 Minuten · Deutsch</p>
+        </div>
+    </header>
+
+    <section class="ag-section">
+        <div class="container ag-narrow">
+
+            <!-- Player -->
+            <div class="ag-player" id="agPlayer">
+                <p class="ag-player-title" id="agNowTitle">Bereit zum Start</p>
+                <p class="ag-player-meta" id="agNowMeta">Drücken Sie Play, um die Führung bei Station 1 zu beginnen.</p>
+                <div class="ag-controls">
+                    <button class="ag-btn" id="agPrev" aria-label="Vorherige Station" title="Vorherige Station">⏮</button>
+                    <button class="ag-btn ag-btn-play" id="agPlay" aria-label="Abspielen / Pause" title="Abspielen / Pause">▶</button>
+                    <button class="ag-btn" id="agNext" aria-label="Nächste Station" title="Nächste Station">⏭</button>
+                    <div class="ag-progress-wrap">
+                        <div class="ag-progress"><div class="ag-progress-bar" id="agBar"></div></div>
+                        <div class="ag-progress-label">
+                            <span id="agStationLabel">Station –</span>
+                            <span id="agTotalLabel"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="ag-options">
+                    <label><input type="checkbox" id="agAuto" checked> Automatisch zur nächsten Station</label>
+                    <label>Tempo <input type="range" id="agRate" min="0.7" max="1.3" step="0.05" value="0.95"> <span id="agRateVal">0.95×</span></label>
+                    <span class="ag-voice-hint" id="agVoiceHint"></span>
+                </div>
+                <p class="ag-unsupported" id="agUnsupported">
+                    Ihr Browser unterstützt leider keine Sprachausgabe (Web Speech API).
+                    Sie können die Texte der Stationen unten in Ruhe selbst lesen.
+                </p>
+            </div>
+
+            <!-- Intro -->
+            <div class="ag-intro">
+                <p><strong>Herzlich willkommen in Le Mans.</strong> Dieser Audioguide führt Sie in 13 Stationen um und durch die Kathedrale Saint-Julien – von den gallo-römischen Ursprüngen der Stadt über das romanische Langhaus bis zum gewaltigen gotischen Chor. Die Wiedergabe nutzt die Sprachausgabe Ihres Browsers; Sie benötigen keine Kopfhörer-Ausleihe und keine App. Am besten starten Sie auf dem Place du Cardinal Grente vor der Westfassade.</p>
+            </div>
+
+            <!-- Table of contents (filled by JS) -->
+            <div class="ag-toc" id="agToc"></div>
+
+            <!-- Stations -->
+
+            <article class="ag-station" data-station="1" id="station-1">
+                <div class="ag-station-head">
+                    <span class="ag-station-num">01</span>
+                    <h2>Willkommen vor der Kathedrale</h2>
+                </div>
+                <p class="ag-station-loc">Standort: Place du Cardinal Grente, vor der Westfassade</p>
+                <div class="ag-station-actions"><button class="ag-play-station">▶ Diese Station abspielen</button></div>
+                <div class="ag-text">
+                    <p>Herzlich willkommen zu dieser Hörführung durch eine der größten und zugleich ungewöhnlichsten Kathedralen Frankreichs: die Kathedrale Saint-Julien in Le Mans. Sie stehen jetzt am besten auf dem kleinen Platz vor der Westfassade, dem Place du Cardinal Grente, mitten in der Altstadt, die man hier die Cité Plantagenêt nennt – ein Gewirr aus Fachwerkhäusern, Renaissance-Palais und kopfsteingepflasterten Gassen, das zu den am besten erhaltenen mittelalterlichen Stadtkernen Frankreichs gehört.</p>
+                    <p>Bevor wir losgehen, ein paar Zahlen, damit Sie eine Vorstellung von den Dimensionen bekommen. Die Kathedrale ist rund einhundertvierunddreißig Meter lang und bedeckt eine Fläche von etwa fünftausend Quadratmetern. Damit spielt sie in einer Liga mit den berühmten Kathedralen von Chartres, Amiens und Reims – und doch kennen sie viel weniger Menschen. Wer nach Le Mans kommt, denkt meist an das legendäre 24-Stunden-Rennen. Dabei wartet hier oben auf dem Hügel der Altstadt ein Bauwerk, das Kunsthistoriker regelmäßig ins Schwärmen bringt.</p>
+                    <p>Das Besondere an Saint-Julien ist ihr doppeltes Gesicht. Diese Kathedrale ist nämlich eigentlich zwei Kirchen in einer: ein romanisches Langhaus aus dem elften und zwölften Jahrhundert, erdverbunden, warm und vergleichsweise dunkel – und daran angebaut ein hochgotischer Chor aus dem dreizehnten Jahrhundert, der wie eine steinerne Fontäne vierunddreißig Meter in die Höhe schießt. Nirgendwo sonst kann man den Übergang von der Romanik zur Gotik so unmittelbar erleben wie hier, mit einem einzigen Schritt durch das Querhaus.</p>
+                    <p>Geweiht ist die Kathedrale dem heiligen Julian, dem ersten Bischof von Le Mans, der der Überlieferung nach im dritten oder vierten Jahrhundert die Region Maine christianisierte. Wir werden ihm gleich noch begegnen – und außerdem einem heidnischen Findling, einer englischen Königin und siebenundvierzig musizierenden Engeln. Sie sehen: Es lohnt sich. Wenn Sie bereit sind, gehen Sie langsam auf die Südwestecke der Kathedrale zu, dorthin, wo ein großer, aufrecht stehender Stein an der Mauer lehnt. Dort beginnt unsere zweite Station.</p>
+                </div>
+            </article>
+
+            <article class="ag-station" data-station="2" id="station-2">
+                <div class="ag-station-head">
+                    <span class="ag-station-num">02</span>
+                    <h2>Der Menhir – ein heidnischer Gruß</h2>
+                </div>
+                <p class="ag-station-loc">Standort: Südwestecke der Kathedrale</p>
+                <div class="ag-station-actions"><button class="ag-play-station">▶ Diese Station abspielen</button></div>
+                <div class="ag-text">
+                    <p>An der Südwestecke der Kathedrale erwartet Sie eines der merkwürdigsten Details, das man an einer christlichen Kirche in Europa finden kann: ein echter Menhir. Der rötliche Sandsteinblock, gut viereinhalb Meter hoch, wurde vor mehreren tausend Jahren aufgerichtet – lange bevor es hier Christen, ja lange bevor es hier überhaupt Römer gab. Er stammt aus der Jungsteinzeit und stand ursprünglich wohl nicht genau an dieser Stelle; im Jahr 1778 wurde er hierher an die Mauer der Kathedrale versetzt, nachdem ein anderer Dolmen in der Nähe zerstört worden war.</p>
+                    <p>Dass ein vorchristliches Kultmal ausgerechnet an der Bischofskirche lehnt, ist kein Zufall, sondern ein Stück Erinnerungspolitik. Die Kirche hat heidnische Heiligtümer oft nicht einfach beseitigt, sondern überformt und eingemeindet. Der Stein von Le Mans hat diese Umarmung überlebt und ist heute so etwas wie das inoffizielle Maskottchen der Stadt.</p>
+                    <p>Schauen Sie genauer hin: Auf der Oberfläche des Steins finden Sie kleine, glatt polierte Vertiefungen, sogenannte Schälchen. Ein alter Brauch verlangt, dass Besucher ihren Daumen oder Finger in eine dieser Mulden legen – das soll Glück bringen. Generationen von Händen haben den Stein an diesen Stellen speckig glänzend gerieben. Probieren Sie es ruhig aus; Sie reihen sich damit in eine sehr, sehr lange Kette von Menschen ein.</p>
+                    <p>Der Menhir erinnert uns daran, wie alt dieser Ort wirklich ist. Auf diesem Hügel über dem Fluss Sarthe siedelten schon die keltischen Aulerker Cenomanen, nach denen die Landschaft bis heute benannt ist. Die Römer machten daraus die Stadt Vindinum, später Civitas Cenomanorum. Und aus dem spätantiken Bischofssitz wuchs schließlich das mittelalterliche Le Mans. Wenn Sie mögen, werfen Sie von hier einen Blick auf die Umgebung der Altstadt: Große Teile der gallo-römischen Stadtmauer aus dem dritten Jahrhundert stehen noch, mit ihren charakteristischen rosafarbenen Ziegelmustern – eine der besterhaltenen römischen Stadtbefestigungen nördlich der Alpen. Gehen Sie nun zurück vor die Westfassade, zur dritten Station.</p>
+                </div>
+            </article>
+
+            <article class="ag-station" data-station="3" id="station-3">
+                <div class="ag-station-head">
+                    <span class="ag-station-num">03</span>
+                    <h2>Die Westfassade – das älteste Gesicht</h2>
+                </div>
+                <p class="ag-station-loc">Standort: Place du Cardinal Grente, Blick auf die Fassade</p>
+                <div class="ag-station-actions"><button class="ag-play-station">▶ Diese Station abspielen</button></div>
+                <div class="ag-text">
+                    <p>Sie stehen nun wieder vor der Westfassade – dem ältesten Gesicht der Kathedrale. Was Sie hier sehen, ist im Kern das elfte Jahrhundert: schweres, lagerhaft geschichtetes Mauerwerk, kleine Fensteröffnungen, klare, strenge Formen. Verglichen mit den prunkvollen Schaufassaden der Gotik, mit ihren Portaltrichtern und Figurenheeren, wirkt diese Front fast schroff. Aber gerade das macht ihren Reiz aus: Sie zeigt die Romanik in ihrer frühen, ungeschminkten Gestalt.</p>
+                    <p>Ein erster Kirchenbau des heiligen Julian soll bereits in der Spätantike an dieser Stelle gestanden haben. Fassbar wird die Baugeschichte aber vor allem ab dem elften Jahrhundert, als Bischof Vulgrin um das Jahr 1060 einen großen Neubau begann. Seine Nachfolger führten das Werk fort, und im Jahr 1120 wurde die romanische Kathedrale geweiht. Doch das Gebäude hatte kein leichtes Leben: Verheerende Stadtbrände in den Jahren 1134 und 1137 beschädigten Kirche und Stadt schwer. Der Wiederaufbau zog sich über Jahrzehnte, und 1158 konnte die erneuerte Kathedrale in Anwesenheit des Bischofs Guillaume de Passavant neu geweiht werden.</p>
+                    <p>Bemerkenswert ist das Mauerwerk selbst. In den unteren Partien der Fassade und des Langhauses haben Archäologen wiederverwendete Steine aus römischer Zeit nachgewiesen – die Baumeister bedienten sich ganz pragmatisch an den Ruinen der antiken Stadt. Man baute im Mittelalter selten auf der grünen Wiese; man baute auf Geschichte, im wörtlichen Sinn.</p>
+                    <p>Bevor Sie weitergehen, treten Sie ein paar Schritte zurück und lassen Sie die Silhouette wirken. Über dem romanischen Westwerk erhebt sich rechts der Turm über dem südlichen Querhausarm, dessen Obergeschosse aus der Zeit der Spätgotik und der Renaissance stammen und heute rund sechsundsechzig Meter erreichen. Die Kathedrale ist eben kein Bau aus einem Guss, sondern ein steinernes Geschichtsbuch, an dem vier Jahrhunderte lang geschrieben wurde. Wir gehen jetzt an der Südseite entlang zum prächtigen Südportal – Station vier.</p>
+                </div>
+            </article>
+
+            <article class="ag-station" data-station="4" id="station-4">
+                <div class="ag-station-head">
+                    <span class="ag-station-num">04</span>
+                    <h2>Das Südportal – Verwandter von Chartres</h2>
+                </div>
+                <p class="ag-station-loc">Standort: Südseite, Portalvorhalle an der Place Saint-Michel</p>
+                <div class="ag-station-actions"><button class="ag-play-station">▶ Diese Station abspielen</button></div>
+                <div class="ag-text">
+                    <p>An der Südseite der Kathedrale, geschützt von einer Vorhalle, öffnet sich das prächtigste Portal von Saint-Julien. Es entstand um die Mitte des zwölften Jahrhunderts, in den 1150er-Jahren, und gehört zu einer kleinen, erlauchten Familie von Skulpturenportalen, deren berühmtestes Mitglied das Königsportal von Chartres ist. Wenn Sie Chartres kennen, werden Sie die Verwandtschaft sofort spüren.</p>
+                    <p>Schauen Sie zuerst auf das Bogenfeld, das Tympanon: Dort thront Christus in der Mandorla, der mandelförmigen Ruhmesgloriole, umgeben von den vier Wesen der Evangelisten – Mensch, Löwe, Stier und Adler. Darunter, auf dem Türsturz, sitzen die zwölf Apostel in feierlicher Reihe. In den Bogenläufen darüber drängen sich Engel und Szenen aus der Kindheit Jesu: die Verkündigung, die Heimsuchung, die Geburt, die Anbetung der Könige.</p>
+                    <p>Und nun die Figuren links und rechts am Gewände, die das Portal wie eine Ehrengarde flankieren: hochgereckte, fast säulenhaft gelängte Gestalten mit fein gefältelten Gewändern – Könige, Königinnen und Gestalten des Alten Testaments, dazu die Apostelfürsten Petrus und Paulus. Diese sogenannten Säulenfiguren sind eine Erfindung der Mitte des zwölften Jahrhunderts, und Le Mans besitzt eines der frühesten und schönsten Beispiele überhaupt. Die Körper sind noch ganz an die Architektur gebunden, unnatürlich gestreckt und feierlich still – aber in den Gesichtern beginnt schon etwas zu leben, eine Ahnung von Individualität, die in die Gotik vorausweist.</p>
+                    <p>Durch dieses Portal betraten jahrhundertelang die Pilger die Kathedrale, denn Le Mans lag an einem der Wege nach Santiago de Compostela. Stellen Sie sich den Lärm vor, das Gedränge, die Buden der Händler an der Portalvorhalle. Der Platz hier trug übrigens lange den Namen des Marktes, der an dieser Stelle abgehalten wurde. Heute ist es stiller geworden – umso besser kann man die achthundertfünfzig Jahre alten Gesichter studieren. Wenn Sie sich sattgesehen haben, folgen Sie der Kathedrale weiter nach Osten, hinunter auf den großen Platz des Jacobins. Dort erwartet Sie der spektakulärste Anblick von ganz Le Mans.</p>
+                </div>
+            </article>
+
+            <article class="ag-station" data-station="5" id="station-5">
+                <div class="ag-station-head">
+                    <span class="ag-station-num">05</span>
+                    <h2>Das Chorhaupt – eine steinerne Krone</h2>
+                </div>
+                <p class="ag-station-loc">Standort: Place des Jacobins, Blick auf die Ostseite</p>
+                <div class="ag-station-actions"><button class="ag-play-station">▶ Diese Station abspielen</button></div>
+                <div class="ag-text">
+                    <p>Bleiben Sie hier auf dem Place des Jacobins einen Moment einfach nur stehen und schauen Sie. Was sich da vor Ihnen auftürmt, ist eine der kühnsten Chorpartien der gesamten Gotik – viele Kenner sagen: die schönste Chorostansicht Frankreichs. Der Chor der Kathedrale wächst hier in drei gewaltigen Stufen empor, gestützt von einem ganzen Wald aus Strebepfeilern und Strebebögen.</p>
+                    <p>Und diese Strebebögen sind das eigentliche Wunder. Schauen Sie genau hin: Die Bögen gabeln sich. Von jedem äußeren Strebepfeiler laufen die Kräfte über zweigeteilte, sich Y-förmig verzweigende Bögen nach innen und oben. Diese ypsilonförmigen Doppelbögen sind eine Spezialität von Le Mans; in dieser Konsequenz finden Sie sie an keiner anderen Kathedrale. Sie wirken nicht wie schweres Stützwerk, sondern wie ein gespanntes Netz, wie die Takelage eines steinernen Schiffes. Der Schriftsteller, der das Chorhaupt einmal mit einer im Hafen liegenden Flotte unter vollen Segeln verglich, hat nicht übertrieben.</p>
+                    <p>Der Grund für diesen Aufwand ist simpel: Der Chor ist riesig. Innen misst er vierunddreißig Meter bis zum Gewölbescheitel – das ist mehr als Chartres und nur wenig unter Reims. Um diese Höhe zu ermöglichen und die Wände in Glas auflösen zu können, mussten die Schubkräfte der Gewölbe über zwei Umgänge hinweg nach außen abgeleitet werden. Was Sie sehen, ist also gefrorene Statik – Ingenieurskunst des dreizehnten Jahrhunderts, offen zur Schau gestellt.</p>
+                    <p>Bemerkenswert ist auch, worauf der Chor steht: Er ragt über die alte gallo-römische Stadtmauer hinaus. Als das Domkapitel zu Beginn des dreizehnten Jahrhunderts den gotischen Neubau plante, war innerhalb der Mauern schlicht kein Platz. Also erlaubte König Philipp August im Jahr 1217, die antike Mauer zu durchbrechen. Der Chor wurde regelrecht über den Hang hinausgeschoben; seine Fundamente steigen tief den Abhang hinunter. Zwischen 1217 und 1254 entstand so dieser Koloss. Übrigens: An Sommerabenden wird das Chorhaupt bei der Lichtinszenierung „La Nuit des Chimères" in farbige Traumbilder getaucht – falls Sie abends noch einmal wiederkommen können, tun Sie es. Jetzt aber gehen wir hinein. Betreten Sie die Kathedrale und bleiben Sie gleich hinter dem Eingang im Langhaus stehen.</p>
+                </div>
+            </article>
+
+            <article class="ag-station" data-station="6" id="station-6">
+                <div class="ag-station-head">
+                    <span class="ag-station-num">06</span>
+                    <h2>Das romanische Langhaus</h2>
+                </div>
+                <p class="ag-station-loc">Standort: Im Inneren, Mitte des Langhauses</p>
+                <div class="ag-station-actions"><button class="ag-play-station">▶ Diese Station abspielen</button></div>
+                <div class="ag-text">
+                    <p>Treten Sie ein und lassen Sie zunächst die Augen sich an das gedämpfte Licht gewöhnen. Sie stehen im romanischen Langhaus, dem ältesten erhaltenen Teil der Kathedrale. Hier atmet alles das elfte und zwölfte Jahrhundert: mächtige Rundbogenarkaden auf wuchtigen Pfeilern, darüber eine niedrige Emporenzone und kleine Obergadenfenster. Die Wände sind dick, das Licht ist golden und sparsam. Nach dem hellen Platz draußen wirkt der Raum wie eine Höhle – eine feierliche, schützende Höhle.</p>
+                    <p>Schauen Sie nun nach oben. Die Gewölbe, die das Langhaus überspannen, gehören zu einer regionalen Besonderheit, die Kunsthistoriker den Plantagenêt-Stil oder das Angevinische Gewölbe nennen: stark gebuste, fast kuppelartig aufgewölbte Rippengewölbe, bei denen der Scheitel deutlich höher liegt als die Ansatzpunkte. Jedes Joch wölbt sich wie ein eigener Baldachin, wie eine Reihe steinerner Segel. Diese Gewölbe entstanden beim Wiederaufbau nach den großen Stadtbränden, in der Mitte des zwölften Jahrhunderts, als das Maine zum Machtbereich der Plantagenêt-Dynastie gehörte – daher der Name.</p>
+                    <p>Sehen Sie sich auch die Kapitelle an, die Abschlüsse der Säulen und Halbsäulen: Blattwerk, Flechtbänder, Fabelwesen, hier und da verrenkte Figuren. Romanische Bildhauer erzählten gern und ungeniert; zwischen Akanthusblättern lauern Dämonen und beißen Löwen. Nehmen Sie sich einen Moment Zeit, ein paar dieser kleinen Szenen zu entdecken – sie sind das Kleingedruckte der Kathedrale.</p>
+                    <p>Und noch etwas sollten Sie hier unten würdigen: die Stille der Proportionen. Das Langhaus ist breit gelagert, menschlich bemessen, erdnah. Die Baumeister der Romanik dachten in Mauern und Massen, nicht in Skeletten und Gläsern wie ihre gotischen Enkel. Gleich werden Sie den Unterschied mit einem einzigen Blick erleben. Aber vorher machen wir Halt bei einem Weltschatz aus Glas. Gehen Sie zur Wand des südlichen Seitenschiffs, etwa auf halber Höhe des Langhauses, und suchen Sie das Fenster mit der Himmelfahrt Christi.</p>
+                </div>
+            </article>
+
+            <article class="ag-station" data-station="7" id="station-7">
+                <div class="ag-station-head">
+                    <span class="ag-station-num">07</span>
+                    <h2>Das Himmelfahrtsfenster – uraltes Glas</h2>
+                </div>
+                <p class="ag-station-loc">Standort: Südliches Seitenschiff des Langhauses</p>
+                <div class="ag-station-actions"><button class="ag-play-station">▶ Diese Station abspielen</button></div>
+                <div class="ag-text">
+                    <p>Das Fenster, vor dem Sie jetzt stehen, ist eine Berühmtheit. Das sogenannte Himmelfahrtsfenster entstand um das Jahr 1120 und gilt als eines der ältesten erhaltenen Glasgemälde der Welt, das sich noch an seinem ursprünglichen Ort befindet. Älter oder ähnlich alt sind nur ganz wenige Scheiben, etwa die berühmten Prophetenfenster im Dom zu Augsburg. Was Sie hier sehen, ist also Glasmalerei aus der Frühzeit dieser Kunst – neunhundert Jahre alt.</p>
+                    <p>Dargestellt ist die Himmelfahrt Christi, erzählt in übereinanderliegenden Registern: Unten stehen die Apostel und Maria, in erregten Gruppen, die Köpfe in den Nacken gelegt, die Hände theatralisch erhoben. Ihre Gewänder sind in kräftigem Rot, Blau und Grün gehalten, die Gesichter mit wenigen, sicheren Pinselstrichen aus Schwarzlot gezeichnet. Beachten Sie, wie ausdrucksstark diese Figuren trotz aller Stilisierung sind – das Staunen, das Zeigen, das Zurückweichen. Romanische Kunst kann alles andere als steif sein.</p>
+                    <p>Machen Sie sich bewusst, was Glas im zwölften Jahrhundert bedeutete. Farbiges Fensterglas war ein Luxusgut ersten Ranges, hergestellt in mühsamer Handarbeit: Man schmolz Pottasche und Sand, färbte die Masse mit Metalloxiden, blies daraus Zylinder, schnitt sie auf, plättete sie zu Scheiben und fügte Hunderte einzelner Stücke mit Bleiruten zu einem Bild. Für die Menschen des Mittelalters war das durchleuchtete Bild mehr als Dekoration – es war Theologie: Licht, das durch Glas fällt, ohne es zu zerstören, galt als Sinnbild für Gott, der in die Welt kommt.</p>
+                    <p>Dass dieses Fenster die Stadtbrände, die Religionskriege, die Revolution und zwei Weltkriege überstanden hat, grenzt an ein Wunder. Im Zweiten Weltkrieg wurden die kostbarsten Scheiben von Le Mans übrigens vorsorglich ausgebaut und eingelagert – eine Vorsichtsmaßnahme, der wir heute diesen Anblick verdanken. Wenn Sie bereit sind, gehen wir weiter nach Osten, dorthin, wo sich der Raum plötzlich öffnet: ins Querhaus.</p>
+                </div>
+            </article>
+
+            <article class="ag-station" data-station="8" id="station-8">
+                <div class="ag-station-head">
+                    <span class="ag-station-num">08</span>
+                    <h2>Das Querhaus – Scharnier aus Licht</h2>
+                </div>
+                <p class="ag-station-loc">Standort: Vierung, zwischen Langhaus und Chor</p>
+                <div class="ag-station-actions"><button class="ag-play-station">▶ Diese Station abspielen</button></div>
+                <div class="ag-text">
+                    <p>Gehen Sie nun langsam weiter nach Osten – und achten Sie darauf, was mit dem Raum geschieht. Mit jedem Schritt wird es heller, die Wände scheinen zurückzuweichen, die Decke hebt sich. Sie durchqueren jetzt das Querhaus, das Scharnier zwischen den beiden Welten dieser Kathedrale.</p>
+                    <p>Das Querhaus ist der jüngste Teil des Baus. Es wurde im vierzehnten und fünfzehnten Jahrhundert errichtet, nachdem der gotische Chor längst vollendet war – der Hundertjährige Krieg hatte die Arbeiten immer wieder unterbrochen. Der südliche Arm entstand ab den 1380er-Jahren, der nördliche wurde erst um 1430 abgeschlossen. Entsprechend zeigt sich hier die Gotik in ihrer reifen, strahlenden Spätform: Die Wände sind fast vollständig in Glas aufgelöst, durchzogen von einem feinen Stabwerk, das nur noch Rahmen sein will.</p>
+                    <p>Heben Sie den Blick in den nördlichen Querhausarm: Dort leuchtet ein riesiges Maßwerkfenster mit einer Rosette, deren Glasmalereien aus dem fünfzehnten Jahrhundert stammen. An der Westseite des Querhauses erhebt sich außerdem die große Orgel auf ihrer Empore – ihr prachtvolles Gehäuse stammt aus dem sechzehnten Jahrhundert und gehört zu den schönsten Renaissance-Orgelprospekten Frankreichs. Wenn Sie Glück haben und gerade jemand übt, hören Sie, wie dieser Raum klingt: lang, weich und golden, mit einem Nachhall von vielen Sekunden.</p>
+                    <p>Und nun der Moment, auf den diese Führung hinausläuft. Stellen Sie sich in die Vierung, dort wo Querhaus, Langhaus und Chor sich kreuzen. Drehen Sie sich einmal langsam um die eigene Achse. Im Westen: die dunkle, warme, erdgebundene Romanik des elften Jahrhunderts. Im Osten: der lichtdurchflutete gotische Chor, der wie ein gläserner Wald in die Höhe wächst. Zweihundert Jahre Architekturgeschichte, ein einziger Blick. Es gibt in Europa kaum einen Ort, an dem dieser Epochensprung so körperlich erfahrbar ist. Wenn Sie so weit sind, treten Sie ein in den Chor – unsere nächste Station.</p>
+                </div>
+            </article>
+
+            <article class="ag-station" data-station="9" id="station-9">
+                <div class="ag-station-head">
+                    <span class="ag-station-num">09</span>
+                    <h2>Der gotische Chor – Wald aus Glas und Stein</h2>
+                </div>
+                <p class="ag-station-loc">Standort: Chorraum</p>
+                <div class="ag-station-actions"><button class="ag-play-station">▶ Diese Station abspielen</button></div>
+                <div class="ag-text">
+                    <p>Sie stehen jetzt in einem der großartigsten Innenräume der französischen Gotik. Der Chor von Le Mans wurde zwischen 1217 und 1254 erbaut, in nur siebenunddreißig Jahren – für mittelalterliche Verhältnisse ein atemberaubendes Tempo, das von Reichtum und Ehrgeiz des Domkapitels erzählt. Vierunddreißig Meter öffnet sich das Gewölbe über Ihnen; die schlanken Pfeiler tragen diese Höhe scheinbar mühelos.</p>
+                    <p>Das Raumgefühl hier ist anders als in den meisten gotischen Kathedralen, und das hat einen Grund: Der Chor besitzt einen doppelten Umgang, zwei konzentrische Wandelgänge, die sich um den Hauptraum legen. Der innere Umgang ist dabei selbst noch einmal erstaunlich hoch. Dadurch staffelt sich der Raum in die Tiefe wie eine Landschaft – Säule hinter Säule, Lichtschicht hinter Lichtschicht. Viele Besucher fühlen sich an einen Hochwald erinnert, und tatsächlich haben schon Schriftsteller des neunzehnten Jahrhunderts den Chor von Le Mans mit einem heiligen Hain verglichen.</p>
+                    <p>Die Architektur zeigt deutliche Verwandtschaft mit der Kathedrale von Bourges, die kurz zuvor nach demselben Prinzip der gestaffelten Räume errichtet worden war. Der erste Baumeister von Le Mans muss Bourges gekannt haben; vielleicht kam er sogar von dort. Und doch ist Le Mans keine Kopie: Die Proportionen sind eigenständig, die Y-förmigen Strebebögen, die Sie draußen bewundert haben, sind eine eigene Erfindung.</p>
+                    <p>Und dann das Glas. Der Obergaden und die Fenster der Umgänge bewahren einen der umfangreichsten Bestände an Glasmalerei des dreizehnten Jahrhunderts in Frankreich – über hundert Fenster mit Propheten, Aposteln, Heiligenlegenden und den Stiftern, die diese Fenster bezahlt haben: Bischöfe und Domherren, aber auch Zünfte, Winzer, Tuchhändler, Bäcker. Achten Sie besonders auf das intensive Blau und das glühende Rot – die Farbpalette steht der von Chartres kaum nach. In den unteren Zonen können Sie die Erzählungen mit bloßem Auge verfolgen; für den Obergaden lohnt ein Fernglas. Bleiben Sie hier ruhig ein paar Minuten sitzen, bevor wir weitergehen in den Chorumgang, zur zehnten Station.</p>
+                </div>
+            </article>
+
+            <article class="ag-station" data-station="10" id="station-10">
+                <div class="ag-station-head">
+                    <span class="ag-station-num">10</span>
+                    <h2>Chorumgang und das Konzert der Engel</h2>
+                </div>
+                <p class="ag-station-loc">Standort: Chorumgang, Scheitelkapelle Notre-Dame-du-Chevet</p>
+                <div class="ag-station-actions"><button class="ag-play-station">▶ Diese Station abspielen</button></div>
+                <div class="ag-text">
+                    <p>Wandern Sie nun gemächlich durch den Chorumgang, diesen doppelten Kranz aus Gängen und Kapellen. Vom Umgang öffnen sich strahlenförmig die Kapellen des Chorhaupts – ein Kranz von Kapellen, wie ihn die klassischen Kathedralen Frankreichs lieben, hier aber besonders tief und licht. In den Kapellen finden Sie Altäre, Grabplatten und immer wieder Glasmalerei des dreizehnten Jahrhunderts.</p>
+                    <p>Ihr Ziel ist die Scheitelkapelle ganz im Osten, die der Jungfrau Maria geweihte Kapelle Notre-Dame-du-Chevet – die größte und tiefste des Kranzes. Treten Sie ein und schauen Sie nach oben an das Gewölbe. Dort erwartet Sie einer der zauberhaftesten Kunstschätze von Le Mans: ein gemalter Engelschor aus der Zeit um 1380. Siebenundvierzig Engel musizieren und singen dort oben auf rotem und blauem Grund, jeder von ihnen anders, jeder mit eigenem Gesicht und eigener Gebärde.</p>
+                    <p>Das Faszinierendste daran: Die Engel spielen echte Instrumente ihrer Zeit, mit solcher Genauigkeit gemalt, dass Musikwissenschaftler daraus Instrumente rekonstruiert haben. Sie erkennen Harfe, Laute, Drehleier, Portativ – eine kleine tragbare Orgel –, Fidel, Psalterium, Dudelsack, Schalmei und viele mehr. Es ist eine vollständige Musikkapelle des vierzehnten Jahrhunderts, eingefroren im Gewölbe. Jahrhundertelang lag diese Malerei unter Tünche und Staub verborgen; erst bei einer Restaurierung in den 1990er-Jahren wurde sie in ihrer ganzen Farbenpracht wieder freigelegt.</p>
+                    <p>Man vermutet als Auftraggeber das Umfeld des kunstsinnigen Königs Karl des Fünften und seines Bruders Louis, Herzog von Anjou – die Malerei gehört stilistisch in die höfische Kunst um 1380, elegant, linear, kostbar. Stellen Sie sich dazu den Klang vor: Unter diesem gemalten Himmelsorchester sang jahrhundertelang die reale Chorschule der Kathedrale. Die Sängerknaben von Le Mans, die Psallette, waren berühmt; Musik gehörte zu dieser Kirche wie ihr Stein und ihr Glas. Verlassen Sie die Kapelle nun wieder und bleiben Sie im Umgang – ich erzähle Ihnen unterwegs eine Geschichte von Königen und Königinnen.</p>
+                </div>
+            </article>
+
+            <article class="ag-station" data-station="11" id="station-11">
+                <div class="ag-station-head">
+                    <span class="ag-station-num">11</span>
+                    <h2>Plantagenêt – Weltgeschichte in Le Mans</h2>
+                </div>
+                <p class="ag-station-loc">Standort: Chorumgang, beim Weitergehen</p>
+                <div class="ag-station-actions"><button class="ag-play-station">▶ Diese Station abspielen</button></div>
+                <div class="ag-text">
+                    <p>Während Sie durch den Umgang schlendern, ein Kapitel Weltgeschichte – denn diese Kathedrale war Schauplatz einer Hochzeit, die Europa verändert hat. Im Juni des Jahres 1128 heiratete hier Gottfried von Anjou, genannt Geoffroy le Bel, der Schöne, die Kaiserwitwe Mathilde, Tochter des englischen Königs Heinrich des Ersten. Gottfried trug angeblich gern einen Ginsterzweig am Hut, lateinisch planta genista – daraus wurde der Name Plantagenêt, der Name einer Dynastie, die England mehr als drei Jahrhunderte lang regieren sollte.</p>
+                    <p>Der Sohn aus dieser Ehe wurde 1133 hier in Le Mans geboren und in dieser Kathedrale getauft: Heinrich Plantagenêt, der spätere König Heinrich der Zweite von England, Ehemann der Eleonore von Aquitanien, Vater von Richard Löwenherz und Johann Ohneland. Auf dem Höhepunkt seiner Macht reichte sein Reich von Schottland bis zu den Pyrenäen – und diese Stadt, Le Mans, war eine seiner Lieblingsresidenzen und sein Geburtsort, an dem er zeitlebens hing.</p>
+                    <p>Gottfried der Schöne wurde nach seinem Tod 1151 in der Kathedrale bestattet. Sein Grab schmückte eine Platte aus Kupfer und Grubenschmelz-Email, die ihn als hochgewachsenen Ritter mit blauem Schild und goldenen Löwen zeigt – die berühmte Emailplatte des Gottfried Plantagenêt, eines der bedeutendsten Emailwerke des Mittelalters und zugleich eines der frühesten Zeugnisse der Heraldik überhaupt. Das Original können Sie heute wenige Schritte von hier im Museum Carré Plantagenêt bewundern.</p>
+                    <p>Und noch eine königliche Gestalt gehört zu dieser Stadt: Berengaria von Navarra, die Witwe von Richard Löwenherz. Nach dem Tod ihres Mannes erhielt sie Le Mans als Witwensitz und regierte die Stadt über zwanzig Jahre lang, klug und tatkräftig. Vor den Toren der Stadt stiftete sie 1229 die Zisterzienserabtei de l'Épau, in der sie begraben liegt und die Sie heute noch besichtigen können. Die Engländerinnen und Engländer unter den Besuchern stehen hier also gewissermaßen auf Familienboden. Gehen Sie nun langsam weiter durch den Umgang zurück Richtung Querhaus – zur vorletzten Station.</p>
+                </div>
+            </article>
+
+            <article class="ag-station" data-station="12" id="station-12">
+                <div class="ag-station-head">
+                    <span class="ag-station-num">12</span>
+                    <h2>Grabmäler, Teppiche und stille Schätze</h2>
+                </div>
+                <p class="ag-station-loc">Standort: Chorumgang und Querhaus</p>
+                <div class="ag-station-actions"><button class="ag-play-station">▶ Diese Station abspielen</button></div>
+                <div class="ag-text">
+                    <p>Auf dem Weg zurück lohnt es sich, den Blick für die Ausstattung zu schärfen, denn die Kathedrale ist auch eine Schatzkammer im Kleinen. Im Bereich des Chores und des Querhauses finden Sie mehrere bemerkenswerte Grabmäler. Da ist zum einen die liegende Grabfigur von Charles d'Anjou, Graf von Maine, aus dem fünfzehnten Jahrhundert – ein Werk von höfischer Eleganz aus weißem Marmor. Ganz anders das Renaissance-Grabmal für Guillaume Du Bellay, den Diplomaten und Feldherrn König Franz des Ersten und Cousin des berühmten Dichters Joachim Du Bellay: Er lehnt lässig auf dem Ellbogen wie ein antiker Römer beim Gastmahl, in der Hand Schwert und Buch – ein Mann des Krieges und der Bildung, ganz Kind seiner Zeit, gestorben 1543.</p>
+                    <p>Suchen Sie außerdem nach den Wandteppichen. Die Kathedrale besitzt eine kostbare Folge von Tapisserien aus der Zeit um 1500, die das Leben der Heiligen Gervasius und Protasius erzählt, und weitere Teppiche mit dem Leben des heiligen Julian – jene Bildergeschichten aus Wolle, die im Winter die kalten Steinwände wärmten und den Gläubigen die Legenden der Patrone erzählten. Ihre Farben sind nach fünfhundert Jahren gedämpft, aber die Erzählfreude ist ungebrochen.</p>
+                    <p>Werfen Sie im Vorbeigehen auch noch einmal einen Blick auf die große Orgel über dem südlichen Querhausarm. Ihr Gehäuse von 1529 ist ein Prachtstück der Renaissance-Schreinerkunst; das Instrument dahinter wurde über die Jahrhunderte immer wieder erneuert und begleitet bis heute die Liturgie und Konzerte. Und vielleicht entdecken Sie irgendwo eine der vielen kleinen Sonnenuhren, Steinmetzzeichen oder Graffiti vergangener Jahrhunderte, die Besucher und Bauleute im Stein hinterlassen haben – auch das gehört zu einer Kathedrale: Sie ist ein Gästebuch aus Stein, in das sich dreißig Generationen eingetragen haben.</p>
+                    <p>Wenn Sie mögen, setzen Sie sich für die letzte Station noch einmal irgendwo hin, wo Sie den Raum gut überblicken – vielleicht wieder in die Nähe der Vierung, mit Blick in den Chor.</p>
+                </div>
+            </article>
+
+            <article class="ag-station" data-station="13" id="station-13">
+                <div class="ag-station-head">
+                    <span class="ag-station-num">13</span>
+                    <h2>Abschied – die Kathedrale als Zeitmaschine</h2>
+                </div>
+                <p class="ag-station-loc">Standort: freie Platzwahl, Blick in den Raum</p>
+                <div class="ag-station-actions"><button class="ag-play-station">▶ Diese Station abspielen</button></div>
+                <div class="ag-text">
+                    <p>Zum Abschluss lade ich Sie ein, noch einmal alles zusammenzudenken, was Sie gesehen haben. Ein jungsteinzeitlicher Menhir an der Außenmauer. Römische Steine im romanischen Mauerwerk. Ein Glasfenster von 1120, eines der ältesten der Welt. Säulenfiguren, die mit Chartres verwandt sind. Ein gotischer Chor, der zu den kühnsten Frankreichs zählt, getragen von Strebebögen, die es so nirgendwo sonst gibt. Siebenundvierzig musizierende Engel aus dem vierzehnten Jahrhundert. Und dazwischen die Spuren einer Dynastie, die von hier aus England regierte.</p>
+                    <p>Die Kathedrale von Le Mans ist eine Zeitmaschine: Kein anderes Gebäude weit und breit umspannt so viele Epochen – von der Vorgeschichte bis zur Renaissance – und macht sie so unmittelbar erlebbar. Vielleicht ist es sogar ein Glück, dass sie im Schatten ihrer berühmten Schwestern von Chartres und Amiens steht. Hier drängen sich keine Menschenmassen; Sie können mit einem Gewölbe von 1250 allein sein.</p>
+                    <p>Wenn Sie noch Zeit haben, hätte ich drei Empfehlungen. Erstens: Spazieren Sie durch die Cité Plantagenêt, die Altstadt zu Füßen der Kathedrale, mit ihren Fachwerkhäusern und der rosafarbenen gallo-römischen Stadtmauer – gehen Sie unbedingt auch unten am Fluss entlang, um die Mauer in ihrer ganzen Länge zu sehen. Zweitens: Besuchen Sie die Abtei de l'Épau vor den Toren der Stadt, die Grablege der Königin Berengaria. Und drittens: Wenn Sie an einem Sommerabend hier sind, kommen Sie zur Nuit des Chimères zurück, wenn Lichtprojektionen die Engel und Chimären der Kathedrale über die Fassaden tanzen lassen.</p>
+                    <p>Damit sind wir am Ende unserer Führung. Ich danke Ihnen herzlich, dass Sie sich eine gute halbe Stunde Zeit genommen haben für diesen außergewöhnlichen Ort. Mögen Sie etwas von seiner Ruhe und seiner neunhundertjährigen Geduld mitnehmen. Auf Wiedersehen – oder, wie man hier sagt: au revoir, und eine gute Weiterreise!</p>
+                </div>
+            </article>
+
+            <p class="ag-footer-note">
+                Dieser Audioguide wurde sorgfältig recherchiert, ersetzt aber keine wissenschaftliche Führung.
+                Angaben zu Daten und Maßen folgen der gängigen kunsthistorischen Literatur zur Kathedrale Saint-Julien.
+                Die Sprachausgabe erfolgt lokal über die Web Speech API Ihres Browsers; es werden keine Audiodaten übertragen.
+            </p>
+            <a class="ag-back" href="index.html">← Zur Startseite</a>
+        </div>
+    </section>
+
+    <script>
+    (function () {
+        'use strict';
+
+        var WORDS_PER_MINUTE = 125; // Durchschnitt für deutsche Sprachausgabe bei Tempo 1.0
+
+        var stations = Array.prototype.map.call(document.querySelectorAll('.ag-station'), function (el) {
+            var paragraphs = Array.prototype.map.call(el.querySelectorAll('.ag-text p'), function (p) {
+                return p.textContent.trim();
+            });
+            var text = paragraphs.join('\n');
+            return {
+                el: el,
+                num: el.dataset.station,
+                title: el.querySelector('h2').textContent.trim(),
+                paragraphs: paragraphs,
+                words: text.split(/\s+/).length
+            };
+        });
+
+        var synth = window.speechSynthesis;
+        var supported = !!synth && 'SpeechSynthesisUtterance' in window;
+
+        var current = -1;          // Index der aktuellen Station
+        var chunkQueue = [];       // Noch zu sprechende Sätze der aktuellen Station
+        var spokenWords = 0;       // Bereits gesprochene Wörter der aktuellen Station
+        var playing = false;
+        var germanVoice = null;
+
+        var playBtn = document.getElementById('agPlay');
+        var prevBtn = document.getElementById('agPrev');
+        var nextBtn = document.getElementById('agNext');
+        var autoChk = document.getElementById('agAuto');
+        var rateInput = document.getElementById('agRate');
+        var rateVal = document.getElementById('agRateVal');
+        var bar = document.getElementById('agBar');
+        var nowTitle = document.getElementById('agNowTitle');
+        var nowMeta = document.getElementById('agNowMeta');
+        var stationLabel = document.getElementById('agStationLabel');
+        var totalLabel = document.getElementById('agTotalLabel');
+        var voiceHint = document.getElementById('agVoiceHint');
+        var toc = document.getElementById('agToc');
+
+        function rate() { return parseFloat(rateInput.value); }
+
+        function minutesFor(words) { return words / (WORDS_PER_MINUTE * rate()); }
+
+        function fmtMinutes(min) {
+            var m = Math.floor(min);
+            var s = Math.round((min - m) * 60);
+            if (s === 60) { m += 1; s = 0; }
+            return m + ':' + (s < 10 ? '0' : '') + s + ' min';
+        }
+
+        function totalWords() {
+            return stations.reduce(function (sum, st) { return sum + st.words; }, 0);
+        }
+
+        function updateTotalLabel() {
+            totalLabel.textContent = 'Gesamt ca. ' + fmtMinutes(minutesFor(totalWords()));
+        }
+
+        // Inhaltsverzeichnis aufbauen
+        stations.forEach(function (st, i) {
+            var btn = document.createElement('button');
+            btn.className = 'ag-toc-item';
+            btn.innerHTML = '<span class="num">' + st.num + '</span><span class="ttl"></span><span class="dur"></span>';
+            btn.querySelector('.ttl').textContent = st.title;
+            btn.addEventListener('click', function () {
+                st.el.scrollIntoView({ behavior: 'smooth' });
+                playStation(i);
+            });
+            toc.appendChild(btn);
+            st.tocEl = btn;
+        });
+
+        function updateTocDurations() {
+            stations.forEach(function (st) {
+                st.tocEl.querySelector('.dur').textContent = '~' + fmtMinutes(minutesFor(st.words));
+            });
+            updateTotalLabel();
+        }
+        updateTocDurations();
+
+        // Deutsche Stimme wählen (bevorzugt lokale Stimmen)
+        function pickVoice() {
+            if (!supported) return;
+            var voices = synth.getVoices();
+            if (!voices.length) return;
+            var german = voices.filter(function (v) { return /^de([-_]|$)/i.test(v.lang); });
+            germanVoice = german.find(function (v) { return v.localService; }) || german[0] || null;
+            voiceHint.textContent = germanVoice
+                ? 'Stimme: ' + germanVoice.name
+                : 'Hinweis: keine deutsche Stimme gefunden – es wird die Standardstimme verwendet.';
+        }
+        if (supported) {
+            pickVoice();
+            if (typeof synth.onvoiceschanged !== 'undefined') synth.onvoiceschanged = pickVoice;
+        } else {
+            document.getElementById('agUnsupported').style.display = 'block';
+        }
+
+        // Text in sprechbare Sätze zerlegen (umgeht Aussetzer bei sehr langen Utterances)
+        function toChunks(paragraphs) {
+            var chunks = [];
+            paragraphs.forEach(function (para, pIdx) {
+                var sentences = para.match(/[^.!?…]+[.!?…]+["»«“„]?|[^.!?…]+$/g) || [para];
+                sentences.forEach(function (s) {
+                    s = s.trim();
+                    if (s) chunks.push({ text: s, para: pIdx });
+                });
+            });
+            return chunks;
+        }
+
+        function setPlayingUI(isPlaying) {
+            playing = isPlaying;
+            playBtn.textContent = isPlaying ? '❚❚' : '▶';
+            stations.forEach(function (st, i) {
+                st.el.classList.toggle('playing', isPlaying && i === current);
+                st.tocEl.classList.toggle('active', i === current);
+            });
+        }
+
+        function highlightParagraph(pIdx) {
+            if (current < 0) return;
+            var ps = stations[current].el.querySelectorAll('.ag-text p');
+            Array.prototype.forEach.call(ps, function (p, i) {
+                p.classList.toggle('spoken-now', i === pIdx);
+            });
+        }
+
+        function clearHighlights() {
+            Array.prototype.forEach.call(document.querySelectorAll('.ag-text p.spoken-now'), function (p) {
+                p.classList.remove('spoken-now');
+            });
+        }
+
+        function updateProgress() {
+            if (current < 0) { bar.style.width = '0%'; return; }
+            var pct = Math.min(100, (spokenWords / stations[current].words) * 100);
+            bar.style.width = pct + '%';
+        }
+
+        function updateNowPlaying() {
+            if (current < 0) return;
+            var st = stations[current];
+            nowTitle.textContent = 'Station ' + st.num + ' · ' + st.title;
+            nowMeta.textContent = 'Dauer ca. ' + fmtMinutes(minutesFor(st.words)) + ' bei Tempo ' + rate().toFixed(2) + '×';
+            stationLabel.textContent = 'Station ' + st.num + ' von ' + stations.length;
+        }
+
+        function speakNextChunk() {
+            if (!playing) return;
+            if (!chunkQueue.length) {
+                // Station beendet
+                setPlayingUI(false);
+                clearHighlights();
+                bar.style.width = '100%';
+                if (autoChk.checked && current < stations.length - 1) {
+                    var next = current + 1;
+                    stations[next].el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    setTimeout(function () { playStation(next); }, 900);
+                } else if (current === stations.length - 1) {
+                    nowTitle.textContent = 'Ende der Führung';
+                    nowMeta.textContent = 'Vielen Dank fürs Zuhören. Au revoir!';
+                }
+                return;
+            }
+            var chunk = chunkQueue.shift();
+            var u = new SpeechSynthesisUtterance(chunk.text);
+            u.lang = 'de-DE';
+            if (germanVoice) u.voice = germanVoice;
+            u.rate = rate();
+            u.onstart = function () { highlightParagraph(chunk.para); };
+            u.onend = function () {
+                spokenWords += chunk.text.split(/\s+/).length;
+                updateProgress();
+                speakNextChunk();
+            };
+            u.onerror = function () { speakNextChunk(); };
+            synth.speak(u);
+        }
+
+        function playStation(i) {
+            if (!supported) {
+                stations[i].el.scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+            synth.cancel();
+            clearHighlights();
+            current = i;
+            spokenWords = 0;
+            chunkQueue = toChunks(stations[i].paragraphs);
+            updateNowPlaying();
+            updateProgress();
+            setPlayingUI(true);
+            speakNextChunk();
+        }
+
+        function togglePlay() {
+            if (!supported) return;
+            if (current < 0) { playStation(0); return; }
+            if (playing) {
+                synth.pause();
+                setPlayingUI(false);
+                playing = false;
+                playBtn.textContent = '▶';
+            } else if (synth.paused) {
+                synth.resume();
+                playing = true;
+                setPlayingUI(true);
+            } else {
+                playing = true;
+                setPlayingUI(true);
+                speakNextChunk();
+            }
+        }
+
+        playBtn.addEventListener('click', togglePlay);
+        prevBtn.addEventListener('click', function () {
+            var target = current <= 0 ? 0 : current - 1;
+            stations[target].el.scrollIntoView({ behavior: 'smooth' });
+            playStation(target);
+        });
+        nextBtn.addEventListener('click', function () {
+            var target = current < 0 ? 0 : Math.min(stations.length - 1, current + 1);
+            stations[target].el.scrollIntoView({ behavior: 'smooth' });
+            playStation(target);
+        });
+
+        rateInput.addEventListener('input', function () {
+            rateVal.textContent = rate().toFixed(2) + '×';
+            updateTocDurations();
+            if (current >= 0) updateNowPlaying();
+        });
+
+        Array.prototype.forEach.call(document.querySelectorAll('.ag-play-station'), function (btn, i) {
+            btn.addEventListener('click', function () { playStation(i); });
+        });
+
+        // Sprachausgabe stoppen, wenn die Seite verlassen wird
+        window.addEventListener('beforeunload', function () {
+            if (supported) synth.cancel();
+        });
+    })();
+    </script>
+</body>
+</html>
