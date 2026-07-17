@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Podcast über Heinrich II. Plantagenêt, den 1133 in Le Mans geborenen König von England – 8 Kapitel auf einer interaktiven Frankreichkarte, ca. 17 Minuten, Deutsch.">
+    <meta property="og:title" content="Heinrich II. Plantagenêt – Der König aus Le Mans">
+    <meta property="og:description" content="Audio-Podcast in 8 Kapiteln auf einer klickbaren Frankreichkarte – mit Querverweisen zur Geschichte des Heiligen Römischen Reiches.">
+    <meta property="og:type" content="website">
+    <title>Heinrich II. Plantagenêt – Der König aus Le Mans</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ===== Heinrich-II-Podcast ===== */
+        .hp-hero {
+            position: relative;
+            padding: 8rem 0 5rem;
+            background: linear-gradient(160deg, var(--secondary) 0%, var(--primary) 100%);
+            color: var(--text-light);
+            text-align: center;
+        }
+        .hp-eyebrow {
+            font-size: 0.8rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+        .hp-hero h1 {
+            font-family: var(--font-serif);
+            font-weight: 600;
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            line-height: 1.1;
+            margin-bottom: 1rem;
+        }
+        .hp-hero .hp-sub { color: var(--text-muted); font-size: 0.95rem; }
+        .hp-narrow { max-width: 900px; margin: 0 auto; }
+        .hp-section { padding: 3rem 0 5rem; }
+
+        /* Sticky player */
+        .hp-player {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: var(--bg-card-dark);
+            border: 1px solid var(--border-dark);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem 1.5rem;
+            margin-top: -3rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+            color: var(--text-light);
+        }
+        .hp-player-title { font-family: var(--font-serif); font-size: 1.2rem; margin-bottom: 0.15rem; }
+        .hp-player-meta { color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.9rem; }
+        .hp-player audio { width: 100%; }
+        .hp-player-label {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 0.6rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        .hp-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.9rem;
+            font-size: 0.8rem;
+            color: var(--accent);
+            border: 1px solid var(--border-dark);
+            padding: 0.45rem 1rem;
+            border-radius: var(--radius);
+            transition: all var(--transition);
+        }
+        .hp-download:hover { background: var(--accent); color: var(--primary); }
+
+        .hp-intro { margin: 2.5rem 0 1.5rem; color: var(--text-dark-muted); }
+        .hp-intro strong { color: var(--text-dark); }
+        .hp-intro a { color: var(--accent); text-decoration: underline; }
+
+        /* Karte */
+        .hp-map-card {
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            background: #f4f1ea;
+            padding: 1.25rem;
+            margin: 1.5rem 0 1rem;
+        }
+        .hp-map-card h2 {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+            color: var(--text-dark);
+        }
+        .hp-map-hint { font-size: 0.82rem; color: var(--text-dark-muted); margin-bottom: 0.75rem; }
+        .hp-map-wrap { width: 100%; overflow: hidden; }
+        .hp-map-wrap svg { width: 100%; height: auto; display: block; }
+
+        .land { fill: #e7e0d2; stroke: #b7ab90; stroke-width: 1.5; stroke-linejoin: round; }
+        .sea-label, .land-label {
+            font-family: var(--font-sans);
+            font-size: 13px;
+            fill: #9a917d;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        .angevin {
+            fill: var(--accent);
+            fill-opacity: 0.22;
+            stroke: var(--accent);
+            stroke-width: 1;
+            stroke-dasharray: 4 3;
+        }
+        .ctx-dot { fill: #8b8574; }
+        .ctx-label { font-family: var(--font-sans); font-size: 12px; fill: #6e6753; }
+
+        .marker { cursor: pointer; }
+        .marker circle.halo { fill: var(--accent); fill-opacity: 0; transition: fill-opacity var(--transition); }
+        .marker circle.dot {
+            fill: #fff;
+            stroke: var(--accent);
+            stroke-width: 2.5;
+            transition: all var(--transition);
+        }
+        .marker text {
+            font-family: var(--font-sans);
+            font-size: 13px;
+            font-weight: 600;
+            fill: #3d3629;
+            paint-order: stroke;
+            stroke: #f4f1ea;
+            stroke-width: 3px;
+            stroke-linejoin: round;
+        }
+        .marker .chnum {
+            font-size: 10px;
+            font-weight: 700;
+            fill: var(--accent);
+            stroke: none;
+        }
+        .marker:hover circle.dot, .marker.active circle.dot { fill: var(--accent); }
+        .marker:hover circle.halo { fill-opacity: 0.15; }
+        .marker.active circle.halo {
+            fill-opacity: 0.2;
+            animation: hp-pulse 2s ease-out infinite;
+        }
+        @keyframes hp-pulse {
+            0% { fill-opacity: 0.35; r: 12; }
+            100% { fill-opacity: 0; r: 26; }
+        }
+        .hp-legend {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            font-size: 0.78rem;
+            color: var(--text-dark-muted);
+            margin-top: 0.75rem;
+        }
+        .hp-legend span { display: inline-flex; align-items: center; gap: 0.45rem; }
+        .hp-legend .sw {
+            width: 14px; height: 14px; border-radius: 3px;
+            background: var(--accent); opacity: 0.25;
+            border: 1px dashed var(--accent);
+        }
+        .hp-legend .dotmark {
+            width: 12px; height: 12px; border-radius: 50%;
+            background: #fff; border: 2.5px solid var(--accent);
+        }
+
+        /* Kapitel-Liste */
+        .hp-toc {
+            margin: 1.5rem 0 3rem;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        .hp-toc-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+            text-align: left;
+            appearance: none;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border-light);
+            padding: 0.8rem 1.1rem;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            transition: background var(--transition);
+        }
+        .hp-toc-item:last-child { border-bottom: none; }
+        .hp-toc-item:hover { background: #f0ece3; }
+        .hp-toc-item .num {
+            flex-shrink: 0;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .hp-toc-item .dur { margin-left: auto; color: var(--text-dark-muted); font-size: 0.78rem; white-space: nowrap; }
+        .hp-toc-item.active { background: #f0ece3; }
+        .hp-toc-item.active .num { background: var(--accent); color: #fff; }
+
+        /* Kapitel-Transkripte */
+        .hp-chapter { margin-bottom: 3.5rem; scroll-margin-top: 200px; }
+        .hp-chapter-head {
+            display: flex;
+            align-items: baseline;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        .hp-chapter-num {
+            font-family: var(--font-serif);
+            font-size: 2.4rem;
+            color: var(--accent);
+            line-height: 1;
+        }
+        .hp-chapter h2 {
+            font-family: var(--font-serif);
+            font-size: 1.7rem;
+            color: var(--text-dark);
+            line-height: 1.2;
+        }
+        .hp-chapter-loc {
+            font-size: 0.78rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-dark-muted);
+            margin-bottom: 1rem;
+        }
+        .hp-chapter-actions { margin-bottom: 1rem; }
+        .hp-play-chapter {
+            appearance: none;
+            border: 1px solid var(--accent);
+            background: transparent;
+            color: var(--accent);
+            border-radius: var(--radius);
+            padding: 0.45rem 1rem;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .hp-play-chapter:hover { background: var(--accent); color: #fff; }
+        .hp-chapter.playing .hp-play-chapter { background: var(--accent); color: #fff; }
+        .hp-chapter.playing .hp-chapter-num { animation: hp-blink 2s ease-in-out infinite; }
+        @keyframes hp-blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.45; }
+        }
+        .hp-text p { margin-bottom: 1.05rem; color: var(--text-dark-muted); }
+        .hp-hre {
+            border-left: 3px solid var(--accent);
+            background: #f6f1e6;
+            padding: 0.9rem 1.1rem;
+            margin: 1.1rem 0;
+            font-size: 0.92rem;
+            color: var(--text-dark);
+            border-radius: 0 var(--radius) var(--radius) 0;
+        }
+        .hp-hre .hp-hre-tag {
+            display: block;
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 0.3rem;
+            font-weight: 600;
+        }
+
+        .hp-footer-note {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-light);
+            font-size: 0.8rem;
+            color: var(--text-dark-muted);
+        }
+        .hp-back {
+            display: inline-block;
+            margin-top: 1.5rem;
+            margin-right: 1.5rem;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+        }
+        @media (max-width: 600px) {
+            .hp-player { padding: 1rem; margin-left: -0.5rem; margin-right: -0.5rem; }
+            .hp-chapter { scroll-margin-top: 240px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero -->
+    <header class="hp-hero">
+        <div class="container hp-narrow">
+            <p class="hp-eyebrow">Podcast · Geschichte</p>
+            <h1>Heinrich II. Plantagenêt<br>Der König aus Le Mans</h1>
+            <p class="hp-sub">8 Kapitel auf einer Frankreichkarte · 17:30 Minuten · Deutsch</p>
+        </div>
+    </header>
+
+    <section class="hp-section">
+        <div class="container hp-narrow">
+
+            <!-- Player -->
+            <div class="hp-player" id="hpPlayer">
+                <p class="hp-player-title" id="hpNowTitle">Podcast – die komplette Folge</p>
+                <p class="hp-player-meta" id="hpNowMeta">Play drücken oder auf der Karte einen Ort anklicken – das Audio springt zum passenden Kapitel.</p>
+                <audio id="hpAudio" controls preload="metadata">
+                    <source src="assets/podcast-heinrich-ii.mp3" type="audio/mpeg">
+                    Ihr Browser kann die Audiodatei nicht abspielen.
+                    <a href="assets/podcast-heinrich-ii.mp3">MP3 herunterladen</a>.
+                </audio>
+                <div class="hp-player-label">
+                    <span id="hpChapterLabel">Kapitel 1 von 8</span>
+                    <span>Gesamt 17:30 min</span>
+                </div>
+                <a class="hp-download" href="assets/podcast-heinrich-ii.mp3" download>⤓ MP3 herunterladen (6,3 MB)</a>
+            </div>
+
+            <!-- Intro -->
+            <div class="hp-intro">
+                <p><strong>Am 5. März 1133 wurde in Le Mans ein Kind geboren</strong>, das England ein halbes Jahrhundert regieren und ein Reich von Schottland bis zu den Pyrenäen zusammenhalten sollte: Heinrich II. Plantagenêt – jener König, dem Sie in <a href="audioguide-le-mans.html">Station 11 unseres Kathedralen-Audioguides</a> schon begegnet sind. Dieser Podcast erzählt sein Leben in 8 Kapiteln, jedes an einem Ort seines Reiches. Und weil seine Geschichte an erstaunlich vielen Stellen die des Heiligen Römischen Reiches kreuzt – seine Mutter war Kaiserin, sein Schwiegersohn war Heinrich der Löwe, sein Enkel wurde Kaiser –, sind die Querverbindungen ins Reich jeweils eigens markiert.</p>
+            </div>
+
+            <!-- Karte -->
+            <div class="hp-map-card">
+                <h2>Die Karte seines Lebens</h2>
+                <p class="hp-map-hint">Klicken Sie auf einen Ort – der Podcast springt direkt zum passenden Kapitel.</p>
+                <div class="hp-map-wrap">
+                    <svg viewBox="0 0 600 640" role="img" aria-label="Karte Frankreichs mit den Lebensstationen Heinrichs II.">
+                        <!-- England (Ausschnitt) -->
+                        <path class="land" d="M 0,150 L 60,140 120,128 189,114 240,100 292,94 300,70 285,40 288,0 L 0,0 Z"/>
+                        <!-- Frankreich -->
+                        <path class="land" d="M 315,105 L 337,100 367,124 437,176 497,185 536,209 587,223 568,246 561,308 499,389 530,413 547,538 466,562 403,544 366,604 169,552 190,427 186,392 141,323 103,311 34,279 43,251 86,239 171,243 156,179 166,182 189,203 240,192 282,166 304,118 Z"/>
+                        <!-- Angevinischer Festlandbesitz (um 1180) -->
+                        <path class="angevin" d="M 282,166 L 300,215 300,341 343,431 297,545 169,552 190,427 186,392 141,323 103,311 34,279 43,251 86,239 171,243 156,179 166,182 189,203 240,192 Z"/>
+
+                        <text class="sea-label" x="70" y="205">Ärmelkanal</text>
+                        <text class="sea-label" x="55" y="430">Atlantik</text>
+                        <text class="land-label" x="425" y="300">Frankreich</text>
+                        <text class="land-label" x="30" y="30">England</text>
+
+                        <!-- Kontext: Paris -->
+                        <circle class="ctx-dot" cx="336" cy="230" r="4"/>
+                        <text class="ctx-label" x="346" y="234">Paris (Krondomäne)</text>
+
+                        <!-- Marker (data-ch = Kapitel-Index) -->
+                        <g class="marker" data-ch="0" tabindex="0" role="button" aria-label="Kapitel 1: Le Mans 1133">
+                            <circle class="halo" cx="244" cy="281" r="14"/>
+                            <circle class="dot" cx="244" cy="281" r="7"/>
+                            <text x="160" y="272">Le Mans <tspan class="chnum">1133 · Kap. 1</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="1" tabindex="0" role="button" aria-label="Kapitel 2: Rouen">
+                            <circle class="halo" cx="283" cy="195" r="14"/>
+                            <circle class="dot" cx="283" cy="195" r="7"/>
+                            <text x="295" y="192">Rouen <tspan class="chnum">Kap. 2</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="2" tabindex="0" role="button" aria-label="Kapitel 3: Poitiers">
+                            <circle class="halo" cx="250" cy="366" r="14"/>
+                            <circle class="dot" cx="250" cy="366" r="7"/>
+                            <text x="262" y="372">Poitiers <tspan class="chnum">Kap. 3</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="3" tabindex="0" role="button" aria-label="Kapitel 4: London">
+                            <circle class="halo" cx="230" cy="72" r="14"/>
+                            <circle class="dot" cx="230" cy="72" r="7"/>
+                            <text x="148" y="66">London <tspan class="chnum">Kap. 4</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="4" tabindex="0" role="button" aria-label="Kapitel 5: Canterbury">
+                            <circle class="halo" cx="282" cy="85" r="14"/>
+                            <circle class="dot" cx="282" cy="85" r="7"/>
+                            <text x="294" y="80">Canterbury <tspan class="chnum">Kap. 5</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="5" tabindex="0" role="button" aria-label="Kapitel 6: Chinon">
+                            <circle class="halo" cx="255" cy="330" r="14"/>
+                            <circle class="dot" cx="255" cy="330" r="7"/>
+                            <text x="267" y="330">Chinon <tspan class="chnum">Kap. 6</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="6" tabindex="0" role="button" aria-label="Kapitel 7: Le Mans 1189">
+                            <circle class="halo" cx="258" cy="290" r="14"/>
+                            <circle class="dot" cx="258" cy="290" r="7"/>
+                            <text x="270" y="296">Le Mans <tspan class="chnum">1189 · Kap. 7</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="7" tabindex="0" role="button" aria-label="Kapitel 8: Fontevraud">
+                            <circle class="halo" cx="224" cy="342" r="14"/>
+                            <circle class="dot" cx="224" cy="342" r="7"/>
+                            <text x="76" y="352">Fontevraud <tspan class="chnum">Kap. 8</tspan></text>
+                        </g>
+                    </svg>
+                </div>
+                <div class="hp-legend">
+                    <span><span class="sw"></span> Festländische Besitzungen Heinrichs II. (um 1180)</span>
+                    <span><span class="dotmark"></span> Kapitel-Station (anklickbar)</span>
+                </div>
+            </div>
+
+            <!-- Kapitel-Liste (per JS gefüllt) -->
+            <div class="hp-toc" id="hpToc"></div>
+
+            <!-- Kapitel 1 -->
+            <article class="hp-chapter" data-ch="0" id="kapitel-1">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">01</span>
+                    <h2>Le Mans, 1133 – die Wiege eines Weltreichs</h2>
+                </div>
+                <p class="hp-chapter-loc">Ort: Le Mans, Grafschaft Maine</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Kapitel anhören</button></div>
+                <div class="hp-text">
+                    <p>Am 5. März 1133 wird in Le Mans ein Kind geboren, das einmal über ein Reich von Schottland bis zu den Pyrenäen herrschen wird: Heinrich Plantagenêt, der spätere König Heinrich II. von England. Sein Vater ist Graf Gottfried von Anjou, genannt der Schöne. Seine Mutter aber ist eine der bemerkenswertesten Frauen des Mittelalters.</p>
+                    <div class="hp-hre"><span class="hp-hre-tag">Brücke ins Reich</span>Mathilde, Heinrichs Mutter, war Kaiserin des Heiligen Römischen Reiches: Als Kind mit Kaiser Heinrich V. verlobt – dem letzten Salier, der 1122 mit dem Wormser Konkordat den Investiturstreit beendete –, wurde sie in Mainz gekrönt und vertrat den Kaiser zeitweise als Statthalterin in Italien. Nach seinem Tod 1125 kehrte sie nach England zurück, legte den Kaiserinnentitel aber nie wieder ab: Die englische Geschichte kennt sie bis heute als <em>Empress Maud</em>.</div>
+                    <p>Der kleine Heinrich wuchs also als Sohn „der Kaiserin" auf, als Enkel eines Königs und Erbe dreier Grafschaften. Getauft wurde er in der Kathedrale von Le Mans – jener Kirche, die Sie mit unserem <a href="audioguide-le-mans.html">Audioguide</a> besuchen können. Le Mans war die Hauptstadt der Grafschaft Maine, das Scharnier zwischen der Normandie im Norden und Anjou im Süden. Genau aus dieser Scharnierlage entstand ein Weltreich.</p>
+                </div>
+            </article>
+
+            <!-- Kapitel 2 -->
+            <article class="hp-chapter" data-ch="1" id="kapitel-2">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">02</span>
+                    <h2>Rouen – das normannische Erbe und der Bürgerkrieg</h2>
+                </div>
+                <p class="hp-chapter-loc">Ort: Rouen, Hauptstadt der Normandie</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Kapitel anhören</button></div>
+                <div class="hp-text">
+                    <p>Rouen an der Seine war die Hauptstadt der Normandie – und die Normandie der Kern von Heinrichs Erbe. Sein Urgroßvater war Wilhelm der Eroberer, der 1066 England erobert hatte. Seit diesem Jahr galt: Wer die Normandie hatte, griff nach England, und wer England hatte, brauchte die Normandie.</p>
+                    <p>Doch Heinrichs Weg zur Krone führte durch einen Bürgerkrieg. Sein Großvater, König Heinrich I., hatte die Barone zweimal schwören lassen, seine Tochter Mathilde als Erbin anzuerkennen. Als der alte König 1135 starb, riss ihr Vetter Stephan von Blois die Krone an sich. Es folgten fast zwanzig Jahre Bürgerkrieg – „die Anarchie". Ein Chronist schrieb: „Christus und seine Heiligen schliefen."</p>
+                    <div class="hp-hre"><span class="hp-hre-tag">Brücke ins Reich</span>Ein vertrautes Muster: Auch das Reich erlebte solche Zerreißproben, etwa bei der Doppelwahl von 1198, als der Staufer Philipp von Schwaben und der Welfe Otto IV. gleichzeitig zu Königen gewählt wurden. Der Unterschied: Im Reich <em>wählten</em> die Fürsten den König, in England entschied das <em>Erbrecht</em> – weshalb eine bestrittene Erbfolge dort umso verheerender wirkte.</div>
+                    <p>1153 kam der Kompromiss: Stephan behielt die Krone auf Lebenszeit, danach sollte Heinrich erben. Stephan starb schon ein Jahr später. Mit 21 Jahren war der Junge aus Le Mans König von England.</p>
+                </div>
+            </article>
+
+            <!-- Kapitel 3 -->
+            <article class="hp-chapter" data-ch="2" id="kapitel-3">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">03</span>
+                    <h2>Poitiers – Eleonore, oder: Heiraten wie später die Habsburger</h2>
+                </div>
+                <p class="hp-chapter-loc">Ort: Poitiers, Herz Aquitaniens</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Kapitel anhören</button></div>
+                <div class="hp-text">
+                    <p>Im März 1152 ließ der französische König Ludwig VII. seine Ehe mit Eleonore von Aquitanien annullieren – nach fünfzehn Jahren und zwei Töchtern. Eleonore war die reichste Erbin Europas: Ihr gehörte der gesamte Südwesten Frankreichs, von Poitiers bis zu den Pyrenäen. Nur acht Wochen später heiratete die etwa dreißigjährige Eleonore den neunzehnjährigen Heinrich. Mit einem Federstrich vereinte er Normandie, Anjou, Maine, Touraine und Aquitanien in einer Hand – zwei Jahre später kam die englische Krone dazu.</p>
+                    <div class="hp-hre"><span class="hp-hre-tag">Brücke zu den Habsburgern</span><em>Bella gerant alii, tu felix Austria nube</em> – „Kriege führen mögen andere, du, glückliches Österreich, heirate." Mit dieser Strategie sammelten die Habsburger ab dem 15. Jahrhundert Burgund, Spanien, Böhmen und Ungarn ein. Heinrich Plantagenêt spielte dasselbe Spiel dreihundert Jahre früher – und mindestens ebenso erfolgreich. Auch die Struktur ähnelt der späteren Habsburgermonarchie: keine Eroberung, kein Einheitsstaat, sondern eine <em>Personalunion</em>, in der jedes Land seine Gesetze und Eliten behielt, zusammengehalten allein durch die Person des Herrschers.</div>
+                    <p>Historiker nennen dieses Gebilde das „Angevinische Reich", nach dem Stammland Anjou. Offiziell blieb Heinrich für seine Festlandsbesitzungen übrigens Vasall des französischen Königs – so wie mancher Kurfürst zugleich Untertan und beinahe ebenbürtiger Rivale seines Kaisers war.</p>
+                </div>
+            </article>
+
+            <!-- Kapitel 4 -->
+            <article class="hp-chapter" data-ch="3" id="kapitel-4">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">04</span>
+                    <h2>London und Westminster – der Reformer auf dem Thron</h2>
+                </div>
+                <p class="hp-chapter-loc">Ort: London / Westminster</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Kapitel anhören</button></div>
+                <div class="hp-text">
+                    <p>Im Dezember 1154 wurde Heinrich in Westminster gekrönt. Die Jahreszahlen nebeneinander: 1152 wird Friedrich Barbarossa römisch-deutscher König, 1155 Kaiser – 1154 besteigt Heinrich den englischen Thron. Die beiden dominierenden Monarchen des Jahrhunderts treten fast gleichzeitig an; begegnet sind sie sich nie, aber sie standen in diplomatischem Kontakt.</p>
+                    <div class="hp-hre"><span class="hp-hre-tag">Brücke ins Reich</span>Interessant ist der Kontrast im Regierungsstil: Barbarossa musste mit mächtigen Reichsfürsten verhandeln – königliche Herrschaft im Reich blieb Herrschaft im Verbund mit den Großen, und auf lange Sicht wuchs die Macht der Territorien, nicht der Krone. Sie kennen das Ergebnis: den Flickenteppich, der das Reich bis 1806 blieb. Heinrich dagegen baute in England eine zentrale Königsherrschaft mit Verwaltung und Recht auf – zwei Antworten auf dieselbe Frage, wie man ein großes Reich zusammenhält.</div>
+                    <p>Er schickte reisende Königsrichter durchs Land, führte das Geschworenenverfahren ein und schuf einheitliche Klageformen. Aus dieser Rechtsprechung erwuchs das <strong>Common Law</strong>, das bis heute die Rechtsordnung Englands, Amerikas und halb der Welt prägt. Dazu kam der <strong>Exchequer</strong>, das Schatzamt mit seinem karierten Rechentuch – eine der modernsten Finanzverwaltungen Europas. Man kann es zuspitzen: Während im Reich die Zentralgewalt erodierte, goss Heinrich in England das Fundament des modernen Staates.</p>
+                </div>
+            </article>
+
+            <!-- Kapitel 5 -->
+            <article class="hp-chapter" data-ch="4" id="kapitel-5">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">05</span>
+                    <h2>Canterbury – Thomas Becket, das englische Canossa</h2>
+                </div>
+                <p class="hp-chapter-loc">Ort: Canterbury, Kent</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Kapitel anhören</button></div>
+                <div class="hp-text">
+                    <p>Thomas Becket war Heinrichs engster Freund und glänzender Kanzler. 1162 machte ihn der König zum Erzbischof von Canterbury – in der Erwartung, damit die Kirche Englands in die Hand zu bekommen. Doch Becket verwandelte sich über Nacht in einen kompromisslosen Kirchenmann. Als Heinrich 1164 in den Konstitutionen von Clarendon die königliche Gerichtsbarkeit über straffällige Kleriker durchsetzen wollte, verweigerte sich Becket und floh nach Frankreich.</p>
+                    <p>Im Dezember 1170 entfuhren dem König jene Worte, die als Frage überliefert sind, wer ihn von diesem aufrührerischen Priester befreie. Vier Ritter nahmen ihn beim Wort und erschlugen den Erzbischof am Altar seiner eigenen Kathedrale. Ganz Europa war entsetzt; Becket wurde schon 1173 heiliggesprochen.</p>
+                    <div class="hp-hre"><span class="hp-hre-tag">Brücke ins Reich</span>Das Echo des Investiturstreits: Sie erinnern sich an Canossa 1077, als Heinrich IV. barfuß im Schnee vor Papst Gregor VII. stand. Jener Streit endete 1122 mit dem Wormser Konkordat – unterzeichnet von Heinrich V., dem ersten Ehemann von Heinrichs Mutter. Ausgerechnet ihr Sohn focht fünfzig Jahre später denselben Kampf zwischen Krone und Kirche aus. Und auch er endete in einem Bußgang: 1172 unterwarf sich Heinrich in Avranches, 1174 ließ er sich am Grab Beckets öffentlich geißeln – das englische Canossa.</div>
+                </div>
+            </article>
+
+            <!-- Kapitel 6 -->
+            <article class="hp-chapter" data-ch="5" id="kapitel-6">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">06</span>
+                    <h2>Chinon – Regieren im Sattel und ein Welfe im Exil</h2>
+                </div>
+                <p class="hp-chapter-loc">Ort: Chinon an der Loire</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Kapitel anhören</button></div>
+                <div class="hp-text">
+                    <p>Wie regiert man ein Reich von Schottland bis zu den Pyrenäen ohne Hauptstadt? Genau wie die römisch-deutschen Kaiser: durch ununterbrochenes Reisen. Heinrich war ein Reisekönig – so wie die Kaiser von Pfalz zu Pfalz zogen, von Aachen nach Goslar, von Gelnhausen nach Italien. Seine Lieblingsburgen lagen an der Loire, allen voran das mächtige Chinon.</p>
+                    <p>Doch das Reich hatte eine offene Flanke: die eigene Familie. 1173 brach die große Revolte los – die älteren Söhne erhoben sich, unterstützt vom französischen König und, das war der eigentliche Skandal, von ihrer Mutter. Eleonore wurde auf der Flucht gefasst und verbrachte die nächsten fünfzehn Jahre als Gefangene ihres Ehemanns.</p>
+                    <div class="hp-hre"><span class="hp-hre-tag">Brücke ins Reich</span>Die welfische Verbindung: Heinrichs Tochter Mathilde heiratete 1168 <strong>Heinrich den Löwen</strong>, den Herzog von Sachsen und Bayern. Als Barbarossa den Löwen 1180 stürzte und seine Herzogtümer zerschlug, ging der Welfe ins Exil – an den Hof seines Schwiegervaters, in die Normandie und nach England. Unter den Kindern war ein Junge namens Otto, der am Plantagenêt-Hof aufwuchs: der spätere <strong>Kaiser Otto IV.</strong>, der einzige Welfe auf dem Kaiserthron – und Enkel Heinrichs II.</div>
+                </div>
+            </article>
+
+            <!-- Kapitel 7 -->
+            <article class="hp-chapter" data-ch="6" id="kapitel-7">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">07</span>
+                    <h2>Le Mans, 1189 – die brennende Geburtsstadt</h2>
+                </div>
+                <p class="hp-chapter-loc">Ort: Le Mans, dann Chinon</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Kapitel anhören</button></div>
+                <div class="hp-text">
+                    <p>Am Ende seines Lebens stand Heinrich einem ebenbürtigen Gegner gegenüber: dem jungen französischen König Philipp II., den man später Augustus nennen sollte. Philipp verstand es meisterhaft, die Söhne gegen den Vater zu wenden. 1189 verbündete sich der Thronfolger Richard – Löwenherz – offen mit dem Franzosen.</p>
+                    <p>Im Juni 1189 rückten Philipp und Richard gegen Le Mans vor, die Geburtsstadt des alten Königs, die er nach eigenen Worten von allen Städten am meisten liebte. Um den Feind aufzuhalten, ließen Heinrichs Leute eine Vorstadt in Brand stecken – doch der Wind drehte, und Le Mans brannte. Heinrich musste aus seiner brennenden Geburtsstadt fliehen. Auf einem Hügel über der Stadt soll der alte König in seiner Verbitterung Gott selbst die Gefolgschaft aufgekündigt haben.</p>
+                    <p>Wenige Wochen später, am 6. Juli 1189, starb Heinrich auf seiner Lieblingsburg Chinon, verlassen von fast allen. Zuvor hatte man ihm die Liste der Verschwörer vorgelesen – an ihrer Spitze: der Name seines Lieblingssohns Johann. Als Richard an die Bahre trat, begann, so will es die Legende, der Leichnam aus der Nase zu bluten – das alte Zeichen, dass der Mörder naht.</p>
+                </div>
+            </article>
+
+            <!-- Kapitel 8 -->
+            <article class="hp-chapter" data-ch="7" id="kapitel-8">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">08</span>
+                    <h2>Fontevraud – Grablege, Löwenherz und das lange Echo</h2>
+                </div>
+                <p class="hp-chapter-loc">Ort: Abtei Fontevraud an der Loire</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Kapitel anhören</button></div>
+                <div class="hp-text">
+                    <p>Heinrich wurde in der Abtei Fontevraud bestattet, nicht in Westminster. Noch heute liegen dort die bemalten Grabfiguren: Heinrich mit Krone und Zepter, daneben Eleonore – die ihn um fünfzehn Jahre überlebte – mit einem aufgeschlagenen Buch, dazu Richard Löwenherz. Ein englisches Königsgrab auf französischem Boden: das ganze Paradox dieses Reiches in einem Bild.</p>
+                    <div class="hp-hre"><span class="hp-hre-tag">Brücke ins Reich</span>Richard Löwenherz geriet 1192 auf dem Rückweg vom Kreuzzug bei Wien in Gefangenschaft – festgesetzt von Herzog Leopold V. von Österreich (noch ein <em>Babenberger</em>; die Habsburger kamen erst neunzig Jahre später nach Österreich). Leopold lieferte Richard an Kaiser <strong>Heinrich VI.</strong> aus, Barbarossas Sohn. Erst gegen 150.000 Mark Silber – über dreißig Tonnen – kam Richard frei, und er musste England formal vom Kaiser zu Lehen nehmen: Für einen Moment war das Inselreich Lehen des Heiligen Römischen Reiches. Und 1214, bei <strong>Bouvines</strong>, unterlagen Johanns Verbündete unter Führung von Kaiser Otto IV. – Heinrichs Enkel – dem französischen König: Diese eine Schlacht besiegelte das Ende des angevinischen Traums <em>und</em> des welfischen Kaisertums. Es folgte der Staufer Friedrich II.</div>
+                    <p>Das Ende kam unter Johann Ohneland: 1204 eroberte Philipp Augustus die Normandie, Anjou und Maine – mitsamt Le Mans. Ein Jahr nach Bouvines zwangen die Barone Johann die Magna Carta ab. Das Angevinische Reich hielt keine fünfzig Jahre, die Habsburgermonarchie später ein halbes Jahrtausend – vielleicht, weil die Habsburger ihre Länder an Institutionen banden und nicht nur an eine Person. Heinrichs eigentliches Erbe lebt woanders weiter: im Common Law, bis heute. Und wenn Sie das nächste Mal vor der Kathedrale von Le Mans stehen, denken Sie daran: Hier wurde 1133 ein Kind getauft, dessen Familie Europa ein Jahrhundert lang in Atem hielt.</p>
+                </div>
+            </article>
+
+            <p class="hp-footer-note">
+                Dieser Podcast wurde sorgfältig recherchiert, ersetzt aber keine wissenschaftliche Darstellung.
+                Die Audiospur wurde mit dem Open-Source-Sprachsynthesesystem MaryTTS (DFKI) und der deutschen Stimme „bits1"
+                (BITS-Projekt, Bayerisches Archiv für Sprachsignale) erzeugt. Die Karte ist eine stilisierte, vereinfachte Darstellung.
+            </p>
+            <a class="hp-back" href="audioguide-le-mans.html">← Zum Audioguide der Kathedrale</a>
+            <a class="hp-back" href="index.html">← Zur Startseite</a>
+        </div>
+    </section>
+
+    <script>
+    (function () {
+        'use strict';
+
+        // Startzeiten der 8 Kapitel in Sekunden (aus der Audio-Produktion)
+        var CHAPTERS = [0, 123.1, 248.8, 382.6, 518.8, 655.0, 777.4, 895.4];
+        var TOTAL = 1050.4;
+
+        var audio = document.getElementById('hpAudio');
+        var nowTitle = document.getElementById('hpNowTitle');
+        var chapterLabel = document.getElementById('hpChapterLabel');
+        var toc = document.getElementById('hpToc');
+        var markers = Array.prototype.slice.call(document.querySelectorAll('.marker'));
+
+        var chapters = Array.prototype.map.call(document.querySelectorAll('.hp-chapter'), function (el) {
+            return { el: el, title: el.querySelector('h2').textContent.trim() };
+        });
+
+        function fmt(sec) {
+            var m = Math.floor(sec / 60), s = Math.round(sec % 60);
+            if (s === 60) { m += 1; s = 0; }
+            return m + ':' + (s < 10 ? '0' : '') + s;
+        }
+
+        function jumpTo(i, scroll) {
+            audio.currentTime = CHAPTERS[i] + 0.05;
+            audio.play();
+            if (scroll) {
+                chapters[i].el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // Kapitel-Liste aufbauen
+        chapters.forEach(function (ch, i) {
+            var end = i < CHAPTERS.length - 1 ? CHAPTERS[i + 1] : TOTAL;
+            var btn = document.createElement('button');
+            btn.className = 'hp-toc-item';
+            btn.innerHTML = '<span class="num">' + (i + 1) + '</span><span class="ttl"></span><span class="dur"></span>';
+            btn.querySelector('.ttl').textContent = ch.title;
+            btn.querySelector('.dur').textContent = fmt(CHAPTERS[i]) + ' · ' + fmt(end - CHAPTERS[i]) + ' min';
+            btn.addEventListener('click', function () { jumpTo(i, true); });
+            toc.appendChild(btn);
+            ch.tocEl = btn;
+        });
+
+        // Karten-Marker
+        markers.forEach(function (mk) {
+            var i = parseInt(mk.dataset.ch, 10);
+            mk.addEventListener('click', function () { jumpTo(i, false); });
+            mk.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); jumpTo(i, false); }
+            });
+        });
+
+        // Kapitel-Buttons im Transkript
+        Array.prototype.forEach.call(document.querySelectorAll('.hp-play-chapter'), function (btn, i) {
+            btn.addEventListener('click', function () { jumpTo(i, false); });
+        });
+
+        function currentChapter() {
+            var t = audio.currentTime, idx = 0;
+            for (var i = 0; i < CHAPTERS.length; i++) {
+                if (t >= CHAPTERS[i] - 0.5) idx = i;
+            }
+            return idx;
+        }
+
+        var lastIdx = -1;
+        function refresh() {
+            var i = currentChapter();
+            if (i === lastIdx) return;
+            lastIdx = i;
+            nowTitle.textContent = 'Kapitel ' + (i + 1) + ' · ' + chapters[i].title;
+            chapterLabel.textContent = 'Kapitel ' + (i + 1) + ' von ' + chapters.length;
+            chapters.forEach(function (ch, j) {
+                ch.el.classList.toggle('playing', j === i && !audio.paused);
+                ch.tocEl.classList.toggle('active', j === i);
+            });
+            markers.forEach(function (mk) {
+                mk.classList.toggle('active', parseInt(mk.dataset.ch, 10) === i);
+            });
+        }
+        audio.addEventListener('timeupdate', refresh);
+        audio.addEventListener('play', function () { lastIdx = -1; refresh(); });
+        audio.addEventListener('pause', function () {
+            chapters.forEach(function (ch) { ch.el.classList.remove('playing'); });
+        });
+        audio.addEventListener('ended', function () {
+            nowTitle.textContent = 'Ende der Folge – vielen Dank fürs Zuhören!';
+        });
+    })();
+    </script>
+</body>
+</html>
