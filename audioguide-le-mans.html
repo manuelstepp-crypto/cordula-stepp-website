@@ -228,6 +228,19 @@
         }
         .ag-play-station:hover { background: var(--accent); color: #fff; }
         .ag-station.playing .ag-play-station { background: var(--accent); color: #fff; }
+        .ag-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.9rem;
+            font-size: 0.8rem;
+            color: var(--accent);
+            border: 1px solid var(--border-dark);
+            padding: 0.45rem 1rem;
+            border-radius: var(--radius);
+            transition: all var(--transition);
+        }
+        .ag-download:hover { background: var(--accent); color: var(--primary); }
         .ag-text p { margin-bottom: 1.05rem; color: var(--text-dark-muted); }
         .ag-text p.spoken-now { color: var(--text-dark); }
         .ag-station.playing .ag-station-num { animation: ag-pulse 2s ease-in-out infinite; }
@@ -264,7 +277,7 @@
         <div class="container ag-narrow">
             <p class="ag-eyebrow">Audioguide · Le Mans</p>
             <h1>Kathedrale Saint-Julien</h1>
-            <p class="ag-sub">13 Stationen · Gesamtdauer über 30 Minuten · Deutsch</p>
+            <p class="ag-sub">13 Stationen · 32 Minuten · Deutsch</p>
         </div>
     </header>
 
@@ -273,41 +286,24 @@
 
             <!-- Player -->
             <div class="ag-player" id="agPlayer">
-                <p class="ag-player-title" id="agNowTitle">Bereit zum Start</p>
-                <p class="ag-player-meta" id="agNowMeta">Drücken Sie Play, um die Führung bei Station 1 zu beginnen.</p>
-                <div class="ag-controls">
-                    <button class="ag-btn" id="agPrev" aria-label="Vorherige Station" title="Vorherige Station">⏮</button>
-                    <button class="ag-btn ag-btn-play" id="agPlay" aria-label="Abspielen / Pause" title="Abspielen / Pause">▶</button>
-                    <button class="ag-btn" id="agNext" aria-label="Nächste Station" title="Nächste Station">⏭</button>
-                    <div class="ag-progress-wrap">
-                        <div class="ag-progress"><div class="ag-progress-bar" id="agBar"></div></div>
-                        <div class="ag-progress-label">
-                            <span id="agStationLabel">Station –</span>
-                            <span id="agTotalLabel"></span>
-                        </div>
-                    </div>
+                <p class="ag-player-title" id="agNowTitle">Audioguide – komplette Führung</p>
+                <p class="ag-player-meta" id="agNowMeta">Einfach auf Play drücken – die Führung läuft automatisch durch alle 13 Stationen.</p>
+                <audio id="agAudio" controls preload="metadata" style="width:100%;">
+                    <source src="assets/audioguide-le-mans.mp3" type="audio/mpeg">
+                    Ihr Browser kann die Audiodatei nicht abspielen.
+                    <a href="assets/audioguide-le-mans.mp3">MP3 herunterladen</a>.
+                </audio>
+                <div class="ag-progress-label" style="margin-top:0.6rem;">
+                    <span id="agStationLabel">Station 1 von 13</span>
+                    <span>Gesamt 31:56 min</span>
                 </div>
-                <div class="ag-options">
-                    <label><input type="checkbox" id="agAuto" checked> Automatisch zur nächsten Station</label>
-                    <label>Tempo <input type="range" id="agRate" min="0.7" max="1.3" step="0.05" value="0.95"> <span id="agRateVal">0.95×</span></label>
-                    <span class="ag-voice-hint" id="agVoiceHint"></span>
-                </div>
-                <p class="ag-unsupported" id="agUnsupported">
-                    Ihr Browser unterstützt leider keine Sprachausgabe (Web Speech API).
-                    Sie können die Texte der Stationen unten in Ruhe selbst lesen.
-                </p>
-                <p class="ag-unsupported" id="agSpeechWarn">
-                    Die Sprachausgabe scheint nicht zu starten. Bitte prüfen Sie: Ist der Ton eingeschaltet?
-                    Öffnen Sie die Seite direkt in Chrome, Edge oder Safari (nicht in einer Vorschau-Ansicht).
-                    Unter Windows muss ggf. eine deutsche Stimme installiert sein
-                    (Einstellungen &rarr; Zeit und Sprache &rarr; Sprache &rarr; Deutsch &rarr; Sprachausgabe).
-                    Die Texte aller Stationen können Sie jederzeit unten mitlesen.
-                </p>
+                <a class="ag-download" href="assets/audioguide-le-mans.mp3" download>⤓ MP3 herunterladen (11,5 MB)</a>
             </div>
+
 
             <!-- Intro -->
             <div class="ag-intro">
-                <p><strong>Herzlich willkommen in Le Mans.</strong> Dieser Audioguide führt Sie in 13 Stationen um und durch die Kathedrale Saint-Julien – von den gallo-römischen Ursprüngen der Stadt über das romanische Langhaus bis zum gewaltigen gotischen Chor. Die Wiedergabe nutzt die Sprachausgabe Ihres Browsers; Sie benötigen keine Kopfhörer-Ausleihe und keine App. Am besten starten Sie auf dem Place du Cardinal Grente vor der Westfassade.</p>
+                <p><strong>Herzlich willkommen in Le Mans.</strong> Dieser Audioguide führt Sie in 13 Stationen um und durch die Kathedrale Saint-Julien – von den gallo-römischen Ursprüngen der Stadt über das romanische Langhaus bis zum gewaltigen gotischen Chor. Die komplette Führung liegt als eine einzige Audiodatei vor – Play drücken genügt. Über das Inhaltsverzeichnis oder die Knöpfe an den Stationen springen Sie direkt an die passende Stelle. Am besten starten Sie auf dem Place du Cardinal Grente vor der Westfassade.</p>
             </div>
 
             <!-- Table of contents (filled by JS) -->
@@ -513,7 +509,7 @@
             <p class="ag-footer-note">
                 Dieser Audioguide wurde sorgfältig recherchiert, ersetzt aber keine wissenschaftliche Führung.
                 Angaben zu Daten und Maßen folgen der gängigen kunsthistorischen Literatur zur Kathedrale Saint-Julien.
-                Die Sprachausgabe erfolgt lokal über die Web Speech API Ihres Browsers; es werden keine Audiodaten übertragen.
+                Die Audiospur wurde mit dem Open-Source-Sprachsynthesesystem MaryTTS (DFKI) und der deutschen Stimme „bits1" (BITS-Projekt, Bayerisches Archiv für Sprachsignale) erzeugt.
             </p>
             <a class="ag-back" href="index.html">← Zur Startseite</a>
         </div>
@@ -523,295 +519,85 @@
     (function () {
         'use strict';
 
-        var WORDS_PER_MINUTE = 125; // Durchschnitt für deutsche Sprachausgabe bei Tempo 1.0
+        // Startzeiten der 13 Stationen in Sekunden (aus der Audio-Produktion)
+        var CHAPTERS = [0, 146, 291.3, 437.8, 592.3, 755.7, 895.1, 1041.4, 1183.4, 1334.7, 1486.1, 1639.9, 1780.3];
+        var TOTAL = 1916;
+
+        var audio = document.getElementById('agAudio');
+        var nowTitle = document.getElementById('agNowTitle');
+        var stationLabel = document.getElementById('agStationLabel');
+        var toc = document.getElementById('agToc');
 
         var stations = Array.prototype.map.call(document.querySelectorAll('.ag-station'), function (el) {
-            var paragraphs = Array.prototype.map.call(el.querySelectorAll('.ag-text p'), function (p) {
-                return p.textContent.trim();
-            });
-            var text = paragraphs.join('\n');
             return {
                 el: el,
                 num: el.dataset.station,
-                title: el.querySelector('h2').textContent.trim(),
-                paragraphs: paragraphs,
-                words: text.split(/\s+/).length
+                title: el.querySelector('h2').textContent.trim()
             };
         });
 
-        var synth = window.speechSynthesis;
-        var supported = !!synth && 'SpeechSynthesisUtterance' in window;
-
-        var current = -1;          // Index der aktuellen Station
-        var chunkQueue = [];       // Noch zu sprechende Sätze der aktuellen Station
-        var spokenWords = 0;       // Bereits gesprochene Wörter der aktuellen Station
-        var playing = false;
-        var germanVoice = null;
-        var playToken = 0;         // Entwertet Callbacks alter Utterances nach cancel()
-        var engineOk = false;      // Wird true, sobald die Sprachausgabe je gestartet ist
-
-        var playBtn = document.getElementById('agPlay');
-        var prevBtn = document.getElementById('agPrev');
-        var nextBtn = document.getElementById('agNext');
-        var autoChk = document.getElementById('agAuto');
-        var rateInput = document.getElementById('agRate');
-        var rateVal = document.getElementById('agRateVal');
-        var bar = document.getElementById('agBar');
-        var nowTitle = document.getElementById('agNowTitle');
-        var nowMeta = document.getElementById('agNowMeta');
-        var stationLabel = document.getElementById('agStationLabel');
-        var totalLabel = document.getElementById('agTotalLabel');
-        var voiceHint = document.getElementById('agVoiceHint');
-        var toc = document.getElementById('agToc');
-        var speechWarn = document.getElementById('agSpeechWarn');
-
-        function showSpeechWarn() { speechWarn.style.display = 'block'; }
-        function hideSpeechWarn() { speechWarn.style.display = 'none'; }
-
-        function rate() { return parseFloat(rateInput.value); }
-
-        function minutesFor(words) { return words / (WORDS_PER_MINUTE * rate()); }
-
-        function fmtMinutes(min) {
-            var m = Math.floor(min);
-            var s = Math.round((min - m) * 60);
+        function fmt(sec) {
+            var m = Math.floor(sec / 60), s = Math.round(sec % 60);
             if (s === 60) { m += 1; s = 0; }
-            return m + ':' + (s < 10 ? '0' : '') + s + ' min';
+            return m + ':' + (s < 10 ? '0' : '') + s;
         }
 
-        function totalWords() {
-            return stations.reduce(function (sum, st) { return sum + st.words; }, 0);
-        }
-
-        function updateTotalLabel() {
-            totalLabel.textContent = 'Gesamt ca. ' + fmtMinutes(minutesFor(totalWords()));
+        function jumpTo(i) {
+            audio.currentTime = CHAPTERS[i] + 0.05;
+            audio.play();
         }
 
         // Inhaltsverzeichnis aufbauen
         stations.forEach(function (st, i) {
+            var end = i < CHAPTERS.length - 1 ? CHAPTERS[i + 1] : TOTAL;
             var btn = document.createElement('button');
             btn.className = 'ag-toc-item';
             btn.innerHTML = '<span class="num">' + st.num + '</span><span class="ttl"></span><span class="dur"></span>';
             btn.querySelector('.ttl').textContent = st.title;
+            btn.querySelector('.dur').textContent = fmt(CHAPTERS[i]) + ' · ' + fmt(end - CHAPTERS[i]) + ' min';
             btn.addEventListener('click', function () {
-                st.el.scrollIntoView({ behavior: 'smooth' });
-                playStation(i);
+                jumpTo(i);
+                st.el.scrollIntoView({ behavior: 'smooth', block: 'start' });
             });
             toc.appendChild(btn);
             st.tocEl = btn;
         });
 
-        function updateTocDurations() {
-            stations.forEach(function (st) {
-                st.tocEl.querySelector('.dur').textContent = '~' + fmtMinutes(minutesFor(st.words));
-            });
-            updateTotalLabel();
-        }
-        updateTocDurations();
-
-        // Deutsche Stimme wählen (bevorzugt lokale Stimmen)
-        function pickVoice() {
-            if (!supported) return;
-            var voices = synth.getVoices();
-            if (!voices.length) return;
-            var german = voices.filter(function (v) { return /^de([-_]|$)/i.test(v.lang); });
-            germanVoice = german.find(function (v) { return v.localService; }) || german[0] || null;
-            voiceHint.textContent = germanVoice
-                ? 'Stimme: ' + germanVoice.name
-                : 'Hinweis: keine deutsche Stimme gefunden – es wird die Standardstimme verwendet.';
-        }
-        if (supported) {
-            pickVoice();
-            if (typeof synth.onvoiceschanged !== 'undefined') synth.onvoiceschanged = pickVoice;
-        } else {
-            document.getElementById('agUnsupported').style.display = 'block';
-        }
-
-        // Text in sprechbare Sätze zerlegen (umgeht Aussetzer bei sehr langen Utterances)
-        function toChunks(paragraphs) {
-            var chunks = [];
-            paragraphs.forEach(function (para, pIdx) {
-                var sentences = para.match(/[^.!?…]+[.!?…]+["»«“„]?|[^.!?…]+$/g) || [para];
-                sentences.forEach(function (s) {
-                    s = s.trim();
-                    if (s) chunks.push({ text: s, para: pIdx });
-                });
-            });
-            return chunks;
-        }
-
-        function setPlayingUI(isPlaying) {
-            playing = isPlaying;
-            playBtn.textContent = isPlaying ? '❚❚' : '▶';
-            stations.forEach(function (st, i) {
-                st.el.classList.toggle('playing', isPlaying && i === current);
-                st.tocEl.classList.toggle('active', i === current);
-            });
-        }
-
-        function highlightParagraph(pIdx) {
-            if (current < 0) return;
-            var ps = stations[current].el.querySelectorAll('.ag-text p');
-            Array.prototype.forEach.call(ps, function (p, i) {
-                p.classList.toggle('spoken-now', i === pIdx);
-            });
-        }
-
-        function clearHighlights() {
-            Array.prototype.forEach.call(document.querySelectorAll('.ag-text p.spoken-now'), function (p) {
-                p.classList.remove('spoken-now');
-            });
-        }
-
-        function updateProgress() {
-            if (current < 0) { bar.style.width = '0%'; return; }
-            var pct = Math.min(100, (spokenWords / stations[current].words) * 100);
-            bar.style.width = pct + '%';
-        }
-
-        function updateNowPlaying() {
-            if (current < 0) return;
-            var st = stations[current];
-            nowTitle.textContent = 'Station ' + st.num + ' · ' + st.title;
-            nowMeta.textContent = 'Dauer ca. ' + fmtMinutes(minutesFor(st.words)) + ' bei Tempo ' + rate().toFixed(2) + '×';
-            stationLabel.textContent = 'Station ' + st.num + ' von ' + stations.length;
-        }
-
-        function finishStation() {
-            setPlayingUI(false);
-            clearHighlights();
-            bar.style.width = '100%';
-            if (autoChk.checked && current < stations.length - 1) {
-                var next = current + 1;
-                stations[next].el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                setTimeout(function () { playStation(next); }, 900);
-            } else if (current === stations.length - 1) {
-                nowTitle.textContent = 'Ende der Führung';
-                nowMeta.textContent = 'Vielen Dank fürs Zuhören. Au revoir!';
-            }
-        }
-
-        function stopWithWarning() {
-            playToken++;
-            playing = false;
-            synth.cancel();
-            setPlayingUI(false);
-            showSpeechWarn();
-        }
-
-        function speakNextChunk() {
-            if (!playing) return;
-            if (!chunkQueue.length) { finishStation(); return; }
-            var token = playToken;
-            var chunk = chunkQueue[0]; // erst nach erfolgreichem Ende entfernen, damit Pause hier wieder einsetzen kann
-            var u = new SpeechSynthesisUtterance(chunk.text);
-            u.lang = 'de-DE';
-            if (germanVoice) u.voice = germanVoice;
-            u.rate = rate();
-            var started = false;
-            u.onstart = function () {
-                if (token !== playToken) return;
-                started = true;
-                engineOk = true;
-                hideSpeechWarn();
-                highlightParagraph(chunk.para);
-            };
-            u.onend = function () {
-                if (token !== playToken || !playing) return;
-                chunkQueue.shift();
-                spokenWords += chunk.text.split(/\s+/).length;
-                updateProgress();
-                speakNextChunk();
-            };
-            u.onerror = function (e) {
-                if (token !== playToken || !playing) return;
-                var kind = e && e.error;
-                if (kind === 'interrupted' || kind === 'canceled') return;
-                if (!engineOk) { stopWithWarning(); return; }
-                chunkQueue.shift();
-                speakNextChunk();
-            };
-            // Chrome bleibt nach Tab-Wechseln gern im paused-Zustand hängen
-            try { synth.resume(); } catch (err) {}
-            synth.speak(u);
-            // Watchdog: manche Browser schlucken speak() stillschweigend (z. B. ohne installierte Stimme)
-            setTimeout(function () {
-                if (token !== playToken || !playing || started || engineOk) return;
-                showSpeechWarn();
-                if (!synth.speaking) stopWithWarning();
-            }, 3000);
-        }
-
-        function playStation(i) {
-            if (!supported) {
-                stations[i].el.scrollIntoView({ behavior: 'smooth' });
-                return;
-            }
-            playToken++;
-            synth.cancel();
-            clearHighlights();
-            current = i;
-            spokenWords = 0;
-            chunkQueue = toChunks(stations[i].paragraphs);
-            updateNowPlaying();
-            updateProgress();
-            setPlayingUI(true);
-            // Kurz warten: Chrome ignoriert ein speak() unmittelbar nach cancel()
-            var token = playToken;
-            setTimeout(function () {
-                if (token === playToken && playing) speakNextChunk();
-            }, 150);
-        }
-
-        function pausePlayback() {
-            // cancel() statt pause(): pause() funktioniert auf Android/iOS unzuverlässig.
-            // Beim Fortsetzen wird der aktuelle Satz von vorn gesprochen.
-            playToken++;
-            playing = false;
-            synth.cancel();
-            setPlayingUI(false);
-        }
-
-        function togglePlay() {
-            if (!supported) return;
-            if (current < 0) { playStation(0); return; }
-            if (playing) {
-                pausePlayback();
-            } else {
-                playToken++;
-                setPlayingUI(true);
-                var token = playToken;
-                setTimeout(function () {
-                    if (token === playToken && playing) speakNextChunk();
-                }, 150);
-            }
-        }
-
-        playBtn.addEventListener('click', togglePlay);
-        prevBtn.addEventListener('click', function () {
-            var target = current <= 0 ? 0 : current - 1;
-            stations[target].el.scrollIntoView({ behavior: 'smooth' });
-            playStation(target);
-        });
-        nextBtn.addEventListener('click', function () {
-            var target = current < 0 ? 0 : Math.min(stations.length - 1, current + 1);
-            stations[target].el.scrollIntoView({ behavior: 'smooth' });
-            playStation(target);
-        });
-
-        rateInput.addEventListener('input', function () {
-            rateVal.textContent = rate().toFixed(2) + '×';
-            updateTocDurations();
-            if (current >= 0) updateNowPlaying();
-        });
-
+        // Stations-Buttons
         Array.prototype.forEach.call(document.querySelectorAll('.ag-play-station'), function (btn, i) {
-            btn.addEventListener('click', function () { playStation(i); });
+            btn.addEventListener('click', function () { jumpTo(i); });
         });
 
-        // Sprachausgabe stoppen, wenn die Seite verlassen wird
-        window.addEventListener('beforeunload', function () {
-            if (supported) synth.cancel();
+        function currentStation() {
+            var t = audio.currentTime;
+            var idx = 0;
+            for (var i = 0; i < CHAPTERS.length; i++) {
+                if (t >= CHAPTERS[i] - 0.5) idx = i;
+            }
+            return idx;
+        }
+
+        var lastIdx = -1;
+        audio.addEventListener('timeupdate', function () {
+            var i = currentStation();
+            if (i === lastIdx) return;
+            lastIdx = i;
+            var st = stations[i];
+            nowTitle.textContent = 'Station ' + st.num + ' · ' + st.title;
+            stationLabel.textContent = 'Station ' + st.num + ' von ' + stations.length;
+            stations.forEach(function (s, j) {
+                s.el.classList.toggle('playing', j === i && !audio.paused);
+                s.tocEl.classList.toggle('active', j === i);
+            });
+        });
+        audio.addEventListener('pause', function () {
+            stations.forEach(function (s) { s.el.classList.remove('playing'); });
+        });
+        audio.addEventListener('play', function () {
+            lastIdx = -1;
+        });
+        audio.addEventListener('ended', function () {
+            nowTitle.textContent = 'Ende der Führung – vielen Dank fürs Zuhören!';
         });
     })();
     </script>
