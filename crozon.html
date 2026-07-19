@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Audioguide zur Halbinsel Crozon in der Bretagne – Einführung in 7 Kapiteln mit Musik, ca. 15 Minuten, Deutsch, mit klickbarer Karte.">
+    <meta property="og:title" content="Halbinsel Crozon – Audioguide-Einführung">
+    <meta property="og:description" content="15-minütige Hörführung über die Presqu'île de Crozon: Kaps, Strände, Menhire, Vauban und die älteste Abtei der Bretagne – mit Musik.">
+    <meta property="og:type" content="website">
+    <title>Halbinsel Crozon – Audioguide-Einführung</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ===== Crozon-Audioguide (nutzt das hp-Muster der Heinrich-II-Seite) ===== */
+        .hp-hero {
+            position: relative;
+            padding: 8rem 0 5rem;
+            background: linear-gradient(160deg, #12222e 0%, var(--primary) 100%);
+            color: var(--text-light);
+            text-align: center;
+        }
+        .hp-eyebrow {
+            font-size: 0.8rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+        .hp-hero h1 {
+            font-family: var(--font-serif);
+            font-weight: 600;
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            line-height: 1.1;
+            margin-bottom: 1rem;
+        }
+        .hp-hero .hp-sub { color: var(--text-muted); font-size: 0.95rem; }
+        .hp-narrow { max-width: 900px; margin: 0 auto; }
+        .hp-section { padding: 3rem 0 5rem; }
+
+        .hp-player {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: var(--bg-card-dark);
+            border: 1px solid var(--border-dark);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem 1.5rem;
+            margin-top: -3rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+            color: var(--text-light);
+        }
+        .hp-player-title { font-family: var(--font-serif); font-size: 1.2rem; margin-bottom: 0.15rem; }
+        .hp-player-meta { color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.9rem; }
+        .hp-player audio { width: 100%; }
+        .hp-player-label {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 0.6rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        .hp-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.9rem;
+            font-size: 0.8rem;
+            color: var(--accent);
+            border: 1px solid var(--border-dark);
+            padding: 0.45rem 1rem;
+            border-radius: var(--radius);
+            transition: all var(--transition);
+        }
+        .hp-download:hover { background: var(--accent); color: var(--primary); }
+
+        .hp-intro { margin: 2.5rem 0 1.5rem; color: var(--text-dark-muted); }
+        .hp-intro strong { color: var(--text-dark); }
+        .hp-intro a { color: var(--accent); text-decoration: underline; }
+
+        .hp-map-card {
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            background: #e9f0f2;
+            padding: 1.25rem;
+            margin: 1.5rem 0 1rem;
+        }
+        .hp-map-card h2 {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+            color: var(--text-dark);
+        }
+        .hp-map-hint { font-size: 0.82rem; color: var(--text-dark-muted); margin-bottom: 0.75rem; }
+        .hp-map-wrap { width: 100%; overflow: hidden; }
+        .hp-map-wrap svg { width: 100%; height: auto; display: block; }
+
+        .land { fill: #e5ddc8; stroke: #ada173; stroke-width: 1.5; stroke-linejoin: round; }
+        .islet { fill: #d8cfb4; stroke: #ada173; stroke-width: 1; }
+        .sea-label, .land-label {
+            font-family: var(--font-sans);
+            font-size: 13px;
+            fill: #7d97a3;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        .land-label { fill: #9a917d; }
+        .trail {
+            fill: none;
+            stroke: #b4552d;
+            stroke-width: 1.5;
+            stroke-dasharray: 5 4;
+            opacity: 0.65;
+        }
+
+        .marker { cursor: pointer; }
+        .marker circle.halo { fill: var(--accent); fill-opacity: 0; }
+        .marker circle.dot {
+            fill: #fff;
+            stroke: var(--accent);
+            stroke-width: 2.5;
+            transition: all var(--transition);
+        }
+        .marker text {
+            font-family: var(--font-sans);
+            font-size: 13px;
+            font-weight: 600;
+            fill: #3d3629;
+            paint-order: stroke;
+            stroke: #e9f0f2;
+            stroke-width: 3px;
+            stroke-linejoin: round;
+        }
+        .marker .chnum {
+            font-size: 10px;
+            font-weight: 700;
+            fill: var(--accent);
+            stroke: none;
+        }
+        .marker:hover circle.dot, .marker.active circle.dot { fill: var(--accent); }
+        .marker:hover circle.halo { fill-opacity: 0.15; }
+        .marker.active circle.halo {
+            fill-opacity: 0.2;
+            animation: hp-pulse 2s ease-out infinite;
+        }
+        @keyframes hp-pulse {
+            0% { fill-opacity: 0.35; r: 12; }
+            100% { fill-opacity: 0; r: 26; }
+        }
+        .hp-legend {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            font-size: 0.78rem;
+            color: var(--text-dark-muted);
+            margin-top: 0.75rem;
+        }
+        .hp-legend span { display: inline-flex; align-items: center; gap: 0.45rem; }
+        .hp-legend .dotmark {
+            width: 12px; height: 12px; border-radius: 50%;
+            background: #fff; border: 2.5px solid var(--accent);
+        }
+        .hp-legend .trailmark {
+            width: 22px; height: 0;
+            border-top: 2px dashed #b4552d; opacity: 0.65;
+        }
+
+        .hp-toc {
+            margin: 1.5rem 0 3rem;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        .hp-toc-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+            text-align: left;
+            appearance: none;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border-light);
+            padding: 0.8rem 1.1rem;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            transition: background var(--transition);
+        }
+        .hp-toc-item:last-child { border-bottom: none; }
+        .hp-toc-item:hover { background: #f0ece3; }
+        .hp-toc-item .num {
+            flex-shrink: 0;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .hp-toc-item .dur { margin-left: auto; color: var(--text-dark-muted); font-size: 0.78rem; white-space: nowrap; }
+        .hp-toc-item.active { background: #f0ece3; }
+        .hp-toc-item.active .num { background: var(--accent); color: #fff; }
+
+        .hp-chapter { margin-bottom: 3.5rem; scroll-margin-top: 200px; }
+        .hp-chapter-head {
+            display: flex;
+            align-items: baseline;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        .hp-chapter-num {
+            font-family: var(--font-serif);
+            font-size: 2.4rem;
+            color: var(--accent);
+            line-height: 1;
+        }
+        .hp-chapter h2 {
+            font-family: var(--font-serif);
+            font-size: 1.7rem;
+            color: var(--text-dark);
+            line-height: 1.2;
+        }
+        .hp-chapter-loc {
+            font-size: 0.78rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-dark-muted);
+            margin-bottom: 1rem;
+        }
+        .hp-chapter-actions { margin-bottom: 1rem; }
+        .hp-play-chapter {
+            appearance: none;
+            border: 1px solid var(--accent);
+            background: transparent;
+            color: var(--accent);
+            border-radius: var(--radius);
+            padding: 0.45rem 1rem;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .hp-play-chapter:hover { background: var(--accent); color: #fff; }
+        .hp-chapter.playing .hp-play-chapter { background: var(--accent); color: #fff; }
+        .hp-chapter.playing .hp-chapter-num { animation: hp-blink 2s ease-in-out infinite; }
+        @keyframes hp-blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.45; }
+        }
+        .hp-text p { margin-bottom: 1.05rem; color: var(--text-dark-muted); }
+
+        .hp-footer-note {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-light);
+            font-size: 0.8rem;
+            color: var(--text-dark-muted);
+        }
+        .hp-back {
+            display: inline-block;
+            margin-top: 1.5rem;
+            margin-right: 1.5rem;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+        }
+        @media (max-width: 600px) {
+            .hp-player { padding: 1rem; margin-left: -0.5rem; margin-right: -0.5rem; }
+            .hp-chapter { scroll-margin-top: 240px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero -->
+    <header class="hp-hero">
+        <div class="container hp-narrow">
+            <p class="hp-eyebrow">Audioguide · Bretagne</p>
+            <h1>Halbinsel Crozon<br>Eine Einführung ans Ende der Welt</h1>
+            <p class="hp-sub">7 Kapitel · 15:34 Minuten · mit Musik · Deutsch</p>
+        </div>
+    </header>
+
+    <section class="hp-section">
+        <div class="container hp-narrow">
+
+            <!-- Player -->
+            <div class="hp-player" id="hpPlayer">
+                <p class="hp-player-title" id="hpNowTitle">Audioguide – die komplette Einführung</p>
+                <p class="hp-player-meta" id="hpNowMeta">Play drücken oder auf der Karte einen Ort anklicken. Zwischen den Kapiteln erklingt eine kurze Harfenmusik.</p>
+                <audio id="hpAudio" controls preload="metadata">
+                    <source src="assets/audioguide-crozon.mp3" type="audio/mpeg">
+                    Ihr Browser kann die Audiodatei nicht abspielen.
+                    <a href="assets/audioguide-crozon.mp3">MP3 herunterladen</a>.
+                </audio>
+                <div class="hp-player-label">
+                    <span id="hpChapterLabel">Kapitel 1 von 7</span>
+                    <span>Gesamt 15:34 min</span>
+                </div>
+                <a class="hp-download" href="assets/audioguide-crozon.mp3" download>⤓ MP3 herunterladen (7,5 MB)</a>
+            </div>
+
+            <!-- Intro -->
+            <div class="hp-intro">
+                <p><strong>Ganz im Westen der Bretagne</strong>, dort, wo Frankreich im Atlantik ausläuft, liegt die Presqu'île de Crozon – streng genommen keine Insel, sondern eine „Fast-Insel", aber mit echtem Inselgefühl. Diese Einführung in 7 Kapiteln nimmt Sie mit zu den großen Kaps, in Meeresgrotten, zu jungsteinzeitlichen Steinreihen (Sie erinnern sich vielleicht an den Menhir an der <a href="audioguide-le-mans.html">Kathedrale von Le Mans</a>?), zum Festungsbaumeister Vauban und in die älteste Abtei der Bretagne. Gesprochen von einer neuen, klareren Stimme – und mit ein wenig Harfenmusik zwischen den Kapiteln.</p>
+            </div>
+
+            <!-- Karte -->
+            <div class="hp-map-card">
+                <h2>Die Karte der Halbinsel</h2>
+                <p class="hp-map-hint">Klicken Sie auf einen Ort – der Guide springt zum passenden Kapitel. Die gestrichelte Linie ist der Küstenwanderweg GR 34.</p>
+                <div class="hp-map-wrap">
+                    <svg viewBox="0 0 700 480" role="img" aria-label="Stilisierte Karte der Halbinsel Crozon mit den Kapitel-Stationen">
+                        <!-- Halbinsel -->
+                        <path class="land" d="M 580,230 L 500,215 430,220 360,210 300,220 245,210 230,195
+                            215,170 205,100 194,41 170,50 165,120 172,180 150,205 131,225
+                            95,255 75,280 110,300 159,278 150,310 165,360 170,400 185,445
+                            215,400 240,370 250,335 270,310 310,320 380,315 450,320 550,250 Z"/>
+                        <!-- Tas de Pois (Felseninseln) -->
+                        <circle class="islet" cx="52" cy="288" r="5"/>
+                        <circle class="islet" cx="40" cy="295" r="4"/>
+                        <circle class="islet" cx="30" cy="302" r="3"/>
+                        <!-- GR34 Küstenweg (stilisiert, folgt der Küste innen) -->
+                        <path class="trail" d="M 240,214 L 222,180 210,105 196,55 178,60 174,125 180,182 156,210 137,228
+                            100,258 84,280 112,295 158,282 155,312 170,362 175,398 186,435
+                            216,396 242,368 252,336 272,314 320,324 390,319 455,324 545,252"/>
+
+                        <text class="sea-label" x="330" y="120">Rade de Brest</text>
+                        <text class="sea-label" x="400" y="430">Baie de Douarnenez</text>
+                        <text class="sea-label" x="18" y="180">Mer d'Iroise</text>
+                        <text class="land-label" x="300" y="270">Presqu'île de Crozon</text>
+
+                        <!-- Marker -->
+                        <g class="marker" data-ch="0" tabindex="0" role="button" aria-label="Kapitel 1: Crozon">
+                            <circle class="halo" cx="264" cy="288" r="14"/>
+                            <circle class="dot" cx="264" cy="288" r="7"/>
+                            <text x="276" y="284">Crozon <tspan class="chnum">Kap. 1</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="1" tabindex="0" role="button" aria-label="Kapitel 2: Pointe de Pen-Hir">
+                            <circle class="halo" cx="75" cy="280" r="14"/>
+                            <circle class="dot" cx="75" cy="280" r="7"/>
+                            <text x="30" y="264">Pen-Hir <tspan class="chnum">Kap. 2</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="1" tabindex="0" role="button" aria-label="Kapitel 2: Pointe de Dinan">
+                            <circle class="halo" cx="159" cy="278" r="12"/>
+                            <circle class="dot" cx="159" cy="278" r="6"/>
+                            <text x="168" y="296">Pte de Dinan <tspan class="chnum">Kap. 2</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="1" tabindex="0" role="button" aria-label="Kapitel 2: Cap de la Chèvre">
+                            <circle class="halo" cx="185" cy="445" r="12"/>
+                            <circle class="dot" cx="185" cy="445" r="6"/>
+                            <text x="197" y="452">Cap de la Chèvre <tspan class="chnum">Kap. 2</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="1" tabindex="0" role="button" aria-label="Kapitel 2: Pointe des Espagnols">
+                            <circle class="halo" cx="194" cy="41" r="12"/>
+                            <circle class="dot" cx="194" cy="41" r="6"/>
+                            <text x="206" y="38">Pte des Espagnols <tspan class="chnum">Kap. 2</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="2" tabindex="0" role="button" aria-label="Kapitel 3: Morgat">
+                            <circle class="halo" cx="250" cy="335" r="14"/>
+                            <circle class="dot" cx="250" cy="335" r="7"/>
+                            <text x="262" y="340">Morgat <tspan class="chnum">Kap. 3</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="2" tabindex="0" role="button" aria-label="Kapitel 3: Plage de l'Île Vierge">
+                            <circle class="halo" cx="240" cy="370" r="12"/>
+                            <circle class="dot" cx="240" cy="370" r="6"/>
+                            <text x="252" y="378">Île Vierge <tspan class="chnum">Kap. 3</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="2" tabindex="0" role="button" aria-label="Kapitel 3: Plage de La Palue">
+                            <circle class="halo" cx="168" cy="400" r="12"/>
+                            <circle class="dot" cx="168" cy="400" r="6"/>
+                            <text x="60" y="398">La Palue <tspan class="chnum">Kap. 3</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="3" tabindex="0" role="button" aria-label="Kapitel 4: Tas de Pois, Geologie und Natur">
+                            <circle class="halo" cx="52" cy="288" r="12"/>
+                            <circle class="dot" cx="52" cy="288" r="6"/>
+                            <text x="14" y="320">Tas de Pois <tspan class="chnum">Kap. 4</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="4" tabindex="0" role="button" aria-label="Kapitel 5: Steinreihen von Lagatjar">
+                            <circle class="halo" cx="122" cy="246" r="12"/>
+                            <circle class="dot" cx="122" cy="246" r="6"/>
+                            <text x="30" y="230">Lagatjar <tspan class="chnum">Kap. 5</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="5" tabindex="0" role="button" aria-label="Kapitel 6: Camaret-sur-Mer">
+                            <circle class="halo" cx="134" cy="222" r="14"/>
+                            <circle class="dot" cx="134" cy="222" r="7"/>
+                            <text x="145" y="215">Camaret <tspan class="chnum">Kap. 6</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="5" tabindex="0" role="button" aria-label="Kapitel 6: Landévennec">
+                            <circle class="halo" cx="535" cy="215" r="14"/>
+                            <circle class="dot" cx="535" cy="215" r="7"/>
+                            <text x="475" y="200">Landévennec <tspan class="chnum">Kap. 6</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="6" tabindex="0" role="button" aria-label="Kapitel 7: Brücke von Térénez">
+                            <circle class="halo" cx="550" cy="248" r="12"/>
+                            <circle class="dot" cx="550" cy="248" r="6"/>
+                            <text x="560" y="266">Pont de Térénez <tspan class="chnum">Kap. 7</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="6" tabindex="0" role="button" aria-label="Kapitel 7: Le Fret">
+                            <circle class="halo" cx="245" cy="212" r="12"/>
+                            <circle class="dot" cx="245" cy="212" r="6"/>
+                            <text x="257" y="205">Le Fret <tspan class="chnum">Kap. 7</tspan></text>
+                        </g>
+                    </svg>
+                </div>
+                <div class="hp-legend">
+                    <span><span class="dotmark"></span> Kapitel-Station (anklickbar)</span>
+                    <span><span class="trailmark"></span> Zöllnerpfad GR 34</span>
+                </div>
+            </div>
+
+            <!-- Kapitel-Liste (per JS gefüllt) -->
+            <div class="hp-toc" id="hpToc"></div>
+
+            <!-- Kapitel 1 -->
+            <article class="hp-chapter" data-ch="0" id="kapitel-1">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">01</span>
+                    <h2>Willkommen am Ende der Welt</h2>
+                </div>
+                <p class="hp-chapter-loc">Überblick · Finistère · Naturpark Armorique</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Kapitel anhören</button></div>
+                <div class="hp-text">
+                    <p>Herzlich willkommen auf Crozon! Genau genommen ist Crozon keine Insel: Die Franzosen sagen <em>Presqu'île</em> – „Fast-Insel" –, denn nur ein schmaler Landstreifen verbindet die Halbinsel mit dem Festland. Das Inselgefühl gibt es trotzdem gratis: Das Meer ist nie weiter als ein paar Minuten entfernt, das Licht wechselt ständig, die Uhren gehen langsamer.</p>
+                    <p>Wir sind im äußersten Westen Frankreichs, im Département Finistère – vom lateinischen <em>Finis terrae</em>, „Ende der Welt". Die Halbinsel liegt wie ein ausgestrecktes Kreuz im Atlantik: im Norden die geschützte Rade de Brest, einer der größten Naturhäfen Europas, im Süden die Bucht von Douarnenez, nach Westen der offene Ozean. Ganz Crozon gehört zum Regionalen Naturpark Armorique: sanfter Tourismus, geschützte Landschaften, keine Bettenburgen – dafür violett blühende Heide, Klippen aus uraltem Sandstein und Strände mit karibisch türkisem Wasser (bei eher bretonischen Temperaturen).</p>
+                </div>
+            </article>
+
+            <!-- Kapitel 2 -->
+            <article class="hp-chapter" data-ch="1" id="kapitel-2">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">02</span>
+                    <h2>Die großen Kaps – Balkone über dem Atlantik</h2>
+                </div>
+                <p class="hp-chapter-loc">Pen-Hir · Pointe de Dinan · Cap de la Chèvre · Pointe des Espagnols</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Kapitel anhören</button></div>
+                <div class="hp-text">
+                    <p>Das berühmteste Kap ist die <strong>Pointe de Pen-Hir</strong>: ein siebzig Meter hoher Balkon über dem Ozean, davor die Felseninseln des <em>Tas de Pois</em> („Erbsenhaufen"). Bei Sturm explodiert hier die Brandung; bei klarem Wetter reicht der Blick bis zur Île de Sein. Ein Granitkreuz erinnert an die Bretonen, die de Gaulles Ruf zum freien Frankreich folgten.</p>
+                    <p>An der <strong>Pointe de Dinan</strong> hat das Meer einen gewaltigen Felsbogen aus der Küste gewaschen – die Einheimischen sprechen vom „Schloss von Dinan", samt eigener Zugbrücke. Das <strong>Cap de la Chèvre</strong> im Süden ist sanfter: Heide, Ginster, kleine Sandbuchten. Und die <strong>Pointe des Espagnols</strong> im Norden blickt direkt auf Brest – warum sie nach Spaniern benannt ist, erzählt Kapitel 5.</p>
+                </div>
+            </article>
+
+            <!-- Kapitel 3 -->
+            <article class="hp-chapter" data-ch="2" id="kapitel-3">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">03</span>
+                    <h2>Strände, Grotten und das Meer</h2>
+                </div>
+                <p class="hp-chapter-loc">Morgat · Île Vierge · La Palue</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Kapitel anhören</button></div>
+                <div class="hp-text">
+                    <p><strong>Morgat</strong>, einst Sardinenfischer-Dorf und um 1900 von der Familie Peugeot zum Seebad ausgebaut, ist der beliebteste Badeort: feiner Sandstrand in halbrunder Bucht, Belle-Époque-Villen zwischen Pinien. Vom Hafen starten Boote zu den berühmten <strong>Meeresgrotten</strong> mit Wänden in Rot, Ocker und Grün – wer mag, paddelt mit dem Seekajak hinein.</p>
+                    <p>Die <strong>Plage de l'Île Vierge</strong> wurde durch Fotos mit Südsee-Wasser weltberühmt – der Ansturm war so groß, dass der steile Zugang inzwischen gesperrt ist (auch wegen brüchiger Klippen). Der schönste Blick ist ohnehin von oben vom Küstenweg oder vom Wasser aus. Surfer finden ihr Glück am weiten Strand von <strong>La Palue</strong> – Baden dort nur für Geübte, die Strömungen sind stark.</p>
+                </div>
+            </article>
+
+            <!-- Kapitel 4 -->
+            <article class="hp-chapter" data-ch="3" id="kapitel-4">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">04</span>
+                    <h2>Ein Bilderbuch der Erdgeschichte</h2>
+                </div>
+                <p class="hp-chapter-loc">Geologisches Schutzgebiet · Meeresnaturpark Iroise</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Kapitel anhören</button></div>
+                <div class="hp-text">
+                    <p>Crozon ist unter Geologen weltberühmt: Die Felsen erzählen rund <strong>500 Millionen Jahre Erdgeschichte</strong> – Sandsteine vom Grund urzeitlicher Meere, dunkle Schiefer, Bänder aus weißem Quarzit, vielerorts spektakulär gefaltet und steil aufgerichtet. Die wichtigsten Küstenabschnitte sind heute geologisches Naturschutzgebiet; mit Glück entdeckt man Fossilien von Trilobiten (bitte liegen lassen – Sammeln ist verboten).</p>
+                    <p>Auch die lebendige Natur glänzt: Das Meer gehört zum <strong>Meeresnaturpark Iroise</strong>, einem der artenreichsten Gewässer Frankreichs. Auf den Felseninseln vor Pen-Hir brüten Seevögel, vom Küstenweg aus lassen sich Delfine und manchmal Kegelrobben beobachten. Im Frühjahr blüht der Ginster goldgelb, im Spätsommer färbt die Glockenheide die Hänge violett.</p>
+                </div>
+            </article>
+
+            <!-- Kapitel 5 -->
+            <article class="hp-chapter" data-ch="4" id="kapitel-5">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">05</span>
+                    <h2>Steine und Geschichte – Menhire, Spanier, Vauban</h2>
+                </div>
+                <p class="hp-chapter-loc">Lagatjar · Pointe des Espagnols · Tour Vauban (UNESCO)</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Kapitel anhören</button></div>
+                <div class="hp-text">
+                    <p>Bei Camaret stehen die <strong>Steinreihen von Lagatjar</strong>: Dutzende weiße Quarzit-Menhire, vor rund 4.500 Jahren aufgerichtet – wozu, weiß bis heute niemand. (Wenn Sie unseren <a href="audioguide-le-mans.html">Audioguide zu Le Mans</a> gehört haben: Dort lehnt ein einzelner Menhir an der Kathedrale – hier stehen sie gleich in Reihen.)</p>
+                    <p>1594 landeten <strong>spanische Truppen</strong> und bauten an der Nordspitze ein Fort, um Brest zu blockieren – seitdem heißt sie Pointe des Espagnols. Hundert Jahre später kam <strong>Vauban</strong>, der Festungsbaumeister Ludwigs XIV.: Sein goldbrauner Turm am Hafen von Camaret bewährte sich 1694 gegen eine englisch-niederländische Landungsflotte und gehört seit 2008 zum <strong>UNESCO-Welterbe</strong>. Auch das 20. Jahrhundert ließ Spuren: Bunker des Atlantikwalls ducken sich bis heute in die Klippen.</p>
+                </div>
+            </article>
+
+            <!-- Kapitel 6 -->
+            <article class="hp-chapter" data-ch="5" id="kapitel-6">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">06</span>
+                    <h2>Dörfer, Künstler und eine uralte Abtei</h2>
+                </div>
+                <p class="hp-chapter-loc">Camaret-sur-Mer · Crozon · Landévennec</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Kapitel anhören</button></div>
+                <div class="hp-text">
+                    <p><strong>Camaret-sur-Mer</strong>, einst großer Langusten-Hafen, ist der charmanteste Ort: Am Kiesdamm des Sillon rosten alte Fischerboote malerisch vor sich hin – ein Schiffsfriedhof als Wahrzeichen. Daneben die Seemannskapelle Notre-Dame de Rocamadour, in der Modellschiffe von der Decke hängen. Um 1900 zog das Licht Maler und Dichter hierher; etwas davon liegt noch heute über den Cafés am Quai.</p>
+                    <p>Der Hauptort <strong>Crozon</strong> ist das Alltagszentrum – sehenswert der prachtvoll geschnitzte Altaraufsatz der Kirche. Und ganz im Osten, an den großen Schleifen des Aulne: <strong>Landévennec</strong> mit der ältesten Abtei der Bretagne, im 5. Jahrhundert vom heiligen Guénolé gegründet. Die romantischen Ruinen kann man besichtigen; nebenan leben bis heute Benediktinermönche. Dazu: Crêpes, Galettes, Cidre – und Kouign-amann, der butterglänzende Zuckerkuchen.</p>
+                </div>
+            </article>
+
+            <!-- Kapitel 7 -->
+            <article class="hp-chapter" data-ch="6" id="kapitel-7">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">07</span>
+                    <h2>Praktische Tipps und Abschied</h2>
+                </div>
+                <p class="hp-chapter-loc">GR 34 · Reisezeit · Anreise</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Kapitel anhören</button></div>
+                <div class="hp-text">
+                    <p>Die schönste Art, Crozon zu erleben, ist <strong>zu Fuß</strong>: Der Zöllnerpfad <strong>GR 34</strong> führt immer an der Küste entlang – allein auf Crozon weit über hundert Kilometer. Schon die Runde von Camaret über Pen-Hir oder der Abschnitt vom Cap de la Chèvre nach Morgat gehören zum Besten, was Küstenwandern in Europa bietet. Bitte auf den Wegen bleiben: Die Klippen sind stellenweise brüchig.</p>
+                    <p>Zum Wetter sagen die Bretonen, es gebe hier alle vier Jahreszeiten an einem Tag – Sonnencreme und Regenjacke gehören also zusammen ins Gepäck. Beste Reisezeit: Mai, Juni und September. Anreise über Brest oder Quimper (je ca. eine Stunde), hübsch über die geschwungene <strong>Brücke von Térénez</strong>; im Sommer verbindet eine Personenfähre Le Fret mit Brest. Crozon ist kein Ort der großen Attraktionen, sondern der langen Horizonte: Man kommt für einen Tag und bleibt am liebsten eine Woche. <em>Kenavo!</em></p>
+                </div>
+            </article>
+
+            <p class="hp-footer-note">
+                Dieser Audioguide wurde sorgfältig recherchiert, ersetzt aber keinen Reiseführer.
+                Die Sprachaufnahme wurde mit dem Open-Source-System MaryTTS (DFKI) und der deutschen Stimme „Pavoque"
+                (DFKI, Sprecher Axel Wolf) erzeugt; die Harfenmusik wurde eigens für diesen Guide synthetisiert.
+                Die Karte ist eine stilisierte, vereinfachte Darstellung.
+            </p>
+            <a class="hp-back" href="audioguide-le-mans.html">← Audioguide Kathedrale Le Mans</a>
+            <a class="hp-back" href="heinrich-ii.html">← Podcast Heinrich II.</a>
+            <a class="hp-back" href="index.html">← Zur Startseite</a>
+        </div>
+    </section>
+
+    <script>
+    (function () {
+        'use strict';
+
+        // Startzeiten der 7 Kapitel in Sekunden (aus der Audio-Produktion; Kapitel 1 beginnt nach dem Musik-Intro)
+        var CHAPTERS = [20.1, 154.4, 277.9, 402.0, 535.7, 671.2, 799.6];
+        var TOTAL = 934;
+
+        var audio = document.getElementById('hpAudio');
+        var nowTitle = document.getElementById('hpNowTitle');
+        var chapterLabel = document.getElementById('hpChapterLabel');
+        var toc = document.getElementById('hpToc');
+        var markers = Array.prototype.slice.call(document.querySelectorAll('.marker'));
+
+        var chapters = Array.prototype.map.call(document.querySelectorAll('.hp-chapter'), function (el) {
+            return { el: el, title: el.querySelector('h2').textContent.trim() };
+        });
+
+        function fmt(sec) {
+            var m = Math.floor(sec / 60), s = Math.round(sec % 60);
+            if (s === 60) { m += 1; s = 0; }
+            return m + ':' + (s < 10 ? '0' : '') + s;
+        }
+
+        function jumpTo(i, scroll) {
+            audio.currentTime = CHAPTERS[i] + 0.05;
+            audio.play();
+            if (scroll) {
+                chapters[i].el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        chapters.forEach(function (ch, i) {
+            var end = i < CHAPTERS.length - 1 ? CHAPTERS[i + 1] : TOTAL;
+            var btn = document.createElement('button');
+            btn.className = 'hp-toc-item';
+            btn.innerHTML = '<span class="num">' + (i + 1) + '</span><span class="ttl"></span><span class="dur"></span>';
+            btn.querySelector('.ttl').textContent = ch.title;
+            btn.querySelector('.dur').textContent = fmt(CHAPTERS[i]) + ' · ' + fmt(end - CHAPTERS[i]) + ' min';
+            btn.addEventListener('click', function () { jumpTo(i, true); });
+            toc.appendChild(btn);
+            ch.tocEl = btn;
+        });
+
+        markers.forEach(function (mk) {
+            var i = parseInt(mk.dataset.ch, 10);
+            mk.addEventListener('click', function () { jumpTo(i, false); });
+            mk.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); jumpTo(i, false); }
+            });
+        });
+
+        Array.prototype.forEach.call(document.querySelectorAll('.hp-play-chapter'), function (btn, i) {
+            btn.addEventListener('click', function () { jumpTo(i, false); });
+        });
+
+        function currentChapter() {
+            var t = audio.currentTime, idx = 0;
+            for (var i = 0; i < CHAPTERS.length; i++) {
+                if (t >= CHAPTERS[i] - 0.5) idx = i;
+            }
+            return idx;
+        }
+
+        var lastIdx = -1;
+        function refresh() {
+            var i = currentChapter();
+            if (i === lastIdx) return;
+            lastIdx = i;
+            nowTitle.textContent = 'Kapitel ' + (i + 1) + ' · ' + chapters[i].title;
+            chapterLabel.textContent = 'Kapitel ' + (i + 1) + ' von ' + chapters.length;
+            chapters.forEach(function (ch, j) {
+                ch.el.classList.toggle('playing', j === i && !audio.paused);
+                ch.tocEl.classList.toggle('active', j === i);
+            });
+            markers.forEach(function (mk) {
+                mk.classList.toggle('active', parseInt(mk.dataset.ch, 10) === i);
+            });
+        }
+        audio.addEventListener('timeupdate', refresh);
+        audio.addEventListener('play', function () { lastIdx = -1; refresh(); });
+        audio.addEventListener('pause', function () {
+            chapters.forEach(function (ch) { ch.el.classList.remove('playing'); });
+        });
+        audio.addEventListener('ended', function () {
+            nowTitle.textContent = 'Ende der Einführung – Kenavo!';
+        });
+    })();
+    </script>
+</body>
+</html>
