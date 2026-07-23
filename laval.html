@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Audioguide zur Stadt Laval an der Mayenne – Einführung in 7 Kapiteln mit Musik, ca. 15 Minuten, Deutsch, mit klickbarem Stadtplan.">
+    <meta property="og:title" content="Laval an der Mayenne – Audioguide-Einführung">
+    <meta property="og:description" content="15-minütige Hörführung durch Laval: Schloss, Altstadt, Waschboote, der Zöllner Rousseau und virtuelle Welten – mit Musik.">
+    <meta property="og:type" content="website">
+    <title>Laval an der Mayenne – Audioguide-Einführung</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ===== Crozon-Audioguide (nutzt das hp-Muster der Heinrich-II-Seite) ===== */
+        .hp-hero {
+            position: relative;
+            padding: 8rem 0 5rem;
+            background: linear-gradient(160deg, #1e2a1e 0%, var(--primary) 100%);
+            color: var(--text-light);
+            text-align: center;
+        }
+        .hp-eyebrow {
+            font-size: 0.8rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+        .hp-hero h1 {
+            font-family: var(--font-serif);
+            font-weight: 600;
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            line-height: 1.1;
+            margin-bottom: 1rem;
+        }
+        .hp-hero .hp-sub { color: var(--text-muted); font-size: 0.95rem; }
+        .hp-narrow { max-width: 900px; margin: 0 auto; }
+        .hp-section { padding: 3rem 0 5rem; }
+
+        .hp-player {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: var(--bg-card-dark);
+            border: 1px solid var(--border-dark);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem 1.5rem;
+            margin-top: -3rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+            color: var(--text-light);
+        }
+        .hp-player-title { font-family: var(--font-serif); font-size: 1.2rem; margin-bottom: 0.15rem; }
+        .hp-player-meta { color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.9rem; }
+        .hp-player audio { width: 100%; }
+        .hp-player-label {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 0.6rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        .hp-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.9rem;
+            font-size: 0.8rem;
+            color: var(--accent);
+            border: 1px solid var(--border-dark);
+            padding: 0.45rem 1rem;
+            border-radius: var(--radius);
+            transition: all var(--transition);
+        }
+        .hp-download:hover { background: var(--accent); color: var(--primary); }
+
+        .hp-intro { margin: 2.5rem 0 1.5rem; color: var(--text-dark-muted); }
+        .hp-intro strong { color: var(--text-dark); }
+        .hp-intro a { color: var(--accent); text-decoration: underline; }
+
+        .hp-map-card {
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            background: #e9f0f2;
+            padding: 1.25rem;
+            margin: 1.5rem 0 1rem;
+        }
+        .hp-map-card h2 {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+            color: var(--text-dark);
+        }
+        .hp-map-hint { font-size: 0.82rem; color: var(--text-dark-muted); margin-bottom: 0.75rem; }
+        .hp-map-wrap { width: 100%; overflow: hidden; }
+        .hp-map-wrap svg { width: 100%; height: auto; display: block; }
+
+        .land { fill: #e5ddc8; stroke: #ada173; stroke-width: 1.5; stroke-linejoin: round; }
+        .islet { fill: #d8cfb4; stroke: #ada173; stroke-width: 1; }
+        .sea-label, .land-label {
+            font-family: var(--font-sans);
+            font-size: 13px;
+            fill: #7d97a3;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        .land-label { fill: #9a917d; }
+        .trail {
+            fill: none;
+            stroke: #b4552d;
+            stroke-width: 1.5;
+            stroke-dasharray: 5 4;
+            opacity: 0.65;
+        }
+
+        .marker { cursor: pointer; }
+        .marker circle.halo { fill: var(--accent); fill-opacity: 0; }
+        .marker circle.dot {
+            fill: #fff;
+            stroke: var(--accent);
+            stroke-width: 2.5;
+            transition: all var(--transition);
+        }
+        .marker text {
+            font-family: var(--font-sans);
+            font-size: 13px;
+            font-weight: 600;
+            fill: #3d3629;
+            paint-order: stroke;
+            stroke: #e9f0f2;
+            stroke-width: 3px;
+            stroke-linejoin: round;
+        }
+        .marker .chnum {
+            font-size: 10px;
+            font-weight: 700;
+            fill: var(--accent);
+            stroke: none;
+        }
+        .marker:hover circle.dot, .marker.active circle.dot { fill: var(--accent); }
+        .marker:hover circle.halo { fill-opacity: 0.15; }
+        .marker.active circle.halo {
+            fill-opacity: 0.2;
+            animation: hp-pulse 2s ease-out infinite;
+        }
+        @keyframes hp-pulse {
+            0% { fill-opacity: 0.35; r: 12; }
+            100% { fill-opacity: 0; r: 26; }
+        }
+        .hp-legend {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            font-size: 0.78rem;
+            color: var(--text-dark-muted);
+            margin-top: 0.75rem;
+        }
+        .hp-legend span { display: inline-flex; align-items: center; gap: 0.45rem; }
+        .hp-legend .dotmark {
+            width: 12px; height: 12px; border-radius: 50%;
+            background: #fff; border: 2.5px solid var(--accent);
+        }
+        .hp-legend .trailmark {
+            width: 22px; height: 0;
+            border-top: 2px dashed #b4552d; opacity: 0.65;
+        }
+
+        .hp-toc {
+            margin: 1.5rem 0 3rem;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        .hp-toc-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+            text-align: left;
+            appearance: none;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border-light);
+            padding: 0.8rem 1.1rem;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            transition: background var(--transition);
+        }
+        .hp-toc-item:last-child { border-bottom: none; }
+        .hp-toc-item:hover { background: #f0ece3; }
+        .hp-toc-item .num {
+            flex-shrink: 0;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .hp-toc-item .dur { margin-left: auto; color: var(--text-dark-muted); font-size: 0.78rem; white-space: nowrap; }
+        .hp-toc-item.active { background: #f0ece3; }
+        .hp-toc-item.active .num { background: var(--accent); color: #fff; }
+
+        .hp-chapter { margin-bottom: 3.5rem; scroll-margin-top: 200px; }
+        .hp-chapter-head {
+            display: flex;
+            align-items: baseline;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        .hp-chapter-num {
+            font-family: var(--font-serif);
+            font-size: 2.4rem;
+            color: var(--accent);
+            line-height: 1;
+        }
+        .hp-chapter h2 {
+            font-family: var(--font-serif);
+            font-size: 1.7rem;
+            color: var(--text-dark);
+            line-height: 1.2;
+        }
+        .hp-chapter-loc {
+            font-size: 0.78rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-dark-muted);
+            margin-bottom: 1rem;
+        }
+        .hp-chapter-actions { margin-bottom: 1rem; }
+        .hp-play-chapter {
+            appearance: none;
+            border: 1px solid var(--accent);
+            background: transparent;
+            color: var(--accent);
+            border-radius: var(--radius);
+            padding: 0.45rem 1rem;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .hp-play-chapter:hover { background: var(--accent); color: #fff; }
+        .hp-chapter.playing .hp-play-chapter { background: var(--accent); color: #fff; }
+        .hp-chapter.playing .hp-chapter-num { animation: hp-blink 2s ease-in-out infinite; }
+        @keyframes hp-blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.45; }
+        }
+        .hp-text p { margin-bottom: 1.05rem; color: var(--text-dark-muted); }
+
+        .hp-footer-note {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-light);
+            font-size: 0.8rem;
+            color: var(--text-dark-muted);
+        }
+        .hp-back {
+            display: inline-block;
+            margin-top: 1.5rem;
+            margin-right: 1.5rem;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+        }
+        @media (max-width: 600px) {
+            .hp-player { padding: 1rem; margin-left: -0.5rem; margin-right: -0.5rem; }
+            .hp-chapter { scroll-margin-top: 240px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero -->
+    <header class="hp-hero">
+        <div class="container hp-narrow">
+            <p class="hp-eyebrow">Audioguide · Mayenne</p>
+            <h1>Laval an der Mayenne<br>Schloss, Zöllner Rousseau und virtuelle Welten</h1>
+            <p class="hp-sub">7 Kapitel · 15:12 Minuten · mit Musik · Deutsch</p>
+        </div>
+    </header>
+
+    <section class="hp-section">
+        <div class="container hp-narrow">
+
+            <!-- Player -->
+            <div class="hp-player" id="hpPlayer">
+                <p class="hp-player-title" id="hpNowTitle">Audioguide – die komplette Einführung</p>
+                <p class="hp-player-meta" id="hpNowMeta">Play drücken oder auf dem Stadtplan einen Ort anklicken. Zwischen den Kapiteln erklingt eine kurze Harfenmusik.</p>
+                <audio id="hpAudio" controls preload="metadata">
+                    <source src="assets/audioguide-laval.mp3" type="audio/mpeg">
+                    Ihr Browser kann die Audiodatei nicht abspielen.
+                    <a href="assets/audioguide-laval.mp3">MP3 herunterladen</a>.
+                </audio>
+                <div class="hp-player-label">
+                    <span id="hpChapterLabel">Kapitel 1 von 7</span>
+                    <span>Gesamt 15:12 min</span>
+                </div>
+                <a class="hp-download" href="assets/audioguide-laval.mp3" download>⤓ MP3 herunterladen (7,3 MB)</a>
+            </div>
+
+            <!-- Intro -->
+            <div class="hp-intro">
+                <p><strong>Auf halbem Weg zwischen Le Mans und Rennes</strong> liegt Laval, die Hauptstadt der Mayenne – eine Stadt, an der die meisten vorbeifahren und damit einiges verpassen: ein tausendjähriges Schloss mit erhaltenem hölzernem Wehrgang, eine Fachwerk-Altstadt, schwimmende Waschhäuser auf dem Fluss – und den Geburtsturm des Zöllners Henri Rousseau, des Vaters der naiven Malerei. Diese Einführung in 7 Kapiteln verbindet sich gut mit unserem <a href="audioguide-le-mans.html">Audioguide zur Kathedrale von Le Mans</a> und dem <a href="heinrich-ii.html">Podcast über Heinrich Plantagenêt</a> – Laval liegt im selben alten Grenzland der Grafschaft Maine.</p>
+            </div>
+
+            <!-- Karte -->
+            <div class="hp-map-card">
+                <h2>Der Stadtplan</h2>
+                <p class="hp-map-hint">Klicken Sie auf einen Ort – der Guide springt zum passenden Kapitel. Die gestrichelte Linie ist der Treidelpfad (Chemin de halage).</p>
+                <div class="hp-map-wrap">
+                    <svg viewBox="0 0 600 520" role="img" aria-label="Stilisierter Stadtplan von Laval mit den Kapitel-Stationen">
+                        <!-- Ufer / Land -->
+                        <rect x="0" y="0" width="600" height="520" fill="#e5ddc8" stroke="none"/>
+                        <!-- Fluss Mayenne -->
+                        <path d="M 340,0 L 330,150 325,300 335,420 350,520 L 400,520 385,420 375,300 380,150 390,0 Z" fill="#c3d6dc" stroke="#8fb0ba" stroke-width="1.5"/>
+                        <!-- Altstadt (Westufer) -->
+                        <path d="M 325,240 L 180,230 140,320 240,370 325,350 Z" fill="var(--accent)" fill-opacity="0.16" stroke="var(--accent)" stroke-width="1" stroke-dasharray="4 3"/>
+                        <!-- Pont Vieux -->
+                        <rect x="322" y="296" width="60" height="12" fill="#b3a382" stroke="#8d7d5c" stroke-width="1"/>
+                        <!-- Treidelpfad -->
+                        <path class="trail" d="M 318,40 L 322,150 318,250 316,340 330,430 344,505"/>
+
+                        <text class="sea-label" x="398" y="55">La Mayenne</text>
+                        <text class="land-label" x="150" y="200">Altstadt</text>
+                        <text class="land-label" x="430" y="440">Rive droite</text>
+
+                        <!-- Marker -->
+                        <g class="marker" data-ch="0" tabindex="0" role="button" aria-label="Kapitel 1: Panorama-Blick auf Laval">
+                            <circle class="halo" cx="430" cy="285" r="14"/>
+                            <circle class="dot" cx="430" cy="285" r="7"/>
+                            <text x="442" y="282">Panorama-Blick <tspan class="chnum">Kap. 1</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="1" tabindex="0" role="button" aria-label="Kapitel 2: Vieux-Château">
+                            <circle class="halo" cx="300" cy="315" r="14"/>
+                            <circle class="dot" cx="300" cy="315" r="7"/>
+                            <text x="228" y="333">Vieux-Château <tspan class="chnum">Kap. 2</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="2" tabindex="0" role="button" aria-label="Kapitel 3: Grande Rue">
+                            <circle class="halo" cx="245" cy="285" r="12"/>
+                            <circle class="dot" cx="245" cy="285" r="6"/>
+                            <text x="255" y="278">Grande Rue <tspan class="chnum">Kap. 3</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="2" tabindex="0" role="button" aria-label="Kapitel 3: Kathedrale">
+                            <circle class="halo" cx="190" cy="250" r="12"/>
+                            <circle class="dot" cx="190" cy="250" r="6"/>
+                            <text x="120" y="240">Kathedrale <tspan class="chnum">Kap. 3</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="3" tabindex="0" role="button" aria-label="Kapitel 4: Pont Vieux">
+                            <circle class="halo" cx="352" cy="302" r="12"/>
+                            <circle class="dot" cx="352" cy="302" r="6"/>
+                            <text x="362" y="322">Pont Vieux <tspan class="chnum">Kap. 4</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="3" tabindex="0" role="button" aria-label="Kapitel 4: Waschboot Saint-Julien">
+                            <circle class="halo" cx="357" cy="395" r="12"/>
+                            <circle class="dot" cx="357" cy="395" r="6"/>
+                            <text x="370" y="400">Bateau-lavoir <tspan class="chnum">Kap. 4</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="4" tabindex="0" role="button" aria-label="Kapitel 5: Porte Beucheresse, Geburtshaus von Henri Rousseau">
+                            <circle class="halo" cx="150" cy="295" r="14"/>
+                            <circle class="dot" cx="150" cy="295" r="7"/>
+                            <text x="20" y="315">Porte Beucheresse <tspan class="chnum">Kap. 5</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="4" tabindex="0" role="button" aria-label="Kapitel 5: Museum für naive Kunst im Schloss">
+                            <circle class="halo" cx="283" cy="347" r="12"/>
+                            <circle class="dot" cx="283" cy="347" r="6"/>
+                            <text x="180" y="365">Musée Art Naïf <tspan class="chnum">Kap. 5</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="5" tabindex="0" role="button" aria-label="Kapitel 6: Denkmal Ambroise Paré">
+                            <circle class="halo" cx="405" cy="345" r="12"/>
+                            <circle class="dot" cx="405" cy="345" r="6"/>
+                            <text x="417" y="352">Paré-Denkmal <tspan class="chnum">Kap. 6</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="5" tabindex="0" role="button" aria-label="Kapitel 6: Laval Virtual">
+                            <circle class="halo" cx="460" cy="180" r="12"/>
+                            <circle class="dot" cx="460" cy="180" r="6"/>
+                            <text x="472" y="186">Laval Virtual <tspan class="chnum">Kap. 6</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="6" tabindex="0" role="button" aria-label="Kapitel 7: Jardin de la Perrine">
+                            <circle class="halo" cx="230" cy="415" r="14"/>
+                            <circle class="dot" cx="230" cy="415" r="7"/>
+                            <text x="90" y="435">Jardin de la Perrine <tspan class="chnum">Kap. 7</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="6" tabindex="0" role="button" aria-label="Kapitel 7: Bahnhof">
+                            <circle class="halo" cx="480" cy="90" r="12"/>
+                            <circle class="dot" cx="480" cy="90" r="6"/>
+                            <text x="492" y="96">Gare TGV <tspan class="chnum">Kap. 7</tspan></text>
+                        </g>
+                    </svg>
+                </div>
+                <div class="hp-legend">
+                    <span><span class="dotmark"></span> Kapitel-Station (anklickbar)</span>
+                    <span><span class="trailmark"></span> Treidelpfad (Chemin de halage)</span>
+                </div>
+            </div>
+
+            <!-- Kapitel-Liste (per JS gefüllt) -->
+            <div class="hp-toc" id="hpToc"></div>
+
+            <!-- Kapitel 1 -->
+            <article class="hp-chapter" data-ch="0" id="kapitel-1">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">01</span>
+                    <h2>Willkommen in Laval</h2>
+                </div>
+                <p class="hp-chapter-loc">Überblick · Mayenne · Grafschaft Maine</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Kapitel anhören</button></div>
+                <div class="hp-text">
+                    <p>Laval, Hauptstadt des Départements Mayenne, liegt auf halbem Weg zwischen Le Mans und Rennes – die meisten rauschen auf der Autobahn vorbei. Wer abfährt, wird belohnt: eine der schönsten mittelalterlichen Altstädte Westfrankreichs, ein tausend Jahre altes Schloss über einem stillen Fluss und Geschichten von Malern, Dichtern und Chirurgen.</p>
+                    <p>Historisch gehört Laval zur alten <strong>Grafschaft Maine</strong> – demselben Grenzland zwischen Normandie, Anjou und Bretagne, das Sie aus unserem <a href="audioguide-le-mans.html">Le-Mans-Audioguide</a> und dem <a href="heinrich-ii.html">Heinrich-II.-Podcast</a> kennen. Laval entstand um 1020 als Grenzfestung an einer Furt über die Mayenne, dort, wo die alte Straße von Le Mans in die Bretagne den Fluss querte.</p>
+                </div>
+            </article>
+
+            <!-- Kapitel 2 -->
+            <article class="hp-chapter" data-ch="1" id="kapitel-2">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">02</span>
+                    <h2>Das Schloss und die Grafen, die alle Guy hießen</h2>
+                </div>
+                <p class="hp-chapter-loc">Vieux-Château · Château-Neuf</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Kapitel anhören</button></div>
+                <div class="hp-text">
+                    <p>Der mächtige Rundturm des <strong>Vieux-Château</strong> (frühes 13. Jh.) trägt noch seinen originalen <strong>hölzernen Wehrgang</strong> – ein vorkragendes Fachwerkgeschoss, wie es fast nirgendwo sonst erhalten ist, samt staunenswertem Dachstuhl.</p>
+                    <p>Kurios sind die Erbauer: Vom 11. bis ins 16. Jahrhundert hieß das Familienoberhaupt der Herren von Laval fast immer gleich – <strong>Guy I. bis Guy XX.</strong>; wer erbte, nahm den Namen an wie einen Titel. Die Grafen kämpften an der Seite der Könige (einer begleitete Jeanne d'Arc) und waren mit den großen Häusern der Bretagne verflochten. Nebenan das Renaissance-Château-Neuf – und im alten Schloss residiert heute die Kunst: das Museum für naive Kunst. Warum, verrät Kapitel 5.</p>
+                </div>
+            </article>
+
+            <!-- Kapitel 3 -->
+            <article class="hp-chapter" data-ch="2" id="kapitel-3">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">03</span>
+                    <h2>Durch die Altstadt zur Kathedrale</h2>
+                </div>
+                <p class="hp-chapter-loc">Grande Rue · Kathedrale · Porte Beucheresse</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Kapitel anhören</button></div>
+                <div class="hp-text">
+                    <p>Die <strong>Grande Rue</strong> zieht sich vom Schlossplatz den Hügel hinauf, gesäumt von Fachwerkhäusern des 15./16. Jahrhunderts mit geschnitzten Balkenköpfen, dazwischen elegante Renaissance-Stadtpalais.</p>
+                    <p>Die <strong>Kathedrale der Heiligen Dreifaltigkeit</strong> wirkt außen bescheiden, lohnt aber innen: romanische Bögen, gebuste Anjou-Gewölbe im Plantagenêt-Stil (wie im Langhaus von Le Mans!), Wandteppiche und Barockaltäre. Bischofskirche ist sie erst seit 1855. Daneben steht die <strong>Porte Beucheresse</strong>, das letzte Stadttor (13. Jh.) – merken Sie sich dieses Tor: 1844 wurde in einem seiner Türme ein Junge geboren, von dem noch die Rede sein wird.</p>
+                </div>
+            </article>
+
+            <!-- Kapitel 4 -->
+            <article class="hp-chapter" data-ch="3" id="kapitel-4">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">04</span>
+                    <h2>Der Fluss, die Brücke und die Waschboote</h2>
+                </div>
+                <p class="hp-chapter-loc">Pont Vieux · Chemin de halage · Bateau-lavoir Saint-Julien</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Kapitel anhören</button></div>
+                <div class="hp-text">
+                    <p>Der <strong>Pont Vieux</strong> (13. Jh.) war jahrhundertelang der einzige Übergang weit und breit – ihm verdankt Laval seine Existenz. Der <strong>Treidelpfad</strong> am Ufer, einst für Zugpferde der Lastkähne, ist heute ein herrlicher Rad- und Spazierweg entlang von Schleusenhäuschen und Mühlen.</p>
+                    <p>Bis ins 20. Jahrhundert lagen auf der Mayenne schwimmende Waschhäuser: Auf den <strong>Bateaux-lavoirs</strong> schrubbten Wäscherinnen im Sommer wie im Winter für Lohn die Wäsche der Stadt. Eines der letzten, das <strong>Waschboot Saint-Julien</strong>, ist heute als kleines Museum am Quai vertäut. Vom Wasser aus zeigt sich Laval übrigens am schönsten – im Sommer per Ausflugsschiff oder Elektroboot.</p>
+                </div>
+            </article>
+
+            <!-- Kapitel 5 -->
+            <article class="hp-chapter" data-ch="4" id="kapitel-5">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">05</span>
+                    <h2>Der Zöllner Rousseau – ein Träumer aus Laval</h2>
+                </div>
+                <p class="hp-chapter-loc">Porte Beucheresse · Musée d'Art Naïf · Jardin de la Perrine</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Kapitel anhören</button></div>
+                <div class="hp-text">
+                    <p>1844 wurde im Turm der Porte Beucheresse <strong>Henri Rousseau</strong> geboren. Der Zollbeamte begann erst mit über vierzig ernsthaft zu malen – ohne Ausbildung, am Feierabend. Die Kunstwelt lachte über seine steifen Figuren und Dschungel, die er nie gesehen hatte. Dann erkannte die Avantgarde den Großen im Sonntagsmaler: <strong>Picasso</strong> gab ihm ein legendäres Bankett, heute hängen seine Bilder im MoMA und im Musée d'Orsay – Rousseau gilt als Vater der <strong>naiven Kunst</strong>.</p>
+                    <p>Deshalb beherbergt das Schloss heute das Museum für naive und außenseiterische Kunst. Und Rousseau ist heimgekehrt: Sein Grab liegt im <strong>Jardin de la Perrine</strong>, mit Apollinaires Epitaph: „Lieber Rousseau, du hörst uns … Lass unser Gepäck zollfrei durch die Tore des Himmels."</p>
+                </div>
+            </article>
+
+            <!-- Kapitel 6 -->
+            <article class="hp-chapter" data-ch="5" id="kapitel-6">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">06</span>
+                    <h2>Chirurgen, Ubu und virtuelle Welten</h2>
+                </div>
+                <p class="hp-chapter-loc">Ambroise Paré · Alfred Jarry · Laval Virtual</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Kapitel anhören</button></div>
+                <div class="hp-text">
+                    <p><strong>Ambroise Paré</strong> (geb. um 1510 bei Laval) revolutionierte als Feldchirurg der Könige die Medizin – er gilt als Vater der modernen Chirurgie. <strong>Alfred Jarry</strong> (geb. 1873 in Laval) löste 1896 mit „König Ubu" einen der größten Theaterskandale der Geschichte aus und erfand die 'Pataphysik. Und <strong>Alain Gerbault</strong> umsegelte in den 1920ern als einer der Ersten allein die Welt.</p>
+                    <p>Die Gegenwart ist überraschend futuristisch: Seit 1999 trifft sich auf der Messe <strong>Laval Virtual</strong> jedes Frühjahr die internationale VR-Szene. Außerdem hat der weltgrößte Molkereikonzern <strong>Lactalis</strong> hier seinen Sitz. Naive Dschungel, absurdes Theater, moderne Chirurgie und virtuelle Welten – nicht schlecht für eine Stadt, an der die meisten nur vorbeifahren.</p>
+                </div>
+            </article>
+
+            <!-- Kapitel 7 -->
+            <article class="hp-chapter" data-ch="6" id="kapitel-7">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">07</span>
+                    <h2>Praktische Tipps und Abschied</h2>
+                </div>
+                <p class="hp-chapter-loc">Jardin de la Perrine · Markt · Anreise</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Kapitel anhören</button></div>
+                <div class="hp-text">
+                    <p>Laval ist eine Stadt der kurzen Wege: Schloss, Altstadt, Kathedrale und Fluss liegen wenige Gehminuten auseinander – ein halber Tag genügt, mit Bootsfahrt und Gartenpause wird ein schöner ganzer Tag daraus. Lieblingsplatz: der Terrassengarten <strong>Jardin de la Perrine</strong> mit Rosen, Pfauen, Wasserfall und Rousseaus Grab. Samstags lohnt der Markt; in den Crêperien ist man kulinarisch fast schon in der Bretagne.</p>
+                    <p>Anreise: Mit dem <strong>TGV rund 70 Minuten von Paris</strong>, Rennes und Le Mans sind ein Katzensprung – Laval verbindet sich also bestens mit der <a href="audioguide-le-mans.html">Kathedrale von Le Mans</a> und der <a href="crozon.html">Halbinsel Crozon</a>. Ausflugstipp: das Bergdorf <strong>Sainte-Suzanne</strong>, eine halbe Stunde östlich. Au revoir!</p>
+                </div>
+            </article>
+
+            <p class="hp-footer-note">
+                Dieser Audioguide wurde sorgfältig recherchiert, ersetzt aber keinen Reiseführer.
+                Die Sprachaufnahme wurde mit dem Open-Source-System MaryTTS (DFKI) und der deutschen Stimme „Pavoque"
+                (DFKI, Sprecher Axel Wolf) erzeugt; die Harfenmusik wurde eigens für diesen Guide synthetisiert.
+                Die Karte ist eine stilisierte, vereinfachte Darstellung.
+            </p>
+            <a class="hp-back" href="audioguide-le-mans.html">← Audioguide Kathedrale Le Mans</a>
+            <a class="hp-back" href="crozon.html">← Audioguide Halbinsel Crozon</a>
+            <a class="hp-back" href="heinrich-ii.html">← Podcast Heinrich II.</a>
+            <a class="hp-back" href="index.html">← Zur Startseite</a>
+        </div>
+    </section>
+
+    <script>
+    (function () {
+        'use strict';
+
+        // Startzeiten der 7 Kapitel in Sekunden (aus der Audio-Produktion; Kapitel 1 beginnt nach dem Musik-Intro)
+        var CHAPTERS = [20.1, 152.4, 277.7, 401.8, 522.1, 649.2, 787.9];
+        var TOTAL = 912;
+
+        var audio = document.getElementById('hpAudio');
+        var nowTitle = document.getElementById('hpNowTitle');
+        var chapterLabel = document.getElementById('hpChapterLabel');
+        var toc = document.getElementById('hpToc');
+        var markers = Array.prototype.slice.call(document.querySelectorAll('.marker'));
+
+        var chapters = Array.prototype.map.call(document.querySelectorAll('.hp-chapter'), function (el) {
+            return { el: el, title: el.querySelector('h2').textContent.trim() };
+        });
+
+        function fmt(sec) {
+            var m = Math.floor(sec / 60), s = Math.round(sec % 60);
+            if (s === 60) { m += 1; s = 0; }
+            return m + ':' + (s < 10 ? '0' : '') + s;
+        }
+
+        function jumpTo(i, scroll) {
+            audio.currentTime = CHAPTERS[i] + 0.05;
+            audio.play();
+            if (scroll) {
+                chapters[i].el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        chapters.forEach(function (ch, i) {
+            var end = i < CHAPTERS.length - 1 ? CHAPTERS[i + 1] : TOTAL;
+            var btn = document.createElement('button');
+            btn.className = 'hp-toc-item';
+            btn.innerHTML = '<span class="num">' + (i + 1) + '</span><span class="ttl"></span><span class="dur"></span>';
+            btn.querySelector('.ttl').textContent = ch.title;
+            btn.querySelector('.dur').textContent = fmt(CHAPTERS[i]) + ' · ' + fmt(end - CHAPTERS[i]) + ' min';
+            btn.addEventListener('click', function () { jumpTo(i, true); });
+            toc.appendChild(btn);
+            ch.tocEl = btn;
+        });
+
+        markers.forEach(function (mk) {
+            var i = parseInt(mk.dataset.ch, 10);
+            mk.addEventListener('click', function () { jumpTo(i, false); });
+            mk.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); jumpTo(i, false); }
+            });
+        });
+
+        Array.prototype.forEach.call(document.querySelectorAll('.hp-play-chapter'), function (btn, i) {
+            btn.addEventListener('click', function () { jumpTo(i, false); });
+        });
+
+        function currentChapter() {
+            var t = audio.currentTime, idx = 0;
+            for (var i = 0; i < CHAPTERS.length; i++) {
+                if (t >= CHAPTERS[i] - 0.5) idx = i;
+            }
+            return idx;
+        }
+
+        var lastIdx = -1;
+        function refresh() {
+            var i = currentChapter();
+            if (i === lastIdx) return;
+            lastIdx = i;
+            nowTitle.textContent = 'Kapitel ' + (i + 1) + ' · ' + chapters[i].title;
+            chapterLabel.textContent = 'Kapitel ' + (i + 1) + ' von ' + chapters.length;
+            chapters.forEach(function (ch, j) {
+                ch.el.classList.toggle('playing', j === i && !audio.paused);
+                ch.tocEl.classList.toggle('active', j === i);
+            });
+            markers.forEach(function (mk) {
+                mk.classList.toggle('active', parseInt(mk.dataset.ch, 10) === i);
+            });
+        }
+        audio.addEventListener('timeupdate', refresh);
+        audio.addEventListener('play', function () { lastIdx = -1; refresh(); });
+        audio.addEventListener('pause', function () {
+            chapters.forEach(function (ch) { ch.el.classList.remove('playing'); });
+        });
+        audio.addEventListener('ended', function () {
+            nowTitle.textContent = 'Ende der Einführung – au revoir!';
+        });
+    })();
+    </script>
+</body>
+</html>
