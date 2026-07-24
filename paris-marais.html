@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Einstündiger Geschichtsrundgang durch das Pariser Marais – Start Rue des Vertus, 10 Stationen, ca. 22 Minuten Audio mit Musik, Deutsch, mit Routenkarte.">
+    <meta property="og:title" content="Paris: Geschichtsrundgang durchs Marais">
+    <meta property="og:description" content="Von der Rue des Vertus durchs Marais: Alchemist Flamel, Templer, Place des Vosges, Philippe-Auguste-Mauer, Pletzl – 10 Stationen mit Musik.">
+    <meta property="og:type" content="website">
+    <title>Paris: Geschichtsrundgang durchs Marais</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ===== Crozon-Audioguide (nutzt das hp-Muster der Heinrich-II-Seite) ===== */
+        .hp-hero {
+            position: relative;
+            padding: 8rem 0 5rem;
+            background: linear-gradient(160deg, #2a1e2e 0%, var(--primary) 100%);
+            color: var(--text-light);
+            text-align: center;
+        }
+        .hp-eyebrow {
+            font-size: 0.8rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+        .hp-hero h1 {
+            font-family: var(--font-serif);
+            font-weight: 600;
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            line-height: 1.1;
+            margin-bottom: 1rem;
+        }
+        .hp-hero .hp-sub { color: var(--text-muted); font-size: 0.95rem; }
+        .hp-narrow { max-width: 900px; margin: 0 auto; }
+        .hp-section { padding: 3rem 0 5rem; }
+
+        .hp-player {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: var(--bg-card-dark);
+            border: 1px solid var(--border-dark);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem 1.5rem;
+            margin-top: -3rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+            color: var(--text-light);
+        }
+        .hp-player-title { font-family: var(--font-serif); font-size: 1.2rem; margin-bottom: 0.15rem; }
+        .hp-player-meta { color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.9rem; }
+        .hp-player audio { width: 100%; }
+        .hp-player-label {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 0.6rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        .hp-download {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.9rem;
+            font-size: 0.8rem;
+            color: var(--accent);
+            border: 1px solid var(--border-dark);
+            padding: 0.45rem 1rem;
+            border-radius: var(--radius);
+            transition: all var(--transition);
+        }
+        .hp-download:hover { background: var(--accent); color: var(--primary); }
+
+        .hp-intro { margin: 2.5rem 0 1.5rem; color: var(--text-dark-muted); }
+        .hp-intro strong { color: var(--text-dark); }
+        .hp-intro a { color: var(--accent); text-decoration: underline; }
+
+        .hp-map-card {
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            background: #e9f0f2;
+            padding: 1.25rem;
+            margin: 1.5rem 0 1rem;
+        }
+        .hp-map-card h2 {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+            color: var(--text-dark);
+        }
+        .hp-map-hint { font-size: 0.82rem; color: var(--text-dark-muted); margin-bottom: 0.75rem; }
+        .hp-map-wrap { width: 100%; overflow: hidden; }
+        .hp-map-wrap svg { width: 100%; height: auto; display: block; }
+
+        .land { fill: #e5ddc8; stroke: #ada173; stroke-width: 1.5; stroke-linejoin: round; }
+        .islet { fill: #d8cfb4; stroke: #ada173; stroke-width: 1; }
+        .sea-label, .land-label {
+            font-family: var(--font-sans);
+            font-size: 13px;
+            fill: #7d97a3;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        .land-label { fill: #9a917d; }
+        .trail {
+            fill: none;
+            stroke: #b4552d;
+            stroke-width: 1.5;
+            stroke-dasharray: 5 4;
+            opacity: 0.65;
+        }
+
+        .marker { cursor: pointer; }
+        .marker circle.halo { fill: var(--accent); fill-opacity: 0; }
+        .marker circle.dot {
+            fill: #fff;
+            stroke: var(--accent);
+            stroke-width: 2.5;
+            transition: all var(--transition);
+        }
+        .marker text {
+            font-family: var(--font-sans);
+            font-size: 13px;
+            font-weight: 600;
+            fill: #3d3629;
+            paint-order: stroke;
+            stroke: #e9f0f2;
+            stroke-width: 3px;
+            stroke-linejoin: round;
+        }
+        .marker .chnum {
+            font-size: 10px;
+            font-weight: 700;
+            fill: var(--accent);
+            stroke: none;
+        }
+        .marker:hover circle.dot, .marker.active circle.dot { fill: var(--accent); }
+        .marker:hover circle.halo { fill-opacity: 0.15; }
+        .marker.active circle.halo {
+            fill-opacity: 0.2;
+            animation: hp-pulse 2s ease-out infinite;
+        }
+        @keyframes hp-pulse {
+            0% { fill-opacity: 0.35; r: 12; }
+            100% { fill-opacity: 0; r: 26; }
+        }
+        .hp-legend {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            font-size: 0.78rem;
+            color: var(--text-dark-muted);
+            margin-top: 0.75rem;
+        }
+        .hp-legend span { display: inline-flex; align-items: center; gap: 0.45rem; }
+        .hp-legend .dotmark {
+            width: 12px; height: 12px; border-radius: 50%;
+            background: #fff; border: 2.5px solid var(--accent);
+        }
+        .hp-legend .trailmark {
+            width: 22px; height: 0;
+            border-top: 2px dashed #b4552d; opacity: 0.65;
+        }
+
+        .hp-toc {
+            margin: 1.5rem 0 3rem;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        .hp-toc-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+            text-align: left;
+            appearance: none;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--border-light);
+            padding: 0.8rem 1.1rem;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            transition: background var(--transition);
+        }
+        .hp-toc-item:last-child { border-bottom: none; }
+        .hp-toc-item:hover { background: #f0ece3; }
+        .hp-toc-item .num {
+            flex-shrink: 0;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .hp-toc-item .dur { margin-left: auto; color: var(--text-dark-muted); font-size: 0.78rem; white-space: nowrap; }
+        .hp-toc-item.active { background: #f0ece3; }
+        .hp-toc-item.active .num { background: var(--accent); color: #fff; }
+
+        .hp-chapter { margin-bottom: 3.5rem; scroll-margin-top: 200px; }
+        .hp-chapter-head {
+            display: flex;
+            align-items: baseline;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+        .hp-chapter-num {
+            font-family: var(--font-serif);
+            font-size: 2.4rem;
+            color: var(--accent);
+            line-height: 1;
+        }
+        .hp-chapter h2 {
+            font-family: var(--font-serif);
+            font-size: 1.7rem;
+            color: var(--text-dark);
+            line-height: 1.2;
+        }
+        .hp-chapter-loc {
+            font-size: 0.78rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-dark-muted);
+            margin-bottom: 1rem;
+        }
+        .hp-chapter-actions { margin-bottom: 1rem; }
+        .hp-play-chapter {
+            appearance: none;
+            border: 1px solid var(--accent);
+            background: transparent;
+            color: var(--accent);
+            border-radius: var(--radius);
+            padding: 0.45rem 1rem;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .hp-play-chapter:hover { background: var(--accent); color: #fff; }
+        .hp-chapter.playing .hp-play-chapter { background: var(--accent); color: #fff; }
+        .hp-chapter.playing .hp-chapter-num { animation: hp-blink 2s ease-in-out infinite; }
+        @keyframes hp-blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.45; }
+        }
+        .hp-text p { margin-bottom: 1.05rem; color: var(--text-dark-muted); }
+
+        .hp-footer-note {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-light);
+            font-size: 0.8rem;
+            color: var(--text-dark-muted);
+        }
+        .hp-back {
+            display: inline-block;
+            margin-top: 1.5rem;
+            margin-right: 1.5rem;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+        }
+        @media (max-width: 600px) {
+            .hp-player { padding: 1rem; margin-left: -0.5rem; margin-right: -0.5rem; }
+            .hp-chapter { scroll-margin-top: 240px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero -->
+    <header class="hp-hero">
+        <div class="container hp-narrow">
+            <p class="hp-eyebrow">Audioguide · Paris</p>
+            <h1>Rundgang durchs Marais<br>Eine Stunde Geschichte ab der Rue des Vertus</h1>
+            <p class="hp-sub">10 Stationen · ca. 1 Stunde zu Fuß · 22:29 Min. Audio · mit Musik</p>
+        </div>
+    </header>
+
+    <section class="hp-section">
+        <div class="container hp-narrow">
+
+            <!-- Player -->
+            <div class="hp-player" id="hpPlayer">
+                <p class="hp-player-title" id="hpNowTitle">Audioguide – die komplette Einführung</p>
+                <p class="hp-player-meta" id="hpNowMeta">Play drücken und losgehen – oder auf der Routenkarte eine Station anklicken. Zwischen den Stationen erklingt eine kurze Harfenmusik.</p>
+                <audio id="hpAudio" controls preload="metadata">
+                    <source src="assets/audioguide-paris-marais.mp3" type="audio/mpeg">
+                    Ihr Browser kann die Audiodatei nicht abspielen.
+                    <a href="assets/audioguide-paris-marais.mp3">MP3 herunterladen</a>.
+                </audio>
+                <div class="hp-player-label">
+                    <span id="hpChapterLabel">Station 1 von 10</span>
+                    <span>Audio gesamt 22:29 min</span>
+                </div>
+                <a class="hp-download" href="assets/audioguide-paris-marais.mp3" download>⤓ MP3 herunterladen (10,8 MB)</a>
+            </div>
+
+            <!-- Intro -->
+            <div class="hp-intro">
+                <p><strong>Start: Rue des Vertus, 3. Arrondissement.</strong> Dieser Rundgang führt in etwa einer Stunde (ca. 3,5 km) in einem Bogen durch das historische Marais: vom „ältesten Haus von Paris" des Alchemisten Nicolas Flamel über die Zentrale der Tempelritter (und das Gefängnis der Habsburgerin Marie-Antoinette) zur Place des Vosges, weiter zur Stadtmauer von Philippe Auguste – dem Gegenspieler aus unserem <a href="heinrich-ii.html">Heinrich-Plantagenêt-Podcast</a> – und ins alte jüdische Viertel. Einfach Play drücken und losgehen: Die Wegbeschreibung ist ins Audio eingesprochen, jede Station endet mit der Richtung zur nächsten.</p>
+            </div>
+
+            <!-- Karte -->
+            <div class="hp-map-card">
+                <h2>Die Route</h2>
+                <p class="hp-map-hint">Schematische Karte – Klick auf eine Station springt zum passenden Audio-Abschnitt. Die gestrichelte Linie ist der Laufweg.</p>
+                <div class="hp-map-wrap">
+                    <svg viewBox="0 0 600 560" role="img" aria-label="Schematische Routenkarte des Rundgangs durch das Marais">
+                        <rect x="0" y="0" width="600" height="560" fill="#e9e4d6" stroke="none"/>
+                        <!-- Seine -->
+                        <path d="M 0,505 L 600,490 600,560 0,560 Z" fill="#c3d6dc" stroke="#8fb0ba" stroke-width="1.5"/>
+                        <text class="sea-label" x="250" y="540">La Seine</text>
+                        <!-- Place des Vosges Symbol -->
+                        <rect x="482" y="312" width="36" height="36" fill="var(--accent)" fill-opacity="0.25" stroke="var(--accent)" stroke-width="1"/>
+                        <!-- Laufweg -->
+                        <path class="trail" d="M 140,70 L 110,150 330,110 250,240 330,285 420,270 500,330 450,400 400,470 300,380 170,470"/>
+                        <text class="land-label" x="40" y="30">Le Marais · 3e/4e Arrondissement</text>
+                        <text class="land-label" x="495" y="440">→ Bastille</text>
+                        <text class="land-label" x="120" y="495">Hôtel de Ville (Ende)</text>
+
+                        <!-- Marker -->
+                        <g class="marker" data-ch="0" tabindex="0" role="button" aria-label="Station 1: Rue des Vertus (Start)">
+                            <circle class="halo" cx="140" cy="70" r="14"/>
+                            <circle class="dot" cx="140" cy="70" r="7"/>
+                            <text x="152" y="66">Rue des Vertus <tspan class="chnum">Start · St. 1</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="1" tabindex="0" role="button" aria-label="Station 2: Haus des Nicolas Flamel">
+                            <circle class="halo" cx="110" cy="150" r="12"/>
+                            <circle class="dot" cx="110" cy="150" r="6"/>
+                            <text x="20" y="175">Maison Flamel <tspan class="chnum">St. 2</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="2" tabindex="0" role="button" aria-label="Station 3: Square du Temple">
+                            <circle class="halo" cx="330" cy="110" r="14"/>
+                            <circle class="dot" cx="330" cy="110" r="7"/>
+                            <text x="344" y="106">Square du Temple <tspan class="chnum">St. 3</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="3" tabindex="0" role="button" aria-label="Station 4: Nationalarchiv, Hôtel de Soubise">
+                            <circle class="halo" cx="250" cy="240" r="12"/>
+                            <circle class="dot" cx="250" cy="240" r="6"/>
+                            <text x="90" y="245">Archives nationales <tspan class="chnum">St. 4</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="4" tabindex="0" role="button" aria-label="Station 5: Rue des Francs-Bourgeois">
+                            <circle class="halo" cx="330" cy="285" r="12"/>
+                            <circle class="dot" cx="330" cy="285" r="6"/>
+                            <text x="200" y="308">Francs-Bourgeois <tspan class="chnum">St. 5</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="5" tabindex="0" role="button" aria-label="Station 6: Musée Carnavalet">
+                            <circle class="halo" cx="420" cy="270" r="12"/>
+                            <circle class="dot" cx="420" cy="270" r="6"/>
+                            <text x="432" y="262">Carnavalet <tspan class="chnum">St. 6</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="6" tabindex="0" role="button" aria-label="Station 7: Place des Vosges">
+                            <circle class="halo" cx="500" cy="330" r="14"/>
+                            <circle class="dot" cx="500" cy="330" r="7"/>
+                            <text x="428" y="302">Place des Vosges <tspan class="chnum">St. 7</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="7" tabindex="0" role="button" aria-label="Station 8: Hôtel de Sully und Rue Saint-Antoine">
+                            <circle class="halo" cx="450" cy="400" r="12"/>
+                            <circle class="dot" cx="450" cy="400" r="6"/>
+                            <text x="462" y="408">Hôtel de Sully <tspan class="chnum">St. 8</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="8" tabindex="0" role="button" aria-label="Station 9: Mauer des Philippe Auguste">
+                            <circle class="halo" cx="400" cy="470" r="12"/>
+                            <circle class="dot" cx="400" cy="470" r="6"/>
+                            <text x="255" y="478">Philippe-Auguste-Mauer <tspan class="chnum">St. 9</tspan></text>
+                        </g>
+                        <g class="marker" data-ch="9" tabindex="0" role="button" aria-label="Station 10: Rue des Rosiers, das Pletzl">
+                            <circle class="halo" cx="300" cy="380" r="14"/>
+                            <circle class="dot" cx="300" cy="380" r="7"/>
+                            <text x="170" y="372">Rue des Rosiers <tspan class="chnum">St. 10</tspan></text>
+                        </g>
+                    </svg>
+                </div>
+                <div class="hp-legend">
+                    <span><span class="dotmark"></span> Station (anklickbar)</span>
+                    <span><span class="trailmark"></span> Laufweg (ca. 3,5 km)</span>
+                </div>
+            </div>
+
+            <!-- Kapitel-Liste (per JS gefüllt) -->
+            <div class="hp-toc" id="hpToc"></div>
+
+            <!-- Station 1 -->
+            <article class="hp-chapter" data-ch="0" id="station-1">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">01</span>
+                    <h2>Rue des Vertus – ein Start mit Augenzwinkern</h2>
+                </div>
+                <p class="hp-chapter-loc">Start · Rue des Vertus, 3. Arrondissement</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Station anhören</button></div>
+                <div class="hp-text">
+                    <p>Der Name „Straße der Tugenden" ist vermutlich blanke Ironie – im Mittelalter war das Gässchen für käufliche Liebe bekannt. Sie stehen im Norden des <strong>Marais</strong> („Sumpf"), einst Schwemmland der Seine, dann Viertel der Handwerker und Zünfte. Seit gut hundert Jahren prägt zudem die Wenzhou-Gemeinde diese Ecke – das älteste Chinatown von Paris, rund um die Rue au Maire.</p>
+                    <p>Der Rundgang führt in einer guten Stunde im Bogen durchs Marais. <em>Weg zur nächsten Station: Rue des Vertus nach Süden, rechts in die Rue des Gravilliers, links in die Rue de Montmorency bis Nr. 51.</em></p>
+                </div>
+            </article>
+
+            <!-- Station 2 -->
+            <article class="hp-chapter" data-ch="1" id="station-2">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">02</span>
+                    <h2>Das Haus des Alchemisten</h2>
+                </div>
+                <p class="hp-chapter-loc">Rue de Montmorency 51 – Maison Nicolas Flamel (1407)</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Station anhören</button></div>
+                <div class="hp-text">
+                    <p>Das „älteste Haus von Paris" baute 1407 <strong>Nicolas Flamel</strong> – ja, der aus Harry Potter. Der echte Flamel war Schreiber, Buchhändler und Wohltäter: Wer oben gratis wohnte, sollte täglich für die Stifter beten (so steht es bis heute über dem Eingang). Nach seinem Tod wucherte die Legende vom <strong>Stein der Weisen</strong>; Schatzsucher brachen sogar sein Grab auf – gefunden wurde nie etwas. Heute kann man im Erdgeschoss essen.</p>
+                    <p><em>Weg: Rue Beaubourg nach Norden, dann rechts Richtung Square du Temple.</em></p>
+                </div>
+            </article>
+
+            <!-- Station 3 -->
+            <article class="hp-chapter" data-ch="2" id="station-3">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">03</span>
+                    <h2>Der Temple – Ritter, Schatzkammer, Königsgefängnis</h2>
+                </div>
+                <p class="hp-chapter-loc">Square du Temple</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Station anhören</button></div>
+                <div class="hp-text">
+                    <p>Hier lag der <strong>Enclos du Temple</strong>, die Europazentrale der Tempelritter – Mönche, Krieger und Bankiers, in deren Turm zeitweise der Staatsschatz lagerte. Am <strong>Freitag, dem 13. Oktober 1307</strong> ließ Philipp der Schöne alle Templer Frankreichs verhaften; Großmeister Jacques de Molay starb 1314 mit einem Fluch auf den Lippen – König und Papst waren binnen eines Jahres tot.</p>
+                    <p>1792 sperrte die Revolution die königliche Familie in den Templerturm: Ludwig XVI. – und <strong>Marie-Antoinette, geborene Erzherzogin von Österreich</strong>, Tochter Maria Theresias, Schwester zweier Kaiser des Heiligen Römischen Reiches. Napoleon ließ den Turm abreißen, damit er kein Wallfahrtsort würde. <em>Weg: nach Süden in die Rue des Archives, bis links ein Portal mit zwei Türmchen auftaucht.</em></p>
+                </div>
+            </article>
+
+            <!-- Station 4 -->
+            <article class="hp-chapter" data-ch="3" id="station-4">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">04</span>
+                    <h2>Das Nationalarchiv – vom Ritterportal zum Rokoko</h2>
+                </div>
+                <p class="hp-chapter-loc">Rue des Archives · Hôtel de Clisson / Hôtel de Soubise</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Station anhören</button></div>
+                <div class="hp-text">
+                    <p>Das Türmchen-Portal (um 1380) des <strong>Hôtel de Clisson</strong> ist das älteste erhaltene Stück privater Baukunst des mittelalterlichen Paris. Später residierten hier die <strong>Guise</strong>, die Anführer der katholischen Partei der Religionskriege; im 18. Jahrhundert entstand das prachtvolle <strong>Hôtel de Soubise</strong> mit Rokoko-Salons „wie Schlagsahne in Architektur".</p>
+                    <p>Seit Napoleon sitzt hier das <strong>Nationalarchiv</strong>: Templer-Prozessakten, das Testament Ludwigs XVI., der letzte Brief der Marie-Antoinette. <em>Weg: der Rue des Francs-Bourgeois nach Osten folgen – die Straße selbst ist die nächste Station, einfach im Gehen weiterhören.</em></p>
+                </div>
+            </article>
+
+            <!-- Station 5 -->
+            <article class="hp-chapter" data-ch="4" id="station-5">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">05</span>
+                    <h2>Rue des Francs-Bourgeois – arme Leute, reiche Straße</h2>
+                </div>
+                <p class="hp-chapter-loc">Rue des Francs-Bourgeois (im Gehen)</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Station anhören</button></div>
+                <div class="hp-text">
+                    <p>Der Name kommt von einem Armenhaus von 1334, dessen Bewohner steuerbefreit waren – <em>francs bourgeois</em>, freie Bürger. Danach: Adelspaläste, Abstieg zum Slum nach dem Umzug des Hofes nach Versailles, Abrisspläne bis in die 1950er.</p>
+                    <p>Die Rettung kam 1962 mit dem <strong>Malraux-Gesetz</strong>: Das Marais wurde Frankreichs erster geschützter Altstadtbereich (<em>secteur sauvegardé</em>) – der Urahn aller europäischen Altstadtrettungen. <em>Weg: geradeaus bis zum Renaissance-Palais mit Garten – dem Musée Carnavalet.</em></p>
+                </div>
+            </article>
+
+            <!-- Station 6 -->
+            <article class="hp-chapter" data-ch="5" id="station-6">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">06</span>
+                    <h2>Carnavalet – das Gedächtnis von Paris</h2>
+                </div>
+                <p class="hp-chapter-loc">Musée Carnavalet (Eintritt frei)</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Station anhören</button></div>
+                <div class="hp-text">
+                    <p>Im Hôtel Carnavalet lebte fast zwanzig Jahre <strong>Madame de Sévigné</strong>, die geistreichste Briefschreiberin des 17. Jahrhunderts. Heute ist es das <strong>Museum der Geschichte von Paris</strong>: Bastille-Schlüssel und -Modelle, die Spielsachen des Thronfolgers aus dem Temple-Turm, gerettete Prunkzimmer, Ladenschilder aus fünf Jahrhunderten – bis zu Prousts korkgefüttertem Schlafzimmer. Dauerausstellung gratis.</p>
+                    <p><em>Weg: weiter auf der Rue des Francs-Bourgeois, bis sich die Arkaden eines rosaroten Platzes öffnen.</em></p>
+                </div>
+            </article>
+
+            <!-- Station 7 -->
+            <article class="hp-chapter" data-ch="6" id="station-7">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">07</span>
+                    <h2>Place des Vosges – ein Turnierunfall verändert die Geschichte</h2>
+                </div>
+                <p class="hp-chapter-loc">Place des Vosges (vollendet 1612)</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Station anhören</button></div>
+                <div class="hp-text">
+                    <p>Vorher stand hier das <strong>Hôtel des Tournelles</strong>: 1559 starb dort König <strong>Heinrich II. von Frankreich</strong> nach einem Turnierunfall auf der Rue Saint-Antoine – ein Lanzensplitter durchs Visier. (Nicht zu verwechseln mit unserem <a href="heinrich-ii.html">Heinrich II. Plantagenêt</a>, 400 Jahre früher!) Katharina von Medici ließ den Unglückspalast abreißen; es folgten die Religionskriege.</p>
+                    <p>Heinrich IV. schuf hier die <strong>Place Royale</strong>, eingeweiht 1612 zur Hochzeit Ludwigs XIII. mit <strong>Anna von Österreich</strong> – schon wieder eine Habsburgerin. 36 Pavillons aus Backstein und Stein, Duelle unterm Rasen (bis Richelieu sie verbot), <strong>Victor Hugo</strong> in Nr. 6 (Museum, gratis). Der Name „Vosges": Das Département zahlte 1800 als erstes seine Steuern.</p>
+                </div>
+            </article>
+
+            <!-- Station 8 -->
+            <article class="hp-chapter" data-ch="7" id="station-8">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">08</span>
+                    <h2>Hôtel de Sully und Rue Saint-Antoine – der Weg zur Bastille</h2>
+                </div>
+                <p class="hp-chapter-loc">Hôtel de Sully · Rue Saint-Antoine</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Station anhören</button></div>
+                <div class="hp-text">
+                    <p>In der Südwestecke der Place des Vosges führt eine unscheinbare Tür durch Garten und Renaissance-Hof des <strong>Hôtel de Sully</strong> – einer der schönsten Geheimgänge von Paris. Hier verbrachte der alte Herzog von Sully, Finanzminister Heinrichs IV., seinen Lebensabend.</p>
+                    <p>Draußen die <strong>Rue Saint-Antoine</strong>: römische Achse, mittelalterlicher Turnierplatz (hier fand das tödliche Turnier von 1559 statt). Blick nach Osten: die Julisäule der <strong>Bastille</strong> – die Festung selbst wurde nach 1789 restlos abgetragen, nur Pflasterlinien markieren den Grundriss. <em>Weg: nach Westen, dann links in die Rue Saint-Paul, gleich rechts in die Rue des Jardins-Saint-Paul.</em></p>
+                </div>
+            </article>
+
+            <!-- Station 9 -->
+            <article class="hp-chapter" data-ch="8" id="station-9">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">09</span>
+                    <h2>Die Mauer des Philippe Auguste</h2>
+                </div>
+                <p class="hp-chapter-loc">Rue des Jardins-Saint-Paul · Village Saint-Paul</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Station anhören</button></div>
+                <div class="hp-text">
+                    <p>Unvermittelt stehen Sie vor 60 Metern wuchtiger Stadtmauer mit zwei Rundtürmen – das größte erhaltene Stück der <strong>Stadtmauer von Paris (um 1200)</strong>. Erbauer: <strong>Philippe II. Augustus</strong> – der zähe Gegenspieler aus unserem <a href="heinrich-ii.html">Heinrich-Plantagenêt-Podcast</a>, der Richard Löwenherz überlebte und Johann die Normandie abnahm. Vor seinem Kreuzzug 1190 ließ er Paris ummauern – samt einer neuen Trutzburg namens <strong>Louvre</strong>.</p>
+                    <p>Dahinter lohnt das <strong>Village Saint-Paul</strong>: stille Höfe voller Antiquitäten und Cafés. <em>Weg: zurück nach Norden über die Rue Saint-Antoine, durch die Rue Pavée, links in die Rue des Rosiers.</em></p>
+                </div>
+            </article>
+
+            <!-- Station 10 -->
+            <article class="hp-chapter" data-ch="9" id="station-10">
+                <div class="hp-chapter-head">
+                    <span class="hp-chapter-num">10</span>
+                    <h2>Rue des Rosiers und Abschied – das Pletzl</h2>
+                </div>
+                <p class="hp-chapter-loc">Rue des Rosiers · Ende: Hôtel de Ville</p>
+                <div class="hp-chapter-actions"><button class="hp-play-chapter">▶ Station anhören</button></div>
+                <div class="hp-text">
+                    <p>Die Rue des Rosiers ist die Hauptader des alten jüdischen Viertels, auf Jiddisch das <strong>Pletzl</strong>. Juden leben hier seit dem Mittelalter; um 1900 flohen Tausende vor den Pogromen Osteuropas hierher. Unter der Besatzung wurden die Menschen dieses Viertels zu Tausenden deportiert – schwarze Gedenktafeln an den Schulen erinnern daran; nehmen Sie sich einen Moment für eine davon. Heute ist die Straße wieder quicklebendig: Falafel, die gelbe jiddische Bäckerei, Boutiquen.</p>
+                    <p>Damit endet der Rundgang. Wer mag: über die <strong>Rue François-Miron</strong> (zwei spätmittelalterliche Fachwerkhäuser) zum <strong>Hôtel de Ville</strong> – Metro in alle Richtungen. Mehr hören? Unsere Guides zu <a href="audioguide-le-mans.html">Le Mans</a>, <a href="laval.html">Laval</a>, <a href="crozon.html">Crozon</a> und <a href="heinrich-ii.html">Heinrich Plantagenêt</a> warten schon.</p>
+                </div>
+            </article>
+
+            <p class="hp-footer-note">
+                Dieser Audioguide wurde sorgfältig recherchiert, ersetzt aber keinen Reiseführer.
+                Die Sprachaufnahme wurde mit dem Open-Source-System MaryTTS (DFKI) und der deutschen Stimme „Pavoque"
+                (DFKI, Sprecher Axel Wolf) erzeugt; die Harfenmusik wurde eigens für diesen Guide synthetisiert.
+                Die Karte ist eine stilisierte, vereinfachte Darstellung.
+            </p>
+            <a class="hp-back" href="audioguide-le-mans.html">← Audioguide Kathedrale Le Mans</a>
+            <a class="hp-back" href="laval.html">← Audioguide Laval</a>
+            <a class="hp-back" href="crozon.html">← Audioguide Halbinsel Crozon</a>
+            <a class="hp-back" href="heinrich-ii.html">← Podcast Heinrich II.</a>
+            <a class="hp-back" href="index.html">← Zur Startseite</a>
+        </div>
+    </section>
+
+    <script>
+    (function () {
+        'use strict';
+
+        // Startzeiten der 7 Kapitel in Sekunden (aus der Audio-Produktion; Kapitel 1 beginnt nach dem Musik-Intro)
+        var CHAPTERS = [20.1, 148.0, 280.0, 425.3, 556.7, 687.9, 809.4, 953.9, 1087.9, 1208.9];
+        var TOTAL = 1350;
+
+        var audio = document.getElementById('hpAudio');
+        var nowTitle = document.getElementById('hpNowTitle');
+        var chapterLabel = document.getElementById('hpChapterLabel');
+        var toc = document.getElementById('hpToc');
+        var markers = Array.prototype.slice.call(document.querySelectorAll('.marker'));
+
+        var chapters = Array.prototype.map.call(document.querySelectorAll('.hp-chapter'), function (el) {
+            return { el: el, title: el.querySelector('h2').textContent.trim() };
+        });
+
+        function fmt(sec) {
+            var m = Math.floor(sec / 60), s = Math.round(sec % 60);
+            if (s === 60) { m += 1; s = 0; }
+            return m + ':' + (s < 10 ? '0' : '') + s;
+        }
+
+        function jumpTo(i, scroll) {
+            audio.currentTime = CHAPTERS[i] + 0.05;
+            audio.play();
+            if (scroll) {
+                chapters[i].el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        chapters.forEach(function (ch, i) {
+            var end = i < CHAPTERS.length - 1 ? CHAPTERS[i + 1] : TOTAL;
+            var btn = document.createElement('button');
+            btn.className = 'hp-toc-item';
+            btn.innerHTML = '<span class="num">' + (i + 1) + '</span><span class="ttl"></span><span class="dur"></span>';
+            btn.querySelector('.ttl').textContent = ch.title;
+            btn.querySelector('.dur').textContent = fmt(CHAPTERS[i]) + ' · ' + fmt(end - CHAPTERS[i]) + ' min';
+            btn.addEventListener('click', function () { jumpTo(i, true); });
+            toc.appendChild(btn);
+            ch.tocEl = btn;
+        });
+
+        markers.forEach(function (mk) {
+            var i = parseInt(mk.dataset.ch, 10);
+            mk.addEventListener('click', function () { jumpTo(i, false); });
+            mk.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); jumpTo(i, false); }
+            });
+        });
+
+        Array.prototype.forEach.call(document.querySelectorAll('.hp-play-chapter'), function (btn, i) {
+            btn.addEventListener('click', function () { jumpTo(i, false); });
+        });
+
+        function currentChapter() {
+            var t = audio.currentTime, idx = 0;
+            for (var i = 0; i < CHAPTERS.length; i++) {
+                if (t >= CHAPTERS[i] - 0.5) idx = i;
+            }
+            return idx;
+        }
+
+        var lastIdx = -1;
+        function refresh() {
+            var i = currentChapter();
+            if (i === lastIdx) return;
+            lastIdx = i;
+            nowTitle.textContent = 'Station ' + (i + 1) + ' · ' + chapters[i].title;
+            chapterLabel.textContent = 'Station ' + (i + 1) + ' von ' + chapters.length;
+            chapters.forEach(function (ch, j) {
+                ch.el.classList.toggle('playing', j === i && !audio.paused);
+                ch.tocEl.classList.toggle('active', j === i);
+            });
+            markers.forEach(function (mk) {
+                mk.classList.toggle('active', parseInt(mk.dataset.ch, 10) === i);
+            });
+        }
+        audio.addEventListener('timeupdate', refresh);
+        audio.addEventListener('play', function () { lastIdx = -1; refresh(); });
+        audio.addEventListener('pause', function () {
+            chapters.forEach(function (ch) { ch.el.classList.remove('playing'); });
+        });
+        audio.addEventListener('ended', function () {
+            nowTitle.textContent = 'Ende des Rundgangs – au revoir!';
+        });
+    })();
+    </script>
+</body>
+</html>
