@@ -323,7 +323,6 @@ tr.mrow.on td.rl i{background:var(--acc);color:#fff}
         <i>Hay Grade <b>17</b></i>
         <i>Spanne <b>ca. 120 FTE</b></i>
         <i>Region <b>DACH</b></i>
-        <i>Profil <b>20 von 38 Kompetenzen</b></i>
       </div>
     </div>
     <button class="tour" id="tourBtn">▶ Story</button>
@@ -344,7 +343,7 @@ tr.mrow.on td.rl i{background:var(--acc);color:#fff}
     <div class="zone" id="zone-a" style="--z:var(--acc)">
       <div class="z-head">
         <span class="letter">A</span>
-        <span><b>Accountability</b><small>Was die Rolle liefern muss</small></span>
+        <span><b>Accountability</b></span>
         <span class="flow">steuert →</span>
       </div>
       <div class="z-body" id="respList"></div>
@@ -354,28 +353,28 @@ tr.mrow.on td.rl i{background:var(--acc);color:#fff}
     <div class="zone" id="zone-c" style="--z:var(--cap)">
       <div class="z-head">
         <span class="letter">C</span>
-        <span><b>Capability</b><small>Was jemand kann &amp; getan hat &middot; „what you do“</small></span>
+        <span><b>Capability</b></span>
         <span class="flow">← gefordert</span>
       </div>
       <div class="z-body">
         <div class="grp">
-          <div class="grp-t">Verhaltenskompetenzen &middot; Leadership Architect <u id="cnt-comp">0</u></div>
+          <div class="grp-t">Kompetenzen <u id="cnt-comp">0</u></div>
           <div id="box-comp"></div>
         </div>
         <div class="grp">
-          <div class="grp-t">Skills &middot; Fach &amp; Methode <u id="cnt-skill">0</u></div>
+          <div class="grp-t">Skills <u id="cnt-skill">0</u></div>
           <div class="tags" id="box-skill" style="--c:var(--cap)"></div>
         </div>
         <div class="grp">
-          <div class="grp-t">Experiences &middot; prägende Erfahrungen <u id="cnt-exp">0</u></div>
+          <div class="grp-t">Experiences <u id="cnt-exp">0</u></div>
           <div class="tags" id="box-exp" style="--c:var(--cap)"></div>
         </div>
         <div class="grp">
-          <div class="grp-t">Education &middot; formale Qualifikation</div>
+          <div class="grp-t">Education</div>
           <div class="tags" style="--c:var(--cap)">
-            <span class="tag" style="cursor:default">Abgeschlossenes Studium (BWL, Wirtschaftsinformatik o.&nbsp;ä.)</span>
-            <span class="tag" style="cursor:default">Deutsch verhandlungssicher &middot; Englisch fließend</span>
-            <span class="tag" style="cursor:default">Zertifizierung Lean / Six Sigma erwünscht</span>
+            <span class="tag" style="cursor:default">Studium (BWL / WInfo)</span>
+            <span class="tag" style="cursor:default">DE &middot; EN fließend</span>
+            <span class="tag" style="cursor:default">Lean Six Sigma</span>
           </div>
         </div>
       </div>
@@ -385,17 +384,17 @@ tr.mrow.on td.rl i{background:var(--acc);color:#fff}
     <div class="zone" id="zone-i" style="--z:var(--idt)">
       <div class="z-head">
         <span class="letter">I</span>
-        <span><b>Identity</b><small>Wer jemand ist &middot; „who you are“</small></span>
+        <span><b>Identity</b></span>
         <span class="flow">← gefordert</span>
       </div>
       <div class="z-body">
         <div class="grp">
-          <div class="grp-t">Traits &middot; Persönlichkeit <u id="cnt-trait">0</u></div>
+          <div class="grp-t">Traits <u id="cnt-trait">0</u></div>
           <div id="box-trait"></div>
-          <div class="pkey"><s></s> Linie = 50. Perzentil (Norm) &middot; Balken = Zielausprägung</div>
+          <div class="pkey"><s></s> 50. Perzentil (Norm)</div>
         </div>
         <div class="grp">
-          <div class="grp-t">Drivers &middot; Motive <u id="cnt-drive">0</u></div>
+          <div class="grp-t">Drivers <u id="cnt-drive">0</u></div>
           <div id="box-drive"></div>
         </div>
         <div class="stall">
@@ -412,7 +411,7 @@ tr.mrow.on td.rl i{background:var(--acc);color:#fff}
     <div class="zone" id="zone-r" style="--z:var(--kf-dk)">
       <div class="z-head">
         <span class="letter">↗</span>
-        <span><b>Role Insights</b><small>4 Linsen auf die Rolle</small></span>
+        <span><b>Role Insights</b></span>
       </div>
       <div class="z-body">
         <div class="gauge lead">
@@ -451,7 +450,7 @@ tr.mrow.on td.rl i{background:var(--acc);color:#fff}
 
   <!-- ===== Einflussmatrix ===== -->
   <div class="mx">
-    <div class="mx-t">Einflussmatrix <span>— wie jede einzelne Verantwortlichkeit das gesamte Profil prägt. Zeile anklicken.</span></div>
+    <div class="mx-t">Einflussmatrix</div>
     <table class="mx-tb">
       <thead>
         <tr>
@@ -485,10 +484,10 @@ tr.mrow.on td.rl i{background:var(--acc);color:#fff}
    ==================================================================== */
 
 const FACTORS=[
-  {k:'Thought', n:'Thought · wie geführt gedacht wird'},
-  {k:'Results', n:'Results · was erreicht wird'},
-  {k:'People',  n:'People · wie Menschen geführt werden'},
-  {k:'Self',    n:'Self · wie man sich selbst führt'}
+  {k:'Thought', n:'Thought'},
+  {k:'Results', n:'Results'},
+  {k:'People',  n:'People'},
+  {k:'Self',    n:'Self'}
 ];
 
 const ITEMS={
@@ -631,8 +630,8 @@ let sel=null, pick=null;
 RESP.forEach((r,i)=>{
   const b=document.createElement('button');
   b.className='resp'; b.dataset.id=r.id;
-  b.innerHTML=`<div class="rtop"><span class="idx">${i+1}</span><span class="share">${r.share}% der Rolle</span></div>
-    <h3>${r.t}</h3><p>${r.d}</p><div class="sbar"><i style="width:${r.share*3.3}%"></i></div>`;
+  b.innerHTML=`<div class="rtop"><span class="idx">${i+1}</span><span class="share">${r.share}%</span></div>
+    <h3>${r.t}</h3><div class="sbar"><i style="width:${r.share*3.3}%"></i></div>`;
   b.onclick=()=>{pick=null; sel=(sel===r.id?null:r.id); render();};
   b.onmouseenter=()=>{setFoot(`<b>${r.t}</b> — ${r.d} · Anteil an der Rolle: ${r.share}%`); preview(r,true);};
   b.onmouseleave=()=>{resetFoot(); preview(r,false);};
@@ -709,7 +708,7 @@ RESP.forEach((r,i)=>{
 });
 
 /* ---------- Fußzeile ---------- */
-const FOOT_DEF='ACI-Modell: <b>Accountability</b> definiert die Rolle · <b>Capability</b> und <b>Identity</b> beschreiben, wer darin erfolgreich ist. Links eine Verantwortlichkeit anklicken.';
+const FOOT_DEF='Details beim Überfahren.';
 function setFoot(h){$('footDef').innerHTML=h;}
 function resetFoot(){$('footDef').innerHTML=FOOT_DEF;}
 function hoverInfo(it,dim){
@@ -731,10 +730,10 @@ function paint(v,isTotal){
     }
     $(noteId).innerHTML=txt+d;
   };
-  one('ai','ai-bar','ai-val','ai-note',v.note||'');
-  one('rm','rm-bar','rm-val','rm-note','Anteil ortsunabhängig erbringbarer Arbeit.');
-  one('in','in-bar','in-val','in-note','Interne Vernetzungsintensität.');
-  one('ex','ex-bar','ex-val','ex-note','Externe Vernetzungsintensität.');
+  one('ai','ai-bar','ai-val','ai-note','');
+  one('rm','rm-bar','rm-val','rm-note','');
+  one('in','in-bar','in-val','in-note','');
+  one('ex','ex-bar','ex-val','ex-note','');
   const [a,g,t]=v.mix;
   $('mix-auto').style.width=a+'%'; $('mix-augm').style.width=g+'%'; $('mix-tran').style.width=t+'%';
   $('k-auto').textContent=a+'%'; $('k-augm').textContent=g+'%'; $('k-tran').textContent=t+'%';
@@ -783,16 +782,16 @@ function render(){
 
   $('resetBtn').classList.toggle('hot',!sel&&!pick);
   if(r){
-    $('ctxPill').textContent=`Verantwortlichkeit ${RESP.indexOf(r)+1} / 5`;
-    $('ctxMsg').innerHTML=`<em>${r.t}</em> fordert <b>${capHits} Capability-</b> und <b>${idtHits} Identity-Elemente</b> und trägt <b>${r.share}%</b> zur Rolle bei. AI Impact dieser Aufgabe: <b>${r.ai}/100</b> — ${r.note}`;
+    $('ctxPill').textContent=`${RESP.indexOf(r)+1} / 5`;
+    $('ctxMsg').innerHTML=`<em>${r.t}</em> · ${capHits+idtHits} Elemente · ${r.share}% der Rolle`;
   } else if(pick){
     const it=ITEMS[pickDim].find(x=>x.id===pick);
     const rs=RESP.filter(x=>x[pickDim].includes(pick));
-    $('ctxPill').textContent='Rückwärts gelesen';
-    $('ctxMsg').innerHTML=`<em>${it.t}</em> (${LABEL[pickDim]}) wird von <b>${rs.length} von 5 Verantwortlichkeiten</b> gefordert: ${rs.map(x=>x.t).join(' · ')}`;
+    $('ctxPill').textContent='Rückwärts';
+    $('ctxMsg').innerHTML=`<em>${it.t}</em> · gefordert von ${rs.length} / 5 Verantwortlichkeiten`;
   } else {
     $('ctxPill').textContent='Gesamtprofil';
-    $('ctxMsg').innerHTML=`<b>Accountability</b> steuert alles: Aus den <b>5 Verantwortlichkeiten</b> leiten sich Kompetenzen, Skills, Experiences, Traits und Drivers ab – und die vier Role Insights. Klicken Sie links eine Verantwortlichkeit an.`;
+    $('ctxMsg').innerHTML=`Verantwortlichkeit anklicken – das Profil reagiert.`;
   }
   requestAnimationFrame(()=>drawWires(true));
 }
