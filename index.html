@@ -3,332 +3,310 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="description" content="Cordula Stepp – Sängerin und Gesangspädagogin. Klassischer Gesang, Kabarett, Stimmcoaching und Gesangsunterricht in Heidelberg.">
-    <meta name="keywords" content="Cordula Stepp, Sängerin, Gesangspädagogin, Sopran, Gesangsunterricht, Heidelberg, Stimmcoaching">
-    <meta property="og:title" content="Cordula Stepp – Sängerin & Gesangspädagogin">
-    <meta property="og:description" content="Klassischer Gesang, Kabarett, Stimmcoaching und Gesangsunterricht in Heidelberg.">
+    <meta name="description" content="Audioguide – kostenlose deutschsprachige Hörführungen durch Frankreich: Kathedrale Le Mans, Marais-Rundgang in Paris, Laval, Halbinsel Crozon und ein Podcast über Heinrich II. Plantagenêt.">
+    <meta property="og:title" content="Audioguide – Hörführungen durch Frankreich">
+    <meta property="og:description" content="Fünf Hörführungen, knapp zwei Stunden Geschichte zum Mitgehen: Le Mans, Paris/Marais, Laval, Crozon und Heinrich II. Plantagenêt. Deutsch, kostenlos, direkt im Browser.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.cordula-stepp.com">
-    <title>Cordula Stepp – Sängerin & Gesangspädagogin</title>
+    <title>Audioguide – Hörführungen durch Frankreich</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* ===== Startseite Audioguide ===== */
+        .ag-hero {
+            position: relative;
+            padding: 9rem 0 6rem;
+            background: linear-gradient(160deg, #12222e 0%, var(--primary) 100%);
+            color: var(--text-light);
+            text-align: center;
+        }
+        .ag-eyebrow {
+            font-size: 0.8rem;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1.2rem;
+        }
+        .ag-hero h1 {
+            font-family: var(--font-serif);
+            font-weight: 600;
+            font-size: clamp(2.6rem, 8vw, 5rem);
+            line-height: 1;
+            letter-spacing: 0.02em;
+            margin-bottom: 1.2rem;
+        }
+        .ag-hero p {
+            color: var(--text-muted);
+            font-size: 1.02rem;
+            line-height: 1.7;
+            max-width: 640px;
+            margin: 0 auto;
+        }
+        .ag-stats {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2.5rem;
+            margin-top: 3rem;
+            padding-top: 2.2rem;
+            border-top: 1px solid var(--border-dark);
+            max-width: 640px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .ag-stat-num {
+            font-family: var(--font-serif);
+            font-size: 2rem;
+            color: var(--accent);
+            line-height: 1;
+        }
+        .ag-stat-label {
+            font-size: 0.72rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-top: 0.4rem;
+        }
+
+        .ag-narrow { max-width: 980px; margin: 0 auto; }
+        .ag-section { padding: 5rem 0; }
+        .ag-section h2 {
+            font-family: var(--font-serif);
+            font-size: 1.9rem;
+            color: var(--text-dark);
+            margin-bottom: 0.4rem;
+        }
+        .ag-section-hint {
+            color: var(--text-dark-muted);
+            font-size: 0.92rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .ag-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+        .ag-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: 1.8rem;
+            background: #fff;
+            transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+        }
+        .ag-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 18px 45px rgba(0,0,0,0.10);
+            border-color: var(--accent);
+        }
+        .ag-card.ag-wide { grid-column: 1 / -1; }
+        .ag-badge {
+            align-self: flex-start;
+            font-size: 0.66rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            border-radius: 999px;
+            padding: 0.28rem 0.8rem;
+            margin-bottom: 1rem;
+        }
+        .ag-card h3 {
+            font-family: var(--font-serif);
+            font-size: 1.55rem;
+            line-height: 1.2;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+        .ag-meta {
+            font-size: 0.76rem;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-dark-muted);
+            margin-bottom: 1rem;
+        }
+        .ag-card p {
+            color: var(--text-dark-muted);
+            font-size: 0.94rem;
+            line-height: 1.7;
+            margin-bottom: 1.4rem;
+        }
+        .ag-card .ag-go {
+            margin-top: auto;
+            font-size: 0.82rem;
+            letter-spacing: 0.08em;
+            color: var(--accent);
+            font-weight: 600;
+        }
+        .ag-card .ag-go::after {
+            content: " →";
+            transition: all var(--transition);
+        }
+        .ag-card:hover .ag-go::after { margin-left: 0.3rem; }
+        .ag-card a.ag-stretch::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: var(--radius-lg);
+        }
+
+        .ag-how {
+            background: var(--bg-light);
+            border-top: 1px solid var(--border-light);
+            border-bottom: 1px solid var(--border-light);
+        }
+        .ag-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .ag-step-num {
+            font-family: var(--font-serif);
+            font-size: 2.2rem;
+            color: var(--accent);
+            line-height: 1;
+            margin-bottom: 0.6rem;
+        }
+        .ag-step h3 {
+            font-size: 1rem;
+            color: var(--text-dark);
+            margin-bottom: 0.4rem;
+        }
+        .ag-step p {
+            font-size: 0.9rem;
+            line-height: 1.65;
+            color: var(--text-dark-muted);
+        }
+
+        .ag-footer {
+            background: var(--primary);
+            color: var(--text-muted);
+            padding: 3.5rem 0;
+            font-size: 0.82rem;
+            line-height: 1.75;
+            text-align: center;
+        }
+        .ag-footer strong { color: var(--text-light); font-weight: 500; }
+
+        @media (max-width: 600px) {
+            .ag-hero { padding: 6rem 0 4rem; }
+            .ag-stats { gap: 1.8rem; }
+            .ag-section { padding: 3.5rem 0; }
+        }
+    </style>
 </head>
 <body>
 
-    <!-- Navigation -->
-    <header class="header" id="header">
-        <div class="container header-inner">
-            <a href="#hero" class="logo">Cordula Stepp</a>
-            <nav class="nav" id="nav">
-                <a href="#ueber" class="nav-link">Über mich</a>
-                <a href="#unterricht" class="nav-link">Unterricht</a>
-                <a href="#projekte" class="nav-link">Projekte</a>
-                <a href="#termine" class="nav-link">Termine</a>
-                <a href="#kontakt" class="nav-link">Kontakt</a>
-            </nav>
-            <button class="menu-toggle" id="menuToggle" aria-label="Menü öffnen">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
+    <header class="ag-hero">
+        <div class="container ag-narrow">
+            <p class="ag-eyebrow">Hörführungen durch Frankreich</p>
+            <h1>Audioguide</h1>
+            <p>Fünf kostenlose Hörführungen auf Deutsch – zum Mitgehen vor Ort oder zum Zuhören von zu Hause. Jede Seite hat einen Player, eine anklickbare Karte und den ganzen Text zum Mitlesen.</p>
+            <div class="ag-stats">
+                <div>
+                    <div class="ag-stat-num">5</div>
+                    <div class="ag-stat-label">Hörführungen</div>
+                </div>
+                <div>
+                    <div class="ag-stat-num">1:57</div>
+                    <div class="ag-stat-label">Stunden Audio</div>
+                </div>
+                <div>
+                    <div class="ag-stat-num">45</div>
+                    <div class="ag-stat-label">Stationen</div>
+                </div>
+            </div>
         </div>
     </header>
 
-    <!-- Hero -->
-    <section class="hero" id="hero">
-        <img src="assets/hero-portrait.jpeg" alt="Cordula Stepp – Sängerin und Gesangspädagogin" class="hero-bg">
-        <div class="hero-overlay"></div>
-        <div class="container hero-content">
-            <p class="hero-subtitle">Sängerin & Gesangspädagogin</p>
-            <h1 class="hero-title">Cordula Stepp</h1>
-            <blockquote class="hero-quote">
-                <p>&bdquo;Bei Cordula Stepp war es der Genuss ihres schier endlos auf- und abschwingenden Soprans, der das Publikum begeisterte. Der ausgereifte Glanz ihrer Stimme wusste jede Atempause perfekt zu verstecken.&ldquo;</p>
-                <cite>Rhein-Neckar-Zeitung</cite>
-            </blockquote>
-        </div>
-        <a href="#ueber" class="scroll-indicator" aria-label="Weiter scrollen">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 5v14M5 12l7 7 7-7"/>
-            </svg>
-        </a>
-    </section>
+    <section class="ag-section">
+        <div class="container ag-narrow">
+            <h2>Die Hörführungen</h2>
+            <p class="ag-section-hint">Einfach anklicken, Play drücken – nichts installieren, keine App, kein Konto.</p>
 
-    <!-- Über mich -->
-    <section class="section section-light" id="ueber">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Über mich</h2>
-                <div class="section-line"></div>
-            </div>
-            <div class="about-grid">
-                <div class="about-image">
-                    <img src="assets/about-portrait-bw.jpg" alt="Portrait Cordula Stepp" class="about-img">
-                </div>
-                <div class="about-text">
-                    <blockquote class="about-quote">
-                        &bdquo;Künstlerisches und Pädagogisches miteinander zu verbinden – das ist das, was mich erfüllt.&ldquo;
-                    </blockquote>
-                    <p>Mein Weg als Sängerin und Pädagogin begann in Estoril, Portugal, führte über das Studium der Schulmusik (Klavier, Gesang) an der Musikhochschule Mannheim und ein paralleles Germanistikstudium in Heidelberg bis zur Konzertreife bei Prof. C. Rüggeberg an der Kunstuniversität Graz.</p>
-                    <p>Auf der Bühne bin ich in Konzert-Liedern, Kirchenkonzerten und Operngalas in Österreich, Italien und China zu Hause. Im Kabarett-Duo <em>Liederträchtig</em> entdecke ich die humorvolle Seite der Musik, und in Crossover-Projekten suche ich die Freiheit jenseits der Genregrenzen.</p>
-                    <div class="about-stations">
-                        <h3>Stationen</h3>
-                        <ul>
-                            <li>Juniorprofessur für Gesang, China Conservatory Beijing <span class="year">2008–2011</span></li>
-                            <li>Lehrauftrag Gesang, HfMDK Frankfurt <span class="year">2011–2017</span></li>
-                            <li>Pädagogische Hochschule Heidelberg <span class="year">ab 2014</span></li>
-                            <li>ADK Ludwigsburg <span class="year">ab 2018</span></li>
-                            <li>Rabine-Methode Ausbildung <span class="year">2018–2022</span></li>
-                            <li>Zertifizierung Contemporary Popular Singing (BDG) <span class="year">2023–2025</span></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+            <div class="ag-grid">
 
-    <!-- Unterricht -->
-    <section class="section section-dark" id="unterricht">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Gesangsunterricht</h2>
-                <div class="section-line"></div>
-            </div>
-            <p class="section-intro">Seit dem Jahr 2000 arbeite ich als Gesangspädagogin – privat und an verschiedenen Institutionen. Mein Ansatz: freudvolle, kreative Begegnung mit der eigenen Stimme. Ich unterrichte alle Stimmtypen, Genres und Levels.</p>
-            <div class="offerings-grid">
-                <div class="offering-card">
-                    <div class="offering-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-                            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                            <line x1="12" y1="19" x2="12" y2="23"/>
-                            <line x1="8" y1="23" x2="16" y2="23"/>
-                        </svg>
-                    </div>
-                    <h3>Einzelunterricht</h3>
-                    <p>Gesangs- und Stimmbildung für Erwachsene und Kinder – alle Stimmtypen und ästhetischen Vorlieben.</p>
-                </div>
-                <div class="offering-card">
-                    <div class="offering-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-                            <path d="M6 12v5c0 2 3 4 6 4s6-2 6-4v-5"/>
-                        </svg>
-                    </div>
-                    <h3>Prüfungsvorbereitung</h3>
-                    <p>Vorbereitung auf Aufnahmeprüfungen an Musikhochschulen, Schauspielschulen und Jugend musiziert.</p>
-                </div>
-                <div class="offering-card">
-                    <div class="offering-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                            <circle cx="9" cy="7" r="4"/>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                        </svg>
-                    </div>
-                    <h3>Stimmcoaching</h3>
-                    <p>Für Sänger, Schauspieler, Pädagogen, Logopäden, Lehrkräfte und andere Sprechberufe.</p>
-                </div>
-                <div class="offering-card">
-                    <div class="offering-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                            <circle cx="9" cy="7" r="4"/>
-                            <line x1="19" y1="8" x2="19" y2="14"/>
-                            <line x1="22" y1="11" x2="16" y2="11"/>
-                        </svg>
-                    </div>
-                    <h3>Gruppenunterricht</h3>
-                    <p>Stimmbildung in der Gruppe für Erwachsene und Kinder, Studiokonzerte und Wochenend-Workshops.</p>
-                </div>
-                <div class="offering-card">
-                    <div class="offering-icon">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <circle cx="12" cy="12" r="10"/>
-                            <path d="M12 6v6l4 2"/>
-                        </svg>
-                    </div>
-                    <h3>Yoga & Singen</h3>
-                    <p>Körperarbeit und Stimmarbeit verbinden – Atemtechnik, Körperbewusstsein und freies Singen.</p>
-                </div>
-            </div>
-            <div class="methods">
-                <p><strong>Methoden & Fortbildungen:</strong> Rabine-Methode, Estill Voice Training, Complete Vocal Technique (CVT), Lichtenberger Methode, Gewaltfreie Kommunikation, Psychosoziale Kompetenz</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Projekte -->
-    <section class="section section-light" id="projekte">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Projekte</h2>
-                <div class="section-line"></div>
-            </div>
-            <div class="projects-grid">
-                <div class="project-card project-featured">
-                    <div class="project-image">
-                        <img src="assets/kabarett.jpg" alt="Liederträchtig – Musikkabarett mit Cordula Stepp" class="project-img">
-                    </div>
-                    <div class="project-content">
-                        <span class="project-tag">Kabarett</span>
-                        <h3>Liederträchtig</h3>
-                        <p class="project-subtitle">mit Daniel Möllemann</p>
-                        <p>Musikkabarett der feinen Art: Sarkasmus trifft auf beschwingte Melodien, Publikumserwartungen werden unterlaufen und Klischees mit ungeschminkter Realität konfrontiert – im klassischen Gewand von Chansonkunst und Opernarien.</p>
-                        <p class="project-program"><em>Aktuelles Programm: &bdquo;Zeit-Los – Das WiedererLachen&ldquo;</em></p>
-                    </div>
-                </div>
-                <div class="project-card">
-                    <div class="project-image">
-                        <img src="assets/dramen-damen.jpg" alt="Dramen Damen – Gesangstrio" class="project-img">
-                    </div>
-                    <div class="project-content">
-                        <span class="project-tag">Gesangstrio</span>
-                        <h3>Dramen Damen</h3>
-                        <p class="project-subtitle">mit Julika Birke & Annette Wieland</p>
-                        <p>Gesangskunst aus fünf Jahrhunderten mit kabarettistischem Charme – von Monteverdi bis Jazz-Standards, begleitet von Florian Stricker am Klavier.</p>
-                    </div>
-                </div>
-                <div class="project-card">
-                    <div class="project-image">
-                        <img src="assets/crossover.jpeg" alt="Crossover & Zeitgenössisches" class="project-img">
-                    </div>
-                    <div class="project-content">
-                        <span class="project-tag">Crossover</span>
-                        <h3>Crossover & Zeitgenössisches</h3>
-                        <p>Stimmliche Experimente jenseits der Genregrenzen. Zeitgenössische Musik, die ästhetische Freiheit und die enge Zusammenarbeit mit Komponisten schätzt.</p>
-                    </div>
-                </div>
-                <div class="project-card">
-                    <div class="project-image">
-                        <img src="assets/lied-duo.jpeg" alt="Konzertlied & Kirchenkonzert" class="project-img">
-                    </div>
-                    <div class="project-content">
-                        <span class="project-tag">Lied-Duo</span>
-                        <h3>Konzertlied & Kirchenkonzert</h3>
-                        <p>Klassisches Liedrepertoire und geistliche Musik in intimer Besetzung – Auftritte in Österreich, Italien und China.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Termine -->
-    <section class="section section-dark" id="termine">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Termine</h2>
-                <div class="section-line"></div>
-            </div>
-            <div class="events-list">
-                <article class="event-item">
-                    <div class="event-date">
-                        <span class="event-day">18</span>
-                        <span class="event-month">Apr 2026</span>
-                    </div>
-                    <div class="event-details">
-                        <h3>Musik zur Marktzeit – Nachtigall, mon amour</h3>
-                        <p class="event-meta">
-                            <span class="event-time">11:00 Uhr</span>
-                            <span class="event-location">Friedenskirche, Heidelberg-Handschuhsheim</span>
-                        </p>
-                        <p>Mit Barbara Rosnitschek (Flöte) und Shin Hwang (Klavier). Klassisches Repertoire von Vivaldi bis Ravel.</p>
-                    </div>
+                <article class="ag-card ag-wide">
+                    <span class="ag-badge">Stadtrundgang · Neu</span>
+                    <h3><a class="ag-stretch" href="paris-marais.html">Paris – Rundgang durchs Marais</a></h3>
+                    <p class="ag-meta">37:15 min · 10 Stationen · ca. 1 Stunde zu Fuß · 3,5 km</p>
+                    <p>Von der Rue des Vertus in einem Bogen durch das historische Marais: das „älteste Haus von Paris“ des Alchemisten Nicolas Flamel, die Zentrale der Tempelritter und der Turm, in dem Marie-Antoinette gefangen saß, die Place des Vosges, die Stadtmauer von 1200 und das jüdische Viertel rund um die Rue des Rosiers. Der Guide erzählt <strong>durchgehend</strong> – auch beim Schlendern zwischen den Stationen, samt Wegbeschreibung.</p>
+                    <span class="ag-go">Rundgang starten</span>
                 </article>
-                <article class="event-item">
-                    <div class="event-date">
-                        <span class="event-day">09</span>
-                        <span class="event-month">Mai 2026</span>
-                    </div>
-                    <div class="event-details">
-                        <h3>Dramen Damen</h3>
-                        <p class="event-meta">
-                            <span class="event-time">20:00 Uhr</span>
-                            <span class="event-location">Kulturwerkstatt, Ladenburg</span>
-                        </p>
-                        <p>Gesangskunst aus fünf Jahrhunderten mit kabarettistischem Charme. Mit Julika Birke, Annette Wieland und Florian Stricker (Klavier).</p>
-                    </div>
+
+                <article class="ag-card">
+                    <span class="ag-badge">Bauwerk</span>
+                    <h3><a class="ag-stretch" href="audioguide-le-mans.html">Kathedrale von Le Mans</a></h3>
+                    <p class="ag-meta">31:56 min · 13 Stationen</p>
+                    <p>Eine ausführliche Führung durch die Kathedrale Saint-Julien: der heidnische Menhir am Portal, die älteste Westfassade, das romanische Langhaus, der gotische Chor als „Wald aus Glas und Stein“ – und das Himmelfahrtsfenster, eines der ältesten Kirchenfenster der Welt.</p>
+                    <span class="ag-go">Zur Führung</span>
                 </article>
-                <article class="event-item">
-                    <div class="event-date">
-                        <span class="event-day">17</span>
-                        <span class="event-month">Mai 2026</span>
-                    </div>
-                    <div class="event-details">
-                        <h3>Dramen Damen</h3>
-                        <p class="event-meta">
-                            <span class="event-time">17:00 Uhr</span>
-                            <span class="event-location">Klosterkirche, Lobenfeld</span>
-                        </p>
-                        <p>Gesangskunst aus fünf Jahrhunderten mit kabarettistischem Charme. Mit Julika Birke, Annette Wieland und Florian Stricker (Klavier).</p>
-                    </div>
+
+                <article class="ag-card">
+                    <span class="ag-badge">Stadt</span>
+                    <h3><a class="ag-stretch" href="laval.html">Laval an der Mayenne</a></h3>
+                    <p class="ag-meta">15:12 min · 7 Kapitel · mit Stadtplan</p>
+                    <p>Die Stadt, an der alle vorbeifahren: ein Schloss mit erhaltenem hölzernem Wehrgang, Grafen, die 500 Jahre lang alle „Guy“ hießen, schwimmende Waschhäuser auf dem Fluss – und der Geburtsturm des Zöllners Henri Rousseau, des Vaters der naiven Malerei.</p>
+                    <span class="ag-go">Zur Einführung</span>
                 </article>
-                <article class="event-item">
-                    <div class="event-date">
-                        <span class="event-day">16</span>
-                        <span class="event-month">Jan 2027</span>
-                    </div>
-                    <div class="event-details">
-                        <h3>Liederträchtig – Zeit-Los – Das WiedererLachen</h3>
-                        <p class="event-meta">
-                            <span class="event-time">20:00 Uhr</span>
-                            <span class="event-location">Kulturverein, Waibstadt</span>
-                        </p>
-                        <p>Musikkabarett mit Cordula Stepp und Daniel Möllemann. Moderne Absurditäten in Chanson, Oper und zeitgenössischem Stil.</p>
-                    </div>
+
+                <article class="ag-card">
+                    <span class="ag-badge">Landschaft</span>
+                    <h3><a class="ag-stretch" href="crozon.html">Halbinsel Crozon</a></h3>
+                    <p class="ag-meta">15:34 min · 7 Kapitel · mit Karte</p>
+                    <p>Ans Ende der Welt in die Bretagne: die großen Kaps über dem Atlantik, Meeresgrotten und türkise Buchten, 500 Millionen Jahre Erdgeschichte in den Felsen, die Menhire von Lagatjar und Vaubans Turm, der zum UNESCO-Welterbe gehört.</p>
+                    <span class="ag-go">Zur Einführung</span>
                 </article>
+
+                <article class="ag-card">
+                    <span class="ag-badge">Podcast</span>
+                    <h3><a class="ag-stretch" href="heinrich-ii.html">Heinrich II. Plantagenêt</a></h3>
+                    <p class="ag-meta">17:30 min · 8 Kapitel · mit Frankreichkarte</p>
+                    <p>Das Leben des 1133 in Le Mans geborenen Königs von England, erzählt entlang der Orte auf einer interaktiven Karte: Rouen, Eleonore von Aquitanien in Poitiers, der Mord an Thomas Becket in Canterbury, die brennende Geburtsstadt 1189 und die Grablege Fontevraud.</p>
+                    <span class="ag-go">Zum Podcast</span>
+                </article>
+
             </div>
         </div>
     </section>
 
-    <!-- Kontakt -->
-    <section class="section section-light" id="kontakt">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Kontakt</h2>
-                <div class="section-line"></div>
-            </div>
-            <div class="contact-grid">
-                <div class="contact-text">
-                    <h3>Fragen? Wünsche? Anregungen?</h3>
-                    <p>Ob Sie Interesse an Gesangsunterricht haben, eine Anfrage für ein Konzert stellen möchten oder einfach in Kontakt treten wollen – ich freue mich auf Ihre Nachricht.</p>
+    <section class="ag-section ag-how">
+        <div class="container ag-narrow">
+            <h2>So funktioniert’s</h2>
+            <p class="ag-section-hint">Kein Download nötig – aber vor Ort empfiehlt sich einer.</p>
+            <div class="ag-steps">
+                <div class="ag-step">
+                    <div class="ag-step-num">01</div>
+                    <h3>Führung wählen</h3>
+                    <p>Jede Führung hat eine eigene Seite mit Player, Kapitelliste und dem kompletten Text zum Mitlesen.</p>
                 </div>
-                <form class="contact-form" id="contactForm" action="https://formspree.io/f/PLACEHOLDER" method="POST">
-                    <div class="form-group">
-                        <label for="name">Name *</label>
-                        <input type="text" id="name" name="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">E-Mail *</label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="message">Nachricht *</label>
-                        <textarea id="message" name="message" rows="5" required></textarea>
-                    </div>
-                    <div class="form-group form-checkbox">
-                        <input type="checkbox" id="privacy" name="privacy" required>
-                        <label for="privacy">Ich stimme der Verarbeitung meiner Daten gemäß der <a href="datenschutz.html">Datenschutzerklärung</a> zu. *</label>
-                    </div>
-                    <button type="submit" class="btn">Nachricht senden</button>
-                </form>
+                <div class="ag-step">
+                    <div class="ag-step-num">02</div>
+                    <h3>Karte antippen</h3>
+                    <p>Auf jeder Karte sind die Orte anklickbar – ein Tipp darauf springt direkt zum passenden Abschnitt.</p>
+                </div>
+                <div class="ag-step">
+                    <div class="ag-step-num">03</div>
+                    <h3>Vorher herunterladen</h3>
+                    <p>Unterwegs ist das Netz launisch: Auf jeder Seite gibt es die MP3 zum Herunterladen – dann läuft alles offline.</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container footer-inner">
-            <div class="footer-links">
-                <a href="impressum.html">Impressum</a>
-                <a href="datenschutz.html">Datenschutz</a>
-            </div>
-            <p class="footer-copy">&copy; 2025 Cordula Stepp. Alle Rechte vorbehalten.</p>
+    <footer class="ag-footer">
+        <div class="container ag-narrow">
+            <p><strong>Über diese Guides.</strong> Alle Texte sind sorgfältig recherchiert, ersetzen aber keinen Reiseführer.
+            Die Sprachaufnahmen entstanden mit dem Open-Source-System MaryTTS (DFKI) und der deutschen Stimme „Pavoque“;
+            die Harfenmusik zwischen den Kapiteln wurde eigens für diese Guides synthetisiert.
+            Die Karten sind stilisierte, vereinfachte Darstellungen und keine Navigationsgrundlage.</p>
         </div>
     </footer>
 
-    <script src="script.js"></script>
 </body>
 </html>
