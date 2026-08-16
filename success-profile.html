@@ -3,852 +3,776 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="description" content="Interaktive Erklärung: Wie ein ConFerry Success Profile aufgebaut ist – das HCI-Modell, Verantwortlichkeiten, Verhaltenskompetenzen, Skills, Traits und Drivers und ihre Wechselwirkungen.">
+<meta name="description" content="Success Profile – interaktives Beispielprofil entlang des ACI-Modells: Accountability, Capability, Identity und Role Insights.">
 <meta name="robots" content="noindex">
-<title>ConFerry Success Profile – interaktiv erklärt</title>
+<title>Success Profile – Director Customer Operations</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0b0e17;
-  --bg-2:#121726;
-  --panel:#161c2d;
-  --panel-2:#1c2438;
-  --line:#283046;
-  --line-soft:#222a3d;
-  --ink:#eef1f8;
-  --ink-soft:#aab3c8;
-  --ink-mute:#76819b;
-  --gold:#c9a96e;
-  --gold-light:#e4cf9e;
+  --ink:#0c1f1a;
+  --ink-2:#32463f;
+  --ink-3:#6b7d76;
+  --ink-4:#9aa8a2;
+  --rule:#e3e8e6;
+  --rule-2:#eff2f1;
+  --paper:#fff;
+  --paper-2:#f7faf9;
 
-  /* Component accent colours */
-  --c-resp:#e0855b;   /* Verantwortlichkeiten */
-  --c-comp:#6fb3c9;   /* Verhaltenskompetenzen */
-  --c-skill:#8ac28a;  /* Skills */
-  --c-trait:#b08ad6;  /* Traits */
-  --c-drive:#d98aab;  /* Drivers */
+  --kf:#07C690;            /* Caribbean Green */
+  --kf-dk:#094838;         /* Tiber */
+  --kf-lt:#e6faf4;
 
-  --radius:14px;
-  --radius-sm:8px;
-  --transition:0.35s cubic-bezier(.4,0,.2,1);
-  --font-sans:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
-  --font-serif:'Cormorant Garamond','Georgia',serif;
-  --maxw:1120px;
+  --acc:#C2643C;           /* Accountability */
+  --cap:#2F7FB5;           /* Capability */
+  --idt:#7A5EA8;           /* Identity */
+
+  --r:10px;
+  --t:.26s cubic-bezier(.4,0,.2,1);
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  --serif:'Source Serif 4',Georgia,serif;
 }
-
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+html,body{height:100%}
 body{
-  font-family:var(--font-sans);
-  font-weight:300;
-  line-height:1.7;
-  color:var(--ink);
-  background:
-    radial-gradient(1200px 600px at 15% -10%, rgba(201,169,110,.10), transparent 60%),
-    radial-gradient(900px 500px at 100% 0%, rgba(111,179,201,.08), transparent 55%),
-    var(--bg);
-  min-height:100vh;
-  overflow-x:hidden;
+  font-family:var(--sans);font-size:13px;line-height:1.45;color:var(--ink);
+  background:radial-gradient(1400px 900px at 15% -10%,#eaf2ef,#d7e0dc);
+  overflow:hidden;padding:12px;
 }
-.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
-.eyebrow{
-  font-size:.72rem;font-weight:600;text-transform:uppercase;
-  letter-spacing:.22em;color:var(--gold);margin-bottom:14px;
-}
-h1,h2,h3{font-weight:400;letter-spacing:-.01em}
-.serif{font-family:var(--font-serif)}
-em{color:var(--gold-light);font-style:italic}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;text-align:left}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-thumb{background:#d2dbd7;border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:#b8c5bf}
+::-webkit-scrollbar-track{background:transparent}
 
-/* ===== Top bar ===== */
-.topbar{
-  position:sticky;top:0;z-index:50;
-  background:rgba(11,14,23,.78);
-  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--line-soft);
-}
-.topbar-inner{
-  display:flex;align-items:center;justify-content:space-between;
-  height:62px;
-}
-.brand{display:flex;align-items:center;gap:10px;font-weight:600;letter-spacing:.02em}
-.brand .dot{
-  width:26px;height:26px;border-radius:7px;flex-shrink:0;
-  background:linear-gradient(135deg,var(--gold),#9c7d49);
-  display:grid;place-items:center;color:#0b0e17;font-weight:800;font-size:.85rem;
-}
-.brand small{color:var(--ink-mute);font-weight:400;font-size:.78rem}
-.topnav{display:flex;gap:6px}
-.topnav a{
-  font-size:.78rem;color:var(--ink-soft);padding:8px 12px;border-radius:8px;
-  transition:var(--transition);text-decoration:none;
-}
-.topnav a:hover{color:var(--ink);background:var(--panel)}
-
-/* ===== Hero ===== */
-.hero{padding:90px 0 70px;text-align:center}
-.hero h1{
-  font-family:var(--font-serif);
-  font-size:clamp(2.6rem,6.5vw,4.6rem);line-height:1.04;margin-bottom:22px;
-}
-.hero h1 span{
-  background:linear-gradient(120deg,var(--gold-light),var(--gold));
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-}
-.hero p.lead{
-  max-width:660px;margin:0 auto 36px;color:var(--ink-soft);font-size:1.12rem;line-height:1.75;
-}
-.cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
-.btn{
-  font-family:var(--font-sans);font-size:.82rem;font-weight:600;
-  letter-spacing:.12em;text-transform:uppercase;
-  padding:15px 30px;border-radius:10px;cursor:pointer;border:1.5px solid transparent;
-  transition:var(--transition);text-decoration:none;display:inline-flex;align-items:center;gap:10px;
-}
-.btn-primary{background:var(--gold);color:#0b0e17;border-color:var(--gold)}
-.btn-primary:hover{background:var(--gold-light);border-color:var(--gold-light);transform:translateY(-2px)}
-.btn-ghost{background:transparent;color:var(--ink);border-color:var(--line)}
-.btn-ghost:hover{border-color:var(--gold);color:var(--gold-light)}
-
-/* chips under hero */
-.hero-chips{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:42px}
-.chip{
-  font-size:.74rem;letter-spacing:.04em;color:var(--ink-soft);
-  border:1px solid var(--line);border-radius:999px;padding:7px 15px;
-  display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.015);
-}
-.chip i{width:8px;height:8px;border-radius:50%;display:inline-block}
-
-/* ===== Section frame ===== */
-section.block{padding:78px 0;border-top:1px solid var(--line-soft)}
-.sec-head{max-width:680px;margin:0 auto 50px;text-align:center}
-.sec-head h2{font-family:var(--font-serif);font-size:clamp(2rem,4.5vw,2.9rem);margin-bottom:16px}
-.sec-head p{color:var(--ink-soft);font-size:1.04rem}
-.sec-line{width:46px;height:2px;background:var(--gold);margin:18px auto 0}
-
-/* ===== HCI model (layered) ===== */
-.hci{
-  display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;
-}
-.hci-stack{display:flex;flex-direction:column;gap:12px;position:relative}
-.hci-axis{
-  position:absolute;left:-34px;top:8px;bottom:8px;width:24px;
-  display:flex;flex-direction:column;align-items:center;justify-content:space-between;
-}
-.hci-axis .bar{flex:1;width:2px;margin:8px 0;background:linear-gradient(var(--c-resp),var(--c-drive));border-radius:2px}
-.hci-axis span{
-  writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);
-  font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-mute);white-space:nowrap;
-}
-.layer{
-  position:relative;text-align:left;cursor:pointer;
-  border:1px solid var(--line);border-radius:12px;
-  padding:16px 18px;background:var(--panel);
-  transition:var(--transition);
-  display:flex;align-items:center;gap:14px;width:100%;
-  color:var(--ink);font-family:inherit;
-}
-.layer:hover{transform:translateX(4px);border-color:var(--lc)}
-.layer.active{
-  border-color:var(--lc);
-  background:linear-gradient(90deg,color-mix(in srgb,var(--lc) 16%,var(--panel)),var(--panel));
-  box-shadow:0 10px 30px -14px var(--lc);
-}
-.layer .lnum{
-  width:30px;height:30px;border-radius:8px;flex-shrink:0;display:grid;place-items:center;
-  font-weight:700;font-size:.82rem;color:#0b0e17;background:var(--lc);
-}
-.layer .ltext b{display:block;font-weight:600;font-size:1rem;letter-spacing:0}
-.layer .ltext small{color:var(--ink-mute);font-size:.78rem}
-.layer .lwidth{
-  position:absolute;right:14px;top:50%;transform:translateY(-50%);
-  font-size:.66rem;color:var(--ink-mute);letter-spacing:.08em;
+.sheet{
+  height:100%;max-width:1780px;margin:0 auto;background:var(--paper);border-radius:14px;
+  box-shadow:0 1px 2px rgba(9,72,56,.09),0 20px 56px -18px rgba(9,72,56,.32);
+  display:grid;grid-template-rows:auto auto 1fr auto auto;overflow:hidden;
 }
 
-/* detail panel */
-.hci-detail{
-  border:1px solid var(--line);border-radius:var(--radius);
-  background:linear-gradient(180deg,var(--panel),var(--bg-2));
-  padding:30px;min-height:340px;position:relative;overflow:hidden;
+/* ===== Kopf ===== */
+.head{display:flex;align-items:center;gap:18px;padding:12px 20px;border-bottom:1px solid var(--rule)}
+.mark{display:flex;align-items:center;gap:9px;padding-right:18px;border-right:1px solid var(--rule);flex-shrink:0}
+.mark .sq{
+  width:29px;height:29px;border-radius:8px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--kf),var(--kf-dk));
+  display:grid;place-items:center;color:#fff;font-weight:700;font-size:11.5px;
 }
-.hci-detail::before{
-  content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--lc,var(--gold));
+.mark b{font-size:12px;font-weight:600;display:block;line-height:1.25}
+.mark span{font-size:9.5px;color:var(--ink-3);letter-spacing:.1em;text-transform:uppercase}
+.title{flex:1;min-width:0}
+.title h1{font-family:var(--serif);font-size:21px;font-weight:600;letter-spacing:-.01em;line-height:1.15}
+.title .meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.title .meta i{
+  font-style:normal;font-size:10px;color:var(--ink-3);border:1px solid var(--rule);
+  border-radius:5px;padding:2px 7px;background:var(--paper-2);
 }
-.hci-detail .dtag{
-  display:inline-flex;align-items:center;gap:8px;font-size:.7rem;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--lc,var(--gold));font-weight:600;margin-bottom:14px;
+.title .meta i b{color:var(--ink-2);font-weight:600}
+.reset{
+  font-size:11px;font-weight:600;border:1px solid var(--rule);border-radius:7px;
+  padding:8px 14px;transition:var(--t);flex-shrink:0;
 }
-.hci-detail .dtag i{width:9px;height:9px;border-radius:50%;background:var(--lc,var(--gold))}
-.hci-detail h3{font-family:var(--font-serif);font-size:1.9rem;margin-bottom:8px}
-.hci-detail .dsub{color:var(--ink-mute);font-size:.86rem;margin-bottom:18px}
-.hci-detail p.ddesc{color:var(--ink-soft);font-size:.98rem;margin-bottom:20px}
-.hci-detail .dlabel{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-mute);margin-bottom:10px}
-.dexamples{display:flex;flex-wrap:wrap;gap:8px}
-.dexamples span{
-  font-size:.8rem;color:var(--ink);border:1px solid var(--line);
-  background:rgba(255,255,255,.02);border-radius:8px;padding:6px 12px;
-}
-.fade-swap{animation:fadeSwap .4s ease}
-@keyframes fadeSwap{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.reset:hover{border-color:var(--kf);color:var(--kf-dk);background:var(--kf-lt)}
+.reset.hot{border-color:var(--kf-dk);background:var(--kf-dk);color:#fff}
 
-/* HCI explainer note */
-.hci-note{
-  margin-top:36px;border:1px dashed var(--line);border-radius:var(--radius);
-  padding:24px 26px;background:rgba(201,169,110,.04);
-  display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;
+/* ===== Kontextleiste ===== */
+.ctx{
+  padding:8px 20px;background:var(--paper-2);border-bottom:1px solid var(--rule);
+  display:flex;align-items:center;gap:11px;min-height:38px;font-size:11.5px;
 }
-.hci-note .badge{
-  font-family:var(--font-serif);font-size:1.4rem;color:var(--gold-light);
-  border:1px solid var(--gold);border-radius:10px;padding:10px 14px;line-height:1;
+.ctx .pill{
+  font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;
+  background:var(--kf-dk);border-radius:5px;padding:3px 9px;flex-shrink:0;transition:var(--t);
 }
-.hci-note p{color:var(--ink-soft);font-size:.96rem}
-.hci-note strong{color:var(--ink);font-weight:600}
+.ctx .msg{flex:1;min-width:0;color:var(--ink-2)}
+.ctx .msg b{font-weight:600;color:var(--ink)}
+.ctx .msg em{font-style:normal;color:var(--acc);font-weight:600}
 
-/* ===== Stepper (Bestandteile durchklicken) ===== */
-.stepper-top{
-  display:flex;align-items:center;justify-content:space-between;gap:16px;
-  margin-bottom:28px;flex-wrap:wrap;
+/* ===== Körper: 4 Zonen ===== */
+.body{display:grid;grid-template-columns:292px 1fr 306px 254px;min-height:0;overflow:hidden}
+.zone{display:flex;flex-direction:column;min-height:0;min-width:0;border-left:1px solid var(--rule)}
+.zone:first-child{border-left:none}
+.z-head{padding:9px 14px 8px;border-bottom:1px solid var(--rule-2);flex-shrink:0;display:flex;align-items:center;gap:8px}
+.z-head .letter{
+  width:21px;height:21px;border-radius:6px;flex-shrink:0;display:grid;place-items:center;
+  font-size:11px;font-weight:700;color:#fff;background:var(--z);
 }
-.dots{display:flex;gap:8px;flex-wrap:wrap}
-.dots button{
-  border:1px solid var(--line);background:var(--panel);color:var(--ink-soft);
-  border-radius:999px;padding:8px 14px;font-size:.76rem;cursor:pointer;font-family:inherit;
-  transition:var(--transition);display:inline-flex;align-items:center;gap:7px;
+.z-head b{font-size:11.5px;font-weight:600;letter-spacing:.01em;display:block;line-height:1.2}
+.z-head small{font-size:9.5px;color:var(--ink-4);display:block;line-height:1.2}
+.z-head .flow{
+  margin-left:auto;font-size:9.5px;font-weight:600;color:var(--z);opacity:0;transition:var(--t);flex-shrink:0;
 }
-.dots button i{width:8px;height:8px;border-radius:50%;background:var(--dc);display:inline-block;opacity:.55}
-.dots button:hover{color:var(--ink);border-color:var(--dc)}
-.dots button.on{background:color-mix(in srgb,var(--dc) 18%,var(--panel));border-color:var(--dc);color:var(--ink)}
-.dots button.on i{opacity:1}
-.progresswrap{flex:1;min-width:180px;height:5px;background:var(--panel);border-radius:4px;overflow:hidden}
-.progressbar{height:100%;width:20%;background:linear-gradient(90deg,var(--gold),var(--gold-light));transition:width .4s ease}
+.zone.lit .flow{opacity:1}
+.z-body{flex:1;min-height:0;overflow-y:auto;padding:10px 12px 14px}
 
-.stepcard{
-  border:1px solid var(--line);border-radius:var(--radius);
-  background:linear-gradient(180deg,var(--panel),var(--bg-2));
-  padding:38px;position:relative;overflow:hidden;min-height:360px;
+/* ===== Verantwortlichkeiten ===== */
+.resp{
+  width:100%;border:1px solid var(--rule);border-radius:var(--r);padding:10px 11px;
+  margin-bottom:7px;transition:var(--t);position:relative;background:var(--paper);display:block;
 }
-.stepcard::after{
-  content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--dc,var(--gold));
+.resp::before{
+  content:"";position:absolute;left:0;top:9px;bottom:9px;width:3px;border-radius:0 3px 3px 0;
+  background:var(--acc);opacity:0;transition:var(--t);
 }
-.step-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:38px}
-.step-no{
-  font-family:var(--font-serif);font-size:.95rem;color:var(--dc);letter-spacing:.12em;
-  text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:10px;
+.resp:hover{border-color:#cfd8d4;box-shadow:0 3px 12px -5px rgba(9,72,56,.2)}
+.resp.on{border-color:var(--acc);background:#fdf8f5;box-shadow:0 4px 16px -6px rgba(194,100,60,.4)}
+.resp.on::before{opacity:1}
+.resp.off{opacity:.4}
+.resp .rtop{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.resp .idx{
+  width:18px;height:18px;border-radius:5px;display:grid;place-items:center;flex-shrink:0;
+  font-size:10px;font-weight:700;color:var(--ink-3);background:var(--rule-2);transition:var(--t);
 }
-.step-no .ring{
-  width:38px;height:38px;border-radius:50%;display:grid;place-items:center;
-  border:2px solid var(--dc);color:var(--dc);font-weight:700;font-size:1rem;
-}
-.stepcard h3{font-family:var(--font-serif);font-size:2.1rem;margin-bottom:6px}
-.stepcard .role{color:var(--ink-mute);font-size:.85rem;margin-bottom:20px}
-.stepcard p.lead2{color:var(--ink-soft);font-size:1.02rem;margin-bottom:22px}
-.kv{display:flex;flex-direction:column;gap:14px}
-.kv .row{border-left:2px solid var(--dc);padding-left:14px}
-.kv .row b{display:block;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-mute);margin-bottom:3px;font-weight:600}
-.kv .row span{color:var(--ink);font-size:.92rem}
-.step-side .dlabel{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-mute);margin-bottom:12px}
-.examplelist{display:flex;flex-direction:column;gap:10px}
-.examplelist div{
-  border:1px solid var(--line);border-radius:10px;padding:12px 14px;
-  background:rgba(255,255,255,.02);font-size:.9rem;color:var(--ink);
-  display:flex;align-items:center;gap:10px;
-}
-.examplelist div::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--dc);flex-shrink:0}
-.step-nav{display:flex;justify-content:space-between;margin-top:30px;gap:12px}
-.step-nav button{
-  font-family:inherit;font-size:.8rem;font-weight:600;letter-spacing:.06em;
-  padding:12px 22px;border-radius:10px;cursor:pointer;transition:var(--transition);
-  border:1.5px solid var(--line);background:var(--panel);color:var(--ink);
-  display:inline-flex;align-items:center;gap:8px;
-}
-.step-nav button:hover:not(:disabled){border-color:var(--gold);color:var(--gold-light)}
-.step-nav button:disabled{opacity:.35;cursor:not-allowed}
-.step-nav .next{background:var(--gold);color:#0b0e17;border-color:var(--gold)}
-.step-nav .next:hover{background:var(--gold-light);border-color:var(--gold-light);color:#0b0e17}
+.resp.on .idx{background:var(--acc);color:#fff}
+.resp .share{margin-left:auto;font-size:10px;font-weight:600;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.resp h3{font-size:12px;font-weight:600;line-height:1.3}
+.resp p{font-size:10.5px;color:var(--ink-3);line-height:1.4;margin-top:3px}
+.resp .sbar{height:3px;background:var(--rule-2);border-radius:2px;margin-top:7px;overflow:hidden}
+.resp .sbar i{display:block;height:100%;background:var(--acc);opacity:.5;border-radius:2px}
 
-/* ===== Wechselwirkungen (graph) ===== */
-.graph-wrap{display:grid;grid-template-columns:1.25fr .75fr;gap:34px;align-items:stretch}
-.graph-stage{
-  position:relative;border:1px solid var(--line);border-radius:var(--radius);
-  background:
-    radial-gradient(600px 300px at 50% 0%, rgba(111,179,201,.06), transparent 60%),
-    var(--bg-2);
-  padding:14px;min-height:440px;
+/* ===== Gruppen ===== */
+.grp{margin-bottom:12px}
+.grp:last-child{margin-bottom:0}
+.grp-t{
+  display:flex;align-items:center;gap:7px;margin-bottom:7px;
+  font-size:9.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-4);
 }
-.graph-stage svg{width:100%;height:100%;display:block;position:absolute;inset:0;pointer-events:none}
-.node{
-  position:absolute;transform:translate(-50%,-50%);
-  border:1.5px solid var(--nc);border-radius:12px;
-  background:var(--panel);padding:12px 16px;cursor:pointer;
-  transition:var(--transition);text-align:center;min-width:140px;
-  box-shadow:0 8px 24px -16px var(--nc);
+.grp-t::after{content:"";flex:1;height:1px;background:var(--rule-2)}
+.grp-t u{
+  text-decoration:none;font-size:9.5px;color:var(--ink-4);font-variant-numeric:tabular-nums;
+  background:var(--rule-2);border-radius:20px;padding:1px 7px;letter-spacing:0;
 }
-.node b{display:block;font-size:.9rem;font-weight:600;color:var(--ink)}
-.node small{font-size:.7rem;color:var(--ink-mute)}
-.node:hover{transform:translate(-50%,-50%) scale(1.04)}
-.node.dim{opacity:.32;filter:grayscale(.4)}
-.node.sel{
-  background:linear-gradient(180deg,color-mix(in srgb,var(--nc) 24%,var(--panel)),var(--panel));
-  box-shadow:0 0 0 3px color-mix(in srgb,var(--nc) 35%,transparent),0 14px 34px -16px var(--nc);
-}
-.graph-side{
-  border:1px solid var(--line);border-radius:var(--radius);
-  background:linear-gradient(180deg,var(--panel),var(--bg-2));padding:26px;
-}
-.graph-side h3{font-family:var(--font-serif);font-size:1.5rem;margin-bottom:6px;color:var(--nc,var(--gold-light))}
-.graph-side .gsub{font-size:.78rem;color:var(--ink-mute);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
-.graph-side p{color:var(--ink-soft);font-size:.95rem;margin-bottom:16px}
-.influence{display:flex;flex-direction:column;gap:10px}
-.influence .inf{
-  font-size:.86rem;color:var(--ink);border:1px solid var(--line);border-radius:10px;
-  padding:11px 13px;background:rgba(255,255,255,.02);line-height:1.45;
-}
-.influence .inf b{color:var(--nc,var(--gold-light));font-weight:600}
-.graph-hint{margin-top:16px;font-size:.78rem;color:var(--ink-mute);text-align:center}
-.legend{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:24px}
-.legend span{font-size:.76rem;color:var(--ink-soft);display:inline-flex;align-items:center;gap:7px}
-.legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.sub{font-size:9.5px;font-weight:600;color:var(--ink-3);margin:8px 0 5px;letter-spacing:.03em}
+.sub:first-child{margin-top:0}
 
-/* ===== Summary / CTA ===== */
-.summary{
-  border:1px solid var(--line);border-radius:var(--radius);
-  background:linear-gradient(135deg,var(--panel),var(--bg-2));
-  padding:48px;text-align:center;
+/* Kompetenz-/Skill-Zeilen */
+.tags{display:flex;flex-wrap:wrap;gap:5px}
+.tag{
+  font-size:11px;line-height:1.25;color:var(--ink-2);border:1px solid var(--rule);
+  border-radius:7px;padding:5px 8px;transition:var(--t);cursor:pointer;background:var(--paper);
+  display:inline-flex;align-items:center;gap:6px;
 }
-.summary h2{font-family:var(--font-serif);font-size:clamp(1.8rem,4vw,2.6rem);margin-bottom:16px}
-.summary p{max-width:640px;margin:0 auto 28px;color:var(--ink-soft)}
-.flow{
-  display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:30px;
+.tag:hover{border-color:var(--c);color:var(--ink)}
+.tag.hit{
+  border-color:var(--c);background:color-mix(in srgb,var(--c) 10%,#fff);color:var(--ink);font-weight:500;
+  box-shadow:0 2px 8px -4px color-mix(in srgb,var(--c) 70%,transparent);
 }
-.flow .f{
-  border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-size:.82rem;color:var(--ink);
-  background:rgba(255,255,255,.02);
+.tag.miss{opacity:.26}
+.tag.pick{outline:2px solid var(--c);outline-offset:1px}
+.lvl{
+  font-size:8.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  border-radius:4px;padding:1px 5px;flex-shrink:0;
 }
-.flow .arr{color:var(--gold);font-size:1.1rem}
+.lvl.t{background:#dff3ea;color:#0a6b52}   /* Talented */
+.lvl.s{background:#e8eef4;color:#3a5c78}   /* Skilled  */
 
-/* ===== Footer ===== */
-footer{border-top:1px solid var(--line-soft);padding:34px 0;color:var(--ink-mute);font-size:.82rem}
-.foot-inner{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
-.foot-inner a{color:var(--ink-soft);text-decoration:none}
-.foot-inner a:hover{color:var(--gold)}
-
-/* reveal on scroll */
-.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
-.reveal.in{opacity:1;transform:none}
-
-/* ===== Responsive ===== */
-@media (max-width:920px){
-  .hci{grid-template-columns:1fr;gap:28px}
-  .hci-axis{display:none}
-  .step-grid{grid-template-columns:1fr;gap:26px}
-  .graph-wrap{grid-template-columns:1fr}
-  .graph-stage{min-height:430px}
+/* Perzentil-Zeilen (Traits / Drivers) */
+.pr{
+  display:grid;grid-template-columns:minmax(0,1fr) 82px 26px;align-items:center;gap:8px;
+  padding:4px 5px;border-radius:6px;transition:var(--t);cursor:pointer;width:100%;
 }
-@media (max-width:680px){
-  .wrap{padding:0 18px}
-  .topnav{display:none}
-  .hero{padding:60px 0 50px}
-  section.block{padding:58px 0}
-  .stepcard,.summary{padding:26px}
-  .hci-detail{padding:24px;min-height:0}
-  .step-no .ring{width:32px;height:32px}
-  .btn{padding:14px 22px;font-size:.78rem}
+.pr:hover{background:var(--paper-2)}
+.pr.hit{background:color-mix(in srgb,var(--idt) 9%,#fff)}
+.pr.miss{opacity:.28}
+.pr.pick{outline:2px solid var(--idt);outline-offset:0}
+.pr .pn{font-size:11px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.pr.hit .pn{font-weight:600;color:var(--ink)}
+.pb{position:relative;height:6px;background:var(--rule-2);border-radius:3px;overflow:visible}
+.pb i{display:block;height:100%;border-radius:3px;background:var(--idt);opacity:.55;transition:var(--t)}
+.pr.hit .pb i{opacity:1}
+.pb s{
+  position:absolute;top:-3px;bottom:-3px;left:50%;width:1.5px;background:var(--kf-dk);
+  opacity:.45;text-decoration:none;
 }
-@media (hover:none){
-  .layer:hover{transform:none}
-  .node:hover{transform:translate(-50%,-50%)}
+.pr .pv{font-size:10px;font-weight:600;color:var(--ink-3);font-variant-numeric:tabular-nums;text-align:right}
+.pr.hit .pv{color:var(--idt)}
+.pkey{font-size:9.5px;color:var(--ink-4);margin-top:6px;display:flex;align-items:center;gap:5px}
+.pkey s{width:1.5px;height:9px;background:var(--kf-dk);opacity:.45;text-decoration:none;display:inline-block}
+
+/* Stallers */
+.stall{
+  border:1px dashed #e0cfc6;background:#fdf9f7;border-radius:var(--r);padding:9px 10px;margin-top:12px;
+}
+.stall b{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--acc);display:block;margin-bottom:5px}
+.stall ul{list-style:none;display:flex;flex-wrap:wrap;gap:4px}
+.stall li{font-size:10.5px;color:var(--ink-2);border:1px solid #ebdcd4;background:#fff;border-radius:6px;padding:3px 7px}
+
+/* ===== Role Insights ===== */
+.gauge{border:1px solid var(--rule);border-radius:var(--r);padding:10px 11px;margin-bottom:8px}
+.gauge.lead{background:linear-gradient(180deg,#fafdfc,#fff);border-color:#d5e5df}
+.g-top{display:flex;align-items:baseline;gap:6px}
+.g-top b{font-size:11px;font-weight:600}
+.g-top small{font-size:9px;color:var(--ink-4)}
+.g-val{margin-left:auto;font-size:19px;font-weight:600;letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}
+.g-val u{font-size:9.5px;text-decoration:none;color:var(--ink-4);font-weight:500}
+.g-track{height:5px;background:var(--rule-2);border-radius:3px;margin-top:7px;overflow:hidden}
+.g-track i{display:block;height:100%;border-radius:3px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.g-note{font-size:9.5px;color:var(--ink-4);margin-top:6px;line-height:1.4}
+.g-delta{font-size:9.5px;font-weight:700;margin-left:4px}
+.up{color:#b5502c}.down{color:#0a7a5e}
+.mix{display:flex;height:7px;border-radius:4px;overflow:hidden;margin-top:8px;background:var(--rule-2)}
+.mix i{display:block;height:100%;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.mix-key{display:flex;flex-direction:column;gap:3px;margin-top:7px}
+.mix-key div{display:flex;align-items:center;gap:6px;font-size:9.5px;color:var(--ink-3)}
+.mix-key s{width:7px;height:7px;border-radius:2px;text-decoration:none;flex-shrink:0}
+.mix-key b{margin-left:auto;font-weight:600;color:var(--ink-2);font-variant-numeric:tabular-nums}
+
+/* ===== Einflussmatrix ===== */
+.mx{border-top:1px solid var(--rule);background:var(--paper-2);padding:9px 20px 11px;flex-shrink:0}
+.mx-t{
+  display:flex;align-items:baseline;gap:9px;margin-bottom:7px;
+  font-size:9.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3);
+}
+.mx-t span{font-size:10px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--ink-4)}
+table.mx-tb{width:100%;border-collapse:collapse;table-layout:fixed}
+table.mx-tb th{
+  font-size:9px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-4);
+  padding:0 4px 5px;text-align:center;white-space:nowrap;
+}
+table.mx-tb th.rh{text-align:left;width:210px}
+table.mx-tb th.sepl{border-left:1px solid var(--rule)}
+table.mx-tb td{padding:2px 4px;text-align:center}
+table.mx-tb td.sepl{border-left:1px solid var(--rule)}
+table.mx-tb tr.mrow{cursor:pointer;transition:var(--t)}
+table.mx-tb tr.mrow:hover td{background:#fff}
+table.mx-tb tr.mrow.on td{background:#fdf6f2}
+table.mx-tb tr.mrow.off{opacity:.38}
+td.rl{text-align:left!important;font-size:10.5px;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+tr.mrow.on td.rl{font-weight:600;color:var(--ink)}
+td.rl i{
+  display:inline-grid;place-items:center;width:15px;height:15px;border-radius:4px;font-style:normal;
+  font-size:9px;font-weight:700;background:var(--rule-2);color:var(--ink-3);margin-right:6px;vertical-align:middle;
+}
+tr.mrow.on td.rl i{background:var(--acc);color:#fff}
+.cell{
+  display:inline-grid;place-items:center;min-width:26px;height:19px;padding:0 5px;border-radius:5px;
+  font-size:10px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink-2);
+}
+
+/* ===== Fuß ===== */
+.foot{
+  display:flex;align-items:center;gap:12px;padding:7px 20px;border-top:1px solid var(--rule);
+  background:var(--paper-2);font-size:10px;color:var(--ink-4);min-height:34px;
+}
+.foot .def{flex:1;min-width:0;color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.foot .def b{font-weight:600;color:var(--ink)}
+.foot kbd{
+  font-family:var(--sans);font-size:9px;border:1px solid var(--rule);border-bottom-width:2px;
+  border-radius:4px;padding:1px 5px;background:#fff;color:var(--ink-3);margin-left:3px;
+}
+
+@media (max-width:1320px),(max-height:640px){
+  body{overflow:auto;padding:8px}
+  .sheet{height:auto;min-height:100%}
+  .body{grid-template-columns:1fr}
+  .zone{border-left:none;border-top:1px solid var(--rule)}
+  .head{flex-wrap:wrap}
+}
+@media print{
+  body{background:#fff;overflow:visible;padding:0}
+  .sheet{box-shadow:none;height:auto}
+  .tag.miss,.resp.off,.pr.miss{opacity:1}
 }
 </style>
 </head>
 <body>
+<div class="sheet">
 
-<!-- ===== Top bar ===== -->
-<div class="topbar">
-  <div class="wrap topbar-inner">
-    <div class="brand">
-      <span class="dot">CF</span>
-      <span>ConFerry <small>· Success Profile</small></span>
+  <!-- ===== Kopf ===== -->
+  <div class="head">
+    <div class="mark">
+      <span class="sq">KF</span>
+      <span><b>Success Profile</b><span>Beispielprofil</span></span>
     </div>
-    <nav class="topnav">
-      <a href="#hci">HCI-Modell</a>
-      <a href="#bestandteile">Bestandteile</a>
-      <a href="#wechselwirkung">Wechselwirkungen</a>
-      <a href="#fazit">Fazit</a>
-    </nav>
+    <div class="title">
+      <h1>Director Customer Operations</h1>
+      <div class="meta">
+        <i>Funktion <b>Operations</b></i>
+        <i>Job Family <b>Customer Service</b></i>
+        <i>Hay Grade <b>17</b></i>
+        <i>Spanne <b>ca. 120 FTE</b></i>
+        <i>Region <b>DACH</b></i>
+        <i>Profil <b>20 von 38 Kompetenzen</b></i>
+      </div>
+    </div>
+    <button class="reset hot" id="resetBtn">Gesamtprofil</button>
   </div>
+
+  <!-- ===== Kontextleiste ===== -->
+  <div class="ctx">
+    <span class="pill" id="ctxPill">ACI-Modell</span>
+    <span class="msg" id="ctxMsg"></span>
+  </div>
+
+  <!-- ===== Körper ===== -->
+  <div class="body">
+
+    <!-- A – Accountability -->
+    <div class="zone" id="zone-a" style="--z:var(--acc)">
+      <div class="z-head">
+        <span class="letter">A</span>
+        <span><b>Accountability</b><small>Was die Rolle liefern muss</small></span>
+        <span class="flow">steuert →</span>
+      </div>
+      <div class="z-body" id="respList"></div>
+    </div>
+
+    <!-- C – Capability -->
+    <div class="zone" id="zone-c" style="--z:var(--cap)">
+      <div class="z-head">
+        <span class="letter">C</span>
+        <span><b>Capability</b><small>Was jemand kann &amp; getan hat &middot; „what you do“</small></span>
+        <span class="flow">← gefordert</span>
+      </div>
+      <div class="z-body">
+        <div class="grp">
+          <div class="grp-t">Verhaltenskompetenzen &middot; Leadership Architect <u id="cnt-comp">0</u></div>
+          <div id="box-comp"></div>
+        </div>
+        <div class="grp">
+          <div class="grp-t">Skills &middot; Fach &amp; Methode <u id="cnt-skill">0</u></div>
+          <div class="tags" id="box-skill" style="--c:var(--cap)"></div>
+        </div>
+        <div class="grp">
+          <div class="grp-t">Experiences &middot; prägende Erfahrungen <u id="cnt-exp">0</u></div>
+          <div class="tags" id="box-exp" style="--c:var(--cap)"></div>
+        </div>
+        <div class="grp">
+          <div class="grp-t">Education &middot; formale Qualifikation</div>
+          <div class="tags" style="--c:var(--cap)">
+            <span class="tag" style="cursor:default">Abgeschlossenes Studium (BWL, Wirtschaftsinformatik o.&nbsp;ä.)</span>
+            <span class="tag" style="cursor:default">Deutsch verhandlungssicher &middot; Englisch fließend</span>
+            <span class="tag" style="cursor:default">Zertifizierung Lean / Six Sigma erwünscht</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- I – Identity -->
+    <div class="zone" id="zone-i" style="--z:var(--idt)">
+      <div class="z-head">
+        <span class="letter">I</span>
+        <span><b>Identity</b><small>Wer jemand ist &middot; „who you are“</small></span>
+        <span class="flow">← gefordert</span>
+      </div>
+      <div class="z-body">
+        <div class="grp">
+          <div class="grp-t">Traits &middot; Persönlichkeit <u id="cnt-trait">0</u></div>
+          <div id="box-trait"></div>
+          <div class="pkey"><s></s> Linie = 50. Perzentil (Norm) &middot; Balken = Zielausprägung</div>
+        </div>
+        <div class="grp">
+          <div class="grp-t">Drivers &middot; Motive <u id="cnt-drive">0</u></div>
+          <div id="box-drive"></div>
+        </div>
+        <div class="stall">
+          <b>Career Stallers &amp; Stoppers</b>
+          <ul>
+            <li>Overmanaging</li><li>Blocked personal learner</li>
+            <li>Lack of composure</li><li>Non-strategic</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Role Insights -->
+    <div class="zone" id="zone-r" style="--z:var(--kf-dk)">
+      <div class="z-head">
+        <span class="letter">↗</span>
+        <span><b>Role Insights</b><small>4 Linsen auf die Rolle</small></span>
+      </div>
+      <div class="z-body">
+        <div class="gauge lead">
+          <div class="g-top"><b>AI Impact</b><small>Score</small><span class="g-val" id="ai-val">0<u>/100</u></span></div>
+          <div class="g-track"><i id="ai-bar" style="background:linear-gradient(90deg,#e0a63c,#c2643c)"></i></div>
+          <div class="mix">
+            <i id="mix-auto" style="background:#b5502c"></i>
+            <i id="mix-augm" style="background:#e0a63c"></i>
+            <i id="mix-tran" style="background:#07C690"></i>
+          </div>
+          <div class="mix-key">
+            <div><s style="background:#b5502c"></s>Automation<b id="k-auto">0%</b></div>
+            <div><s style="background:#e0a63c"></s>Augmentation<b id="k-augm">0%</b></div>
+            <div><s style="background:#07C690"></s>Transformation<b id="k-tran">0%</b></div>
+          </div>
+          <div class="g-note" id="ai-note"></div>
+        </div>
+        <div class="gauge">
+          <div class="g-top"><b>Remote-ability</b><span class="g-val" id="rm-val">0<u>/100</u></span></div>
+          <div class="g-track"><i id="rm-bar" style="background:#2F7FB5"></i></div>
+          <div class="g-note" id="rm-note"></div>
+        </div>
+        <div class="gauge">
+          <div class="g-top"><b>Internal Networking</b><span class="g-val" id="in-val">0<u>/100</u></span></div>
+          <div class="g-track"><i id="in-bar" style="background:#7A5EA8"></i></div>
+          <div class="g-note" id="in-note"></div>
+        </div>
+        <div class="gauge">
+          <div class="g-top"><b>External Networking</b><span class="g-val" id="ex-val">0<u>/100</u></span></div>
+          <div class="g-track"><i id="ex-bar" style="background:#07C690"></i></div>
+          <div class="g-note" id="ex-note"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Einflussmatrix ===== -->
+  <div class="mx">
+    <div class="mx-t">Einflussmatrix <span>— wie jede einzelne Verantwortlichkeit das gesamte Profil prägt. Zeile anklicken.</span></div>
+    <table class="mx-tb">
+      <thead>
+        <tr>
+          <th class="rh">Verantwortlichkeit</th>
+          <th>Anteil</th>
+          <th class="sepl">Kompetenzen</th><th>Skills</th><th>Experiences</th>
+          <th class="sepl">Traits</th><th>Drivers</th>
+          <th class="sepl">AI Impact</th><th>Remote-ability</th><th>Internal Netw.</th><th>External Netw.</th>
+        </tr>
+      </thead>
+      <tbody id="mxBody"></tbody>
+    </table>
+  </div>
+
+  <!-- ===== Fuß ===== -->
+  <div class="foot">
+    <span class="def" id="footDef"></span>
+    <span>Beispielwerte zur Illustration der Struktur</span>
+    <span><kbd>1</kbd><kbd>–</kbd><kbd>5</kbd> Verantwortlichkeit<kbd>Esc</kbd> zurück</span>
+  </div>
+
 </div>
 
-<!-- ===== Hero ===== -->
-<header class="hero">
-  <div class="wrap">
-    <p class="eyebrow">Interaktiv erklärt</p>
-    <h1>Was ein <span>Success&nbsp;Profile</span><br>wirklich beschreibt</h1>
-    <p class="lead">Ein Erfolgsprofil übersetzt eine Rolle in eine klare Datenstruktur: Es beschreibt, <em>was</em> die Rolle leisten muss und <em>wer</em> dafür erfolgreich sein wird. Klicken Sie sich Schritt für Schritt durch das HCI-Modell und seine fünf Bausteine.</p>
-    <div class="cta-row">
-      <a href="#hci" class="btn btn-primary">Tour starten →</a>
-      <a href="#wechselwirkung" class="btn btn-ghost">Direkt zu den Wechselwirkungen</a>
-    </div>
-    <div class="hero-chips">
-      <span class="chip"><i style="background:var(--c-resp)"></i>Verantwortlichkeiten</span>
-      <span class="chip"><i style="background:var(--c-comp)"></i>Verhaltenskompetenzen</span>
-      <span class="chip"><i style="background:var(--c-skill)"></i>Skills</span>
-      <span class="chip"><i style="background:var(--c-trait)"></i>Traits</span>
-      <span class="chip"><i style="background:var(--c-drive)"></i>Drivers</span>
-    </div>
-  </div>
-</header>
-
-<!-- ===== HCI-Modell ===== -->
-<section class="block" id="hci">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <p class="eyebrow">Das Gesamtbild</p>
-      <h2 class="serif">Das HCI-Modell</h2>
-      <p>Das Erfolgsprofil ordnet alle Informationen über eine Rolle in Ebenen – von dem, was an der Oberfläche <em>sichtbar und gefordert</em> ist, bis zu dem, was tief im Inneren einer Person <em>stabil und antreibend</em> ist. Klicken Sie eine Ebene an.</p>
-      <div class="sec-line"></div>
-    </div>
-
-    <div class="hci reveal">
-      <div class="hci-stack" id="hciStack">
-        <div class="hci-axis" aria-hidden="true">
-          <span>Was die Rolle fordert</span>
-          <div class="bar"></div>
-          <span>Wer die Person ist</span>
-        </div>
-        <!-- layers injected by JS -->
-      </div>
-
-      <div class="hci-detail" id="hciDetail" style="--lc:var(--c-resp)">
-        <!-- detail injected by JS -->
-      </div>
-    </div>
-
-    <div class="hci-note reveal">
-      <div class="badge">HCI</div>
-      <p><strong>Warum „Ebenen“?</strong> Die oberen Ebenen – Verantwortlichkeiten, Kompetenzen und Skills – sind <em>beobachtbar und entwickelbar</em>: Sie zeigen, was jemand heute tut und lernen kann. Die unteren Ebenen – Traits und Drivers – sind <em>stabil und prägend</em>: Sie sagen voraus, wie sich jemand langfristig verhält und was ihn motiviert. Ein gutes Success Profile verbindet beide Welten zu einer einzigen, vergleichbaren Datenstruktur.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ===== Bestandteile (Stepper) ===== -->
-<section class="block" id="bestandteile">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <p class="eyebrow">Die Datenstruktur im Detail</p>
-      <h2 class="serif">Die fünf Bausteine</h2>
-      <p>Jeder Baustein ist ein eigenes Datenfeld im Profil. Klicken Sie sich durch – oder nutzen Sie die Pfeiltasten ← →.</p>
-      <div class="sec-line"></div>
-    </div>
-
-    <div class="reveal">
-      <div class="stepper-top">
-        <div class="dots" id="stepDots"></div>
-        <div class="progresswrap"><div class="progressbar" id="progressBar"></div></div>
-      </div>
-
-      <div class="stepcard" id="stepCard" style="--dc:var(--c-resp)">
-        <!-- step content injected by JS -->
-      </div>
-
-      <div class="step-nav">
-        <button id="prevBtn">← Zurück</button>
-        <button id="nextBtn" class="next">Weiter →</button>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== Wechselwirkungen ===== -->
-<section class="block" id="wechselwirkung">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <p class="eyebrow">Alles hängt zusammen</p>
-      <h2 class="serif">Wie die Bausteine einander beeinflussen</h2>
-      <p>Die Felder stehen nicht nebeneinander – sie bedingen sich. Klicken Sie einen Baustein an und sehen Sie, was er antreibt und woraus er gespeist wird.</p>
-      <div class="sec-line"></div>
-    </div>
-
-    <div class="graph-wrap reveal">
-      <div class="graph-stage" id="graphStage">
-        <svg id="graphSvg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
-        <!-- nodes injected by JS -->
-      </div>
-
-      <div class="graph-side" id="graphSide" style="--nc:var(--gold)">
-        <!-- side content injected by JS -->
-      </div>
-    </div>
-
-    <div class="legend reveal">
-      <span><i style="background:var(--c-drive)"></i>Drivers – motivieren</span>
-      <span><i style="background:var(--c-trait)"></i>Traits – prägen</span>
-      <span><i style="background:var(--c-skill)"></i>Skills – befähigen</span>
-      <span><i style="background:var(--c-comp)"></i>Kompetenzen – zeigen</span>
-      <span><i style="background:var(--c-resp)"></i>Verantwortlichkeiten – fordern</span>
-    </div>
-  </div>
-</section>
-
-<!-- ===== Fazit ===== -->
-<section class="block" id="fazit">
-  <div class="wrap">
-    <div class="summary reveal">
-      <p class="eyebrow" style="justify-content:center">Auf den Punkt</p>
-      <h2 class="serif">Von der Rolle zum Menschen – in einer Struktur</h2>
-      <p>Ein Success Profile liest sich in beide Richtungen: Es leitet aus den <em>Verantwortlichkeiten</em> ab, welche Kompetenzen, Skills, Traits und Drivers Erfolg vorhersagen. Und es zeigt, ob eine Person die <em>Veranlagung</em> mitbringt, um genau diese Rolle erfolgreich auszufüllen.</p>
-      <div class="flow">
-        <span class="f" style="border-color:var(--c-drive)">Drivers</span>
-        <span class="arr">+</span>
-        <span class="f" style="border-color:var(--c-trait)">Traits</span>
-        <span class="arr">→</span>
-        <span class="f" style="border-color:var(--c-skill)">Skills</span>
-        <span class="arr">+</span>
-        <span class="f" style="border-color:var(--c-comp)">Kompetenzen</span>
-        <span class="arr">→</span>
-        <span class="f" style="border-color:var(--c-resp)">Verantwortlichkeiten</span>
-      </div>
-      <a href="#hci" class="btn btn-primary">Tour wiederholen ↑</a>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <div class="wrap foot-inner">
-    <span>ConFerry Success Profile · interaktive Demonstration</span>
-    <span>Erstellt zur Erläuterung der Profil-Datenstruktur</span>
-  </div>
-</footer>
-
 <script>
-/* =========================================================
-   Datenmodell
-   ========================================================= */
-const COMPONENTS = [
-  {
-    key:'resp', num:1, var:'--c-resp',
-    name:'Verantwortlichkeiten',
-    en:'Accountabilities',
-    role:'Ebene der Rolle · „Was muss geliefert werden?“',
-    width:'Sichtbar · gefordert',
-    desc:'Die zentralen Ergebnis- und Aufgabenbereiche, für die eine Rolle den Hut aufhat. Sie sind der Ausgangspunkt jedes Profils – aus ihnen leitet sich alles Weitere ab.',
-    detail:'Verantwortlichkeiten beschreiben die Kern-Ergebnisse einer Rolle – nicht die Person. Sie definieren den Maßstab, an dem Erfolg gemessen wird, und bestimmen, welche Kompetenzen, Skills, Traits und Drivers überhaupt relevant sind.',
-    examples:['Umsatzwachstum der Region verantworten','Ein Team von 12 Personen führen','Produkt-Roadmap definieren','Budgetverantwortung tragen']
-  },
-  {
-    key:'comp', num:2, var:'--c-comp',
-    name:'Verhaltenskompetenzen',
-    en:'Behavioral Competencies',
-    role:'Ebene des Handelns · „Wie wird es getan?“',
-    width:'Beobachtbar · entwickelbar',
-    desc:'Beobachtbares, erlernbares Verhalten, das nachweislich zu erfolgreicher Aufgabenerfüllung führt – das „Wie“ der Leistung.',
-    detail:'Kompetenzen sind Verhaltensmuster, die man trainieren und entwickeln kann. Sie verbinden die inneren Anlagen einer Person mit den konkreten Anforderungen der Rolle und sind über die Zeit veränderbar.',
-    examples:['Strategische Weitsicht','Andere entwickeln & fördern','Mit Mehrdeutigkeit umgehen','Wirkungsvoll kommunizieren']
-  },
-  {
-    key:'skill', num:3, var:'--c-skill',
-    name:'Skills',
-    en:'Skills & Knowledge',
-    role:'Ebene des Wissens · „Was wird beherrscht?“',
-    width:'Erlernbar · zertifizierbar',
-    desc:'Konkretes Fach-, Methoden- und Anwendungswissen – erlernbare Fertigkeiten, die für die Rolle gebraucht werden.',
-    detail:'Skills sind das am leichtesten erlernbare Element: klar benennbar, oft messbar oder zertifizierbar. Sie sagen, ob jemand das Handwerkszeug für die Aufgabe besitzt – heute oder nach gezielter Weiterbildung.',
-    examples:['Finanzmodellierung','Vertragsrecht','Datenanalyse / SQL','Agiles Projektmanagement']
-  },
-  {
-    key:'trait', num:4, var:'--c-trait',
-    name:'Traits',
-    en:'Traits',
-    role:'Ebene der Persönlichkeit · „Wie tickt die Person?“',
-    width:'Stabil · prägend',
-    desc:'Natürliche, relativ stabile Persönlichkeitseigenschaften und Neigungen – sie prägen, wie jemand typischerweise denkt und handelt.',
-    detail:'Traits verändern sich kaum. Sie wirken wie ein Verstärker oder eine Bremse: Sie machen es einer Person leichter oder schwerer, bestimmte Kompetenzen zu entwickeln, und sagen Verhalten unter Druck voraus.',
-    examples:['Selbstvertrauen','Risikobereitschaft','Soziabilität','Anpassungsfähigkeit']
-  },
-  {
-    key:'drive', num:5, var:'--c-drive',
-    name:'Drivers',
-    en:'Drivers',
-    role:'Ebene der Motivation · „Was treibt die Person an?“',
-    width:'Tief · antreibend',
-    desc:'Werte und Motive, die Energie, Engagement und Karriererichtung bestimmen – das „Warum“ hinter dem Verhalten.',
-    detail:'Drivers sind die tiefste Ebene. Sie entscheiden, wofür jemand langfristig Energie aufbringt, in welchem Umfeld er aufblüht und ob er die Anstrengung investiert, Kompetenzen und Skills überhaupt aufzubauen.',
-    examples:['Einfluss & Macht','Herausforderung','Zugehörigkeit','Struktur & Sicherheit']
-  }
+/* ====================================================================
+   Beispielprofil „Director Customer Operations“
+   Struktur nach Korn Ferry: Accountability · Capability · Identity,
+   Kompetenzen aus dem Leadership Architect (4 Faktoren / 12 Cluster / 38),
+   Traits & Drivers als Perzentile, Role Insights als 4 Linsen.
+   Zahlenwerte sind illustrativ.
+   ==================================================================== */
+
+const FACTORS=[
+  {k:'Thought', n:'Thought · wie geführt gedacht wird'},
+  {k:'Results', n:'Results · was erreicht wird'},
+  {k:'People',  n:'People · wie Menschen geführt werden'},
+  {k:'Self',    n:'Self · wie man sich selbst führt'}
 ];
 
-const byKey = Object.fromEntries(COMPONENTS.map(c=>[c.key,c]));
+const ITEMS={
+  comp:[
+    {id:'c1', t:'Business insight',        f:'Thought', lvl:'s', d:'Wendet Wissen über Markt und Wettbewerb an, um die Organisation voranzubringen.'},
+    {id:'c2', t:'Financial acumen',        f:'Thought', lvl:'t', d:'Interpretiert und wendet finanzielle Kennzahlen und Zusammenhänge an.'},
+    {id:'c3', t:'Tech savvy',              f:'Thought', lvl:'t', d:'Antizipiert und adaptiert digitale und technologische Innovationen.'},
+    {id:'c4', t:'Manages complexity',      f:'Thought', lvl:'t', d:'Macht Sinn aus komplexen, teils widersprüchlichen Informationen, um Probleme zu lösen.'},
+    {id:'c5', t:'Balances stakeholders',   f:'Thought', lvl:'s', d:'Berücksichtigt die Interessen mehrerer Anspruchsgruppen.'},
+    {id:'c6', t:'Decision quality',        f:'Thought', lvl:'t', d:'Trifft gute und zeitgerechte Entscheidungen, die die Organisation voranbringen.'},
+    {id:'c7', t:'Cultivates innovation',   f:'Thought', lvl:'t', d:'Schafft neue und bessere Wege, damit die Organisation erfolgreich ist.'},
+    {id:'c8', t:'Strategic mindset',       f:'Thought', lvl:'s', d:'Blickt nach vorn und übersetzt Zukunftsbilder in tragfähige Strategien.'},
 
-/* Wechselwirkungen: was beeinflusst ein Knoten, wovon wird er gespeist */
-const RELATIONS = {
-  drive:{
-    title:'Drivers', sub:'Der Motor des Profils',
-    text:'Drivers liegen ganz unten und strahlen nach oben aus. Sie entscheiden, wofür eine Person Energie investiert – und damit, ob Kompetenzen und Skills überhaupt aufgebaut werden.',
-    out:['drive→trait','drive→comp','drive→skill'],
-    inf:[
-      ['Traits','geben den Drivers eine typische Ausdrucksform.'],
-      ['Kompetenzen','werden nur dann beharrlich entwickelt, wenn ein Driver dahintersteht.'],
-      ['Skills','werden eher erlernt, wenn das Thema zum Antrieb passt.']
-    ]
-  },
-  trait:{
-    title:'Traits', sub:'Die Veranlagung',
-    text:'Traits prägen, wie leicht jemandem bestimmtes Verhalten fällt. Sie verstärken oder bremsen die Entwicklung von Kompetenzen – und färben, wie Drivers sichtbar werden.',
-    out:['trait→comp'],
-    inf:[
-      ['Drivers','liefern die Energie, Traits die Art und Weise.'],
-      ['Kompetenzen','bauen auf passenden Traits leichter und stabiler auf.']
-    ]
-  },
-  skill:{
-    title:'Skills', sub:'Das Handwerkszeug',
-    text:'Skills sind erlernbares Wissen. Gemeinsam mit den Kompetenzen befähigen sie eine Person, die Verantwortlichkeiten der Rolle tatsächlich zu erfüllen.',
-    out:['skill→resp'],
-    inf:[
-      ['Drivers','bestimmen, welche Skills jemand bereit ist aufzubauen.'],
-      ['Verantwortlichkeiten','definieren, welche Skills überhaupt gebraucht werden.']
-    ]
-  },
-  comp:{
-    title:'Verhaltenskompetenzen', sub:'Die Brücke',
-    text:'Kompetenzen sind das Scharnier des Profils: Sie übersetzen innere Anlagen (Traits & Drivers) in beobachtbares Verhalten, das die Rolle verlangt.',
-    out:['comp→resp'],
-    inf:[
-      ['Traits','machen den Aufbau bestimmter Kompetenzen leichter.'],
-      ['Drivers','sorgen für die Ausdauer, Kompetenzen zu entwickeln.'],
-      ['Verantwortlichkeiten','legen fest, welche Kompetenzen zählen.']
-    ]
-  },
-  resp:{
-    title:'Verantwortlichkeiten', sub:'Der Ausgangspunkt',
-    text:'Verantwortlichkeiten stehen oben und definieren rückwärts das ganze Profil: Aus ihnen leitet sich ab, welche Kompetenzen, Skills, Traits und Drivers Erfolg vorhersagen.',
-    out:['resp→comp','resp→skill'],
-    inf:[
-      ['Kompetenzen','werden durch die Rolle als „erfolgskritisch“ ausgewählt.'],
-      ['Skills','werden durch die Aufgaben der Rolle bestimmt.']
-    ]
-  }
+    {id:'c9', t:'Optimizes work processes',f:'Results', lvl:'t', d:'Findet die effizientesten Wege mit Fokus auf kontinuierliche Verbesserung.'},
+    {id:'c10',t:'Plans and aligns',        f:'Results', lvl:'s', d:'Plant und priorisiert Arbeit im Einklang mit den Zielen der Organisation.'},
+    {id:'c11',t:'Customer focus',          f:'Results', lvl:'t', d:'Baut belastbare Kundenbeziehungen auf und liefert kundenzentrierte Lösungen.'},
+    {id:'c12',t:'Drives results',          f:'Results', lvl:'t', d:'Erzielt beharrlich Ergebnisse, auch unter schwierigen Bedingungen.'},
+    {id:'c13',t:'Ensures accountability',  f:'Results', lvl:'t', d:'Hält sich und andere für das Erreichen von Zielen verantwortlich.'},
+
+    {id:'c14',t:'Builds effective teams',  f:'People',  lvl:'t', d:'Formt Teams mit starker Identität, die gemeinsame Ziele erreichen.'},
+    {id:'c15',t:'Develops talent',         f:'People',  lvl:'t', d:'Entwickelt Menschen, damit sie Karriere- und Organisationsziele erreichen.'},
+    {id:'c16',t:'Communicates effectively',f:'People',  lvl:'s', d:'Kommuniziert adressatengerecht über alle Ebenen und Kanäle.'},
+    {id:'c17',t:'Drives engagement',       f:'People',  lvl:'t', d:'Schafft ein Klima, in dem Menschen ihr Bestes geben wollen.'},
+
+    {id:'c18',t:'Instills trust',          f:'Self',    lvl:'t', d:'Gewinnt Vertrauen durch Integrität, Verlässlichkeit und Authentizität.'},
+    {id:'c19',t:'Manages ambiguity',       f:'Self',    lvl:'t', d:'Agiert wirksam, auch wenn Dinge unklar sind oder die Richtung fehlt.'},
+    {id:'c20',t:'Being resilient',         f:'Self',    lvl:'s', d:'Erholt sich von Rückschlägen und bleibt handlungsfähig.'}
+  ],
+  skill:[
+    {id:'s1', t:'Workforce Management',           d:'Kapazitäts- und Einsatzplanung, Forecasting, Schichtsteuerung.'},
+    {id:'s2', t:'KPI- & Datenanalyse',            d:'Service-Kennzahlen aufbauen, auswerten und steuerungswirksam machen.'},
+    {id:'s3', t:'Qualitätsmanagement',            d:'Qualitätsstandards, Audits, Reklamationsmanagement.'},
+    {id:'s4', t:'CRM-Plattformen',                d:'Salesforce / MS Dynamics – Konfiguration, Datenmodell, Reporting.'},
+    {id:'s5', t:'Omnichannel-Architektur',        d:'Kanalstrategie über Telefon, Chat, E-Mail und Self-Service.'},
+    {id:'s6', t:'Prozessdesign / Lean',           d:'End-to-end-Prozesse modellieren, Verschwendung eliminieren.'},
+    {id:'s7', t:'Conversational AI & Automation', d:'Bots, Intent-Design, Automatisierungs-Roadmap, Human-in-the-loop.'},
+    {id:'s8', t:'Change Management',              d:'Veränderung planen, Betroffene mitnehmen, Adoption sichern.'},
+    {id:'s9', t:'Budgetplanung',                  d:'Kostenstellenplanung, Forecast, Abweichungsanalyse.'},
+    {id:'s10',t:'Provider- & Vertragssteuerung',  d:'Outsourcing-Partner, SLAs und Eskalationswege steuern.'}
+  ],
+  exp:[
+    {id:'e1',t:'Turnaround einer Serviceeinheit',   d:'Eine unterperformende Einheit messbar auf Kurs gebracht.'},
+    {id:'e2',t:'Aufbau eines Shared Service Centers',d:'Von der Standortwahl bis zum laufenden Betrieb aufgebaut.'},
+    {id:'e3',t:'Einführung einer KI-Serviceplattform',d:'Automatisierung im Kundenkontakt eingeführt und skaliert.'},
+    {id:'e4',t:'Internationale Matrixverantwortung',d:'Über Länder und Funktionen hinweg ohne Weisungsbefugnis geführt.'},
+    {id:'e5',t:'P&L-Verantwortung > 10 Mio. €',     d:'Volle Ergebnisverantwortung für eine Einheit getragen.'}
+  ],
+  trait:[
+    {id:'t1', t:'Focus',                 p:82, d:'Präferenz für Ordnung, Verfahren und Genauigkeit; wirkt systematisch und im Griff.'},
+    {id:'t2', t:'Persistence',           p:78, d:'Die Fähigkeit, sich auf ein Ziel zu verpflichten und dranzubleiben.'},
+    {id:'t3', t:'Assertiveness',         p:74, d:'Bereitschaft, Führung zu übernehmen, wo keine klare Führung besteht.'},
+    {id:'t4', t:'Composure',             p:80, d:'Reaktion in Stresssituationen; hohe Werte wirken ruhig und belastbar.'},
+    {id:'t5', t:'Adaptability',          p:71, d:'Passt Vorgehen und Verhalten flexibel an neue Lagen an.'},
+    {id:'t6', t:'Tolerance of ambiguity',p:76, d:'Handlungsfähig in einer volatilen, unsicheren, komplexen Welt.'},
+    {id:'t7', t:'Curiosity',             p:69, d:'Sucht aktiv Neues und hinterfragt Bestehendes.'},
+    {id:'t8', t:'Risk-taking',           p:58, d:'Bereitschaft, unter Unsicherheit zu entscheiden und zu handeln.'},
+    {id:'t9', t:'Empathy',               p:73, d:'Nimmt Perspektive und Bedürfnisse anderer wahr.'},
+    {id:'t10',t:'Sociability',           p:64, d:'Geht offen auf Menschen zu und knüpft leicht Kontakte.'},
+    {id:'t11',t:'Situational self-awareness',p:70,d:'Nimmt eigene Reaktionen wertfrei wahr und improvisiert situativ.'},
+    {id:'t12',t:'Confidence',            p:75, d:'Vertraut den eigenen Fähigkeiten und Entscheidungen.'},
+    {id:'t13',t:'Optimism',              p:62, d:'Rechnet mit gutem Ausgang und überträgt das auf andere.'},
+    {id:'t14',t:'Need for achievement',  p:79, d:'Antrieb, anspruchsvolle Leistungsziele zu erreichen.'}
+  ],
+  drive:[
+    {id:'d1',t:'Challenge',    p:81, d:'Motivation durch Leistung angesichts harter Hindernisse; sucht anspruchsvolle Aufgaben.'},
+    {id:'d2',t:'Power',        p:76, d:'Streben nach Status, Sichtbarkeit, Verantwortung und Einfluss.'},
+    {id:'d3',t:'Structure',    p:68, d:'Präferenz für Stabilität, Vorhersagbarkeit und Struktur im Arbeitskontext.'},
+    {id:'d4',t:'Collaboration',p:72, d:'Wunsch, im Team zu arbeiten und Entscheidungen zu teilen.'},
+    {id:'d5',t:'Independence', p:55, d:'Präferenz, eine Vision ohne unnötige Einschränkungen zu verfolgen.'},
+    {id:'d6',t:'Balance',      p:41, d:'Gewicht auf Ausgleich zwischen Arbeit und persönlichen Lebensbereichen.'}
+  ]
 };
 
-/* =========================================================
-   1) HCI-Modell – Ebenen
-   ========================================================= */
-const hciStack = document.getElementById('hciStack');
-const hciDetail = document.getElementById('hciDetail');
+const RESP=[
+  { id:'r1', share:30,
+    t:'Serviceorganisation steuern & Performance sichern',
+    d:'SLA-, Qualitäts- und Produktivitätsziele über alle Kanäle verantworten.',
+    comp:['c9','c12','c13','c10'], skill:['s1','s2','s3'], exp:['e1'],
+    trait:['t1','t2','t3','t14'], drive:['d3','d2'],
+    ai:74, mix:[62,28,10], rm:78, in:72, ex:35,
+    note:'Stark regelbasierte Steuerungs- und Reportingaufgaben – hoher Automationsanteil.' },
 
-COMPONENTS.forEach((c,i)=>{
+  { id:'r2', share:20,
+    t:'Kundenerlebnis end-to-end verantworten',
+    d:'Customer Journey über alle Touchpoints gestalten, Kundenzufriedenheit steigern.',
+    comp:['c11','c5','c16','c4'], skill:['s4','s5','s6'], exp:['e2'],
+    trait:['t9','t7','t10','t11'], drive:['d4','d1'],
+    ai:58, mix:[30,52,18], rm:62, in:80, ex:78,
+    note:'KI unterstützt Analyse und Personalisierung – Urteil und Beziehung bleiben menschlich.' },
+
+  { id:'r3', share:20,
+    t:'Digitalisierung & Automatisierung treiben',
+    d:'Serviceprozesse automatisieren, KI-Einsatz definieren, Adoption sicherstellen.',
+    comp:['c7','c3','c8','c19'], skill:['s7','s8','s6'], exp:['e3'],
+    trait:['t7','t8','t6','t5'], drive:['d1','d5'],
+    ai:81, mix:[18,40,42], rm:85, in:68, ex:55,
+    note:'Höchster Transformationsanteil – die Aufgabe selbst verändert sich grundlegend.' },
+
+  { id:'r4', share:20,
+    t:'Team führen & Talente entwickeln',
+    d:'Führungskräfte entwickeln, Nachfolge sichern, Engagement und Bindung stärken.',
+    comp:['c15','c14','c17','c18'], skill:['s8'], exp:['e4'],
+    trait:['t9','t4','t13','t12'], drive:['d4','d2'],
+    ai:22, mix:[20,62,18], rm:48, in:92, ex:22,
+    note:'Geringste KI-Exposition – Führung, Vertrauen und Entwicklung bleiben menschlich.' },
+
+  { id:'r5', share:10,
+    t:'Budget- & Ergebnisverantwortung',
+    d:'Kostenbasis, Investitionen und Providerverträge steuern.',
+    comp:['c2','c6','c1','c20'], skill:['s9','s10','s2'], exp:['e5'],
+    trait:['t1','t12','t4'], drive:['d3','d2'],
+    ai:63, mix:[45,40,15], rm:90, in:55, ex:40,
+    note:'Planung und Analyse sind gut automatisierbar, die Entscheidung bleibt beim Menschen.' }
+];
+
+const DIMS=['comp','skill','exp','trait','drive'];
+const LABEL={comp:'Kompetenz',skill:'Skill',exp:'Experience',trait:'Trait',drive:'Driver'};
+const $=id=>document.getElementById(id);
+
+/* Gewichtete Rollen-Aggregation */
+const W=RESP.reduce((s,r)=>s+r.share,0);
+const wavg=k=>Math.round(RESP.reduce((s,r)=>s+r.share*r[k],0)/W);
+const rawMix=[0,1,2].map(i=>RESP.reduce((s,r)=>s+r.share*r.mix[i],0)/W);
+const mixSum=rawMix.reduce((a,b)=>a+b,0);
+const TOTAL={
+  ai:wavg('ai'), rm:wavg('rm'), in:wavg('in'), ex:wavg('ex'),
+  mix:rawMix.map(v=>Math.round(v/mixSum*100)),
+  note:'Gewichteter Rollenwert. Die Spannweite der einzelnen Verantwortlichkeiten reicht von 22 bis 81 – der Rollenschnitt verdeckt das.'
+};
+
+/* Häufigkeit je Element */
+const FREQ={};
+DIMS.forEach(dim=>ITEMS[dim].forEach(it=>{FREQ[it.id]=RESP.filter(r=>r[dim].includes(it.id)).length;}));
+const DIM_OF={};
+DIMS.forEach(dim=>ITEMS[dim].forEach(it=>DIM_OF[it.id]=dim));
+
+let sel=null, pick=null;
+
+/* ---------- Aufbau: Verantwortlichkeiten ---------- */
+RESP.forEach((r,i)=>{
   const b=document.createElement('button');
-  b.className='layer'+(i===0?' active':'');
-  b.style.setProperty('--lc',`var(${c.var})`);
-  b.dataset.key=c.key;
-  b.innerHTML=`
-    <span class="lnum">${c.num}</span>
-    <span class="ltext"><b>${c.name}</b><small>${c.role}</small></span>
-    <span class="lwidth">${c.width}</span>`;
-  b.addEventListener('click',()=>selectLayer(c.key));
-  hciStack.appendChild(b);
+  b.className='resp'; b.dataset.id=r.id;
+  b.innerHTML=`<div class="rtop"><span class="idx">${i+1}</span><span class="share">${r.share}% der Rolle</span></div>
+    <h3>${r.t}</h3><p>${r.d}</p><div class="sbar"><i style="width:${r.share*3.3}%"></i></div>`;
+  b.onclick=()=>{pick=null; sel=(sel===r.id?null:r.id); render();};
+  b.onmouseenter=()=>setFoot(`<b>${r.t}</b> — ${r.d} · Anteil an der Rolle: ${r.share}%`);
+  b.onmouseleave=resetFoot;
+  $('respList').appendChild(b);
 });
 
-function selectLayer(key){
-  const c=byKey[key];
-  document.querySelectorAll('.layer').forEach(l=>l.classList.toggle('active',l.dataset.key===key));
-  hciDetail.style.setProperty('--lc',`var(${c.var})`);
-  hciDetail.innerHTML=`
-    <div class="fade-swap">
-      <span class="dtag"><i></i>${c.en}</span>
-      <h3>${c.name}</h3>
-      <p class="dsub">${c.role}</p>
-      <p class="ddesc">${c.detail}</p>
-      <p class="dlabel">Beispiele aus einem Profil</p>
-      <div class="dexamples">${c.examples.map(e=>`<span>${e}</span>`).join('')}</div>
-    </div>`;
+/* ---------- Aufbau: Kompetenzen nach Faktor ---------- */
+FACTORS.forEach(f=>{
+  const items=ITEMS.comp.filter(c=>c.f===f.k);
+  if(!items.length)return;
+  const h=document.createElement('div'); h.className='sub'; h.textContent=f.n;
+  const wrap=document.createElement('div'); wrap.className='tags'; wrap.style.setProperty('--c','var(--cap)');
+  items.forEach(it=>wrap.appendChild(mkTag(it,'comp')));
+  $('box-comp').append(h,wrap);
+});
+$('cnt-comp').textContent=ITEMS.comp.length+' / 38';
+
+/* ---------- Aufbau: Skills & Experiences ---------- */
+['skill','exp'].forEach(dim=>{
+  ITEMS[dim].forEach(it=>$('box-'+dim).appendChild(mkTag(it,dim)));
+  $('cnt-'+dim).textContent=ITEMS[dim].length;
+});
+
+function mkTag(it,dim){
+  const b=document.createElement('button');
+  b.className='tag'; b.dataset.id=it.id; b.dataset.dim=dim;
+  b.innerHTML=it.lvl ? `${it.t}<span class="lvl ${it.lvl}">${it.lvl==='t'?'Talented':'Skilled'}</span>` : it.t;
+  b.onclick=()=>{sel=null; pick=(pick===it.id?null:it.id); render();};
+  b.onmouseenter=()=>hoverInfo(it,dim);
+  b.onmouseleave=resetFoot;
+  return b;
 }
-selectLayer('resp');
 
-/* =========================================================
-   2) Stepper – Bestandteile
-   ========================================================= */
-const stepCard=document.getElementById('stepCard');
-const stepDots=document.getElementById('stepDots');
-const progressBar=document.getElementById('progressBar');
-const prevBtn=document.getElementById('prevBtn');
-const nextBtn=document.getElementById('nextBtn');
-let stepIdx=0;
-
-COMPONENTS.forEach((c,i)=>{
-  const d=document.createElement('button');
-  d.style.setProperty('--dc',`var(${c.var})`);
-  d.innerHTML=`<i></i>${c.name}`;
-  d.addEventListener('click',()=>goStep(i));
-  stepDots.appendChild(d);
+/* ---------- Aufbau: Traits & Drivers als Perzentile ---------- */
+['trait','drive'].forEach(dim=>{
+  ITEMS[dim].forEach(it=>{
+    const b=document.createElement('button');
+    b.className='pr'; b.dataset.id=it.id; b.dataset.dim=dim;
+    b.innerHTML=`<span class="pn">${it.t}</span>
+      <span class="pb"><i style="width:${it.p}%"></i><s></s></span>
+      <span class="pv">${it.p}</span>`;
+    b.onclick=()=>{sel=null; pick=(pick===it.id?null:it.id); render();};
+    b.onmouseenter=()=>hoverInfo(it,dim);
+    b.onmouseleave=resetFoot;
+    $('box-'+dim).appendChild(b);
+  });
+  $('cnt-'+dim).textContent=ITEMS[dim].length;
 });
 
-function renderStep(){
-  const c=COMPONENTS[stepIdx];
-  stepCard.style.setProperty('--dc',`var(${c.var})`);
-  stepCard.innerHTML=`
-    <div class="step-grid fade-swap">
-      <div class="step-main">
-        <p class="step-no"><span class="ring">${c.num}</span> Baustein ${c.num} von ${COMPONENTS.length} · ${c.en}</p>
-        <h3>${c.name}</h3>
-        <p class="role">${c.role}</p>
-        <p class="lead2">${c.desc}</p>
-        <div class="kv">
-          <div class="row"><b>Was es im Profil bedeutet</b><span>${c.detail}</span></div>
-          <div class="row"><b>Charakter des Datenfeldes</b><span>${c.width}</span></div>
-        </div>
-      </div>
-      <div class="step-side">
-        <p class="dlabel">Beispiel-Einträge</p>
-        <div class="examplelist">${c.examples.map(e=>`<div>${e}</div>`).join('')}</div>
-      </div>
-    </div>`;
-  // dots
-  [...stepDots.children].forEach((d,i)=>d.classList.toggle('on',i===stepIdx));
-  progressBar.style.width=((stepIdx+1)/COMPONENTS.length*100)+'%';
-  prevBtn.disabled=stepIdx===0;
-  nextBtn.textContent=stepIdx===COMPONENTS.length-1?'Zur Übersicht →':'Weiter →';
+/* ---------- Aufbau: Einflussmatrix ---------- */
+const SHORT={r1:'Serviceorganisation steuern',r2:'Kundenerlebnis end-to-end',r3:'Digitalisierung & Automatisierung',r4:'Team führen & Talente',r5:'Budget & Ergebnis'};
+/* Heat: 0..100 -> abgestufte Fläche in der Spaltenfarbe */
+function heat(v,rgb){ return `background:rgba(${rgb},${(0.10+v/100*0.62).toFixed(2)})`; }
+const HEAT={ai:'194,100,60', rm:'47,127,181', in:'122,94,168', ex:'7,150,110'};
+
+RESP.forEach((r,i)=>{
+  const tr=document.createElement('tr');
+  tr.className='mrow'; tr.dataset.id=r.id;
+  const cnt=(d,rgb)=>`<td><span class="cell" style="${heat(r[d].length*22,rgb)}">${r[d].length}</span></td>`;
+  const ins=(k,cls)=>`<td class="${cls||''}"><span class="cell" style="${heat(r[k],HEAT[k])}">${r[k]}</span></td>`;
+  tr.innerHTML=
+    `<td class="rl"><i>${i+1}</i>${SHORT[r.id]}</td>`+
+    `<td><span class="cell">${r.share}%</span></td>`+
+    `<td class="sepl"><span class="cell" style="${heat(r.comp.length*22,'47,127,181')}">${r.comp.length}</span></td>`+
+    cnt('skill','47,127,181')+cnt('exp','47,127,181')+
+    `<td class="sepl"><span class="cell" style="${heat(r.trait.length*22,'122,94,168')}">${r.trait.length}</span></td>`+
+    cnt('drive','122,94,168')+
+    ins('ai','sepl')+ins('rm')+ins('in')+ins('ex');
+  tr.onclick=()=>{pick=null; sel=(sel===r.id?null:r.id); render();};
+  tr.onmouseenter=()=>setFoot(`<b>${r.t}</b> — AI Impact ${r.ai} · Remote-ability ${r.rm} · Internal ${r.in} · External ${r.ex}`);
+  tr.onmouseleave=resetFoot;
+  $('mxBody').appendChild(tr);
+});
+
+/* ---------- Fußzeile ---------- */
+const FOOT_DEF='ACI-Modell: <b>Accountability</b> definiert die Rolle · <b>Capability</b> und <b>Identity</b> beschreiben, wer darin erfolgreich ist. Links eine Verantwortlichkeit anklicken.';
+function setFoot(h){$('footDef').innerHTML=h;}
+function resetFoot(){$('footDef').innerHTML=FOOT_DEF;}
+function hoverInfo(it,dim){
+  const rs=RESP.filter(r=>r[dim].includes(it.id)).map(r=>r.t);
+  const lvl=it.lvl?` · Zielniveau: ${it.lvl==='t'?'Talented':'Skilled'}`:'';
+  const pc=it.p!==undefined?` · Zielperzentil: ${it.p}`:'';
+  setFoot(`<b>${it.t}</b> — ${it.d}${lvl}${pc} · Gefordert durch: ${rs.join(' · ')||'—'}`);
 }
-function goStep(i){stepIdx=Math.max(0,Math.min(COMPONENTS.length-1,i));renderStep();}
-prevBtn.addEventListener('click',()=>goStep(stepIdx-1));
-nextBtn.addEventListener('click',()=>{
-  if(stepIdx===COMPONENTS.length-1){document.getElementById('wechselwirkung').scrollIntoView({behavior:'smooth'});}
-  else goStep(stepIdx+1);
-});
+
+/* ---------- Insights zeichnen ---------- */
+function paint(v,isTotal){
+  const one=(key,barId,valId,noteId,txt)=>{
+    $(valId).innerHTML=`${v[key]}<u>/100</u>`;
+    $(barId).style.width=v[key]+'%';
+    let d='';
+    if(!isTotal){
+      const diff=v[key]-TOTAL[key];
+      if(diff!==0) d=` <span class="g-delta ${diff>0?'up':'down'}">${diff>0?'▲':'▼'}${Math.abs(diff)} ggü. Rolle</span>`;
+    }
+    $(noteId).innerHTML=txt+d;
+  };
+  one('ai','ai-bar','ai-val','ai-note',v.note||'');
+  one('rm','rm-bar','rm-val','rm-note','Anteil ortsunabhängig erbringbarer Arbeit.');
+  one('in','in-bar','in-val','in-note','Interne Vernetzungsintensität.');
+  one('ex','ex-bar','ex-val','ex-note','Externe Vernetzungsintensität.');
+  const [a,g,t]=v.mix;
+  $('mix-auto').style.width=a+'%'; $('mix-augm').style.width=g+'%'; $('mix-tran').style.width=t+'%';
+  $('k-auto').textContent=a+'%'; $('k-augm').textContent=g+'%'; $('k-tran').textContent=t+'%';
+}
+
+/* ---------- Render ---------- */
+function render(){
+  const r = sel ? RESP.find(x=>x.id===sel) : null;
+  const pickDim = pick ? DIM_OF[pick] : null;
+
+  document.querySelectorAll('.resp').forEach(el=>{
+    const rr=RESP.find(x=>x.id===el.dataset.id);
+    const inPick = pick ? rr[pickDim].includes(pick) : false;
+    el.classList.toggle('on', sel===el.dataset.id || (pick&&inPick));
+    el.classList.toggle('off',(sel&&sel!==el.dataset.id)||(pick&&!inPick));
+  });
+
+  document.querySelectorAll('tr.mrow').forEach(el=>{
+    const rr=RESP.find(x=>x.id===el.dataset.id);
+    const inPick = pick ? rr[pickDim].includes(pick) : false;
+    el.classList.toggle('on', sel===el.dataset.id || (pick&&inPick));
+    el.classList.toggle('off',(sel&&sel!==el.dataset.id)||(pick&&!inPick));
+  });
+
+  let capHits=0, idtHits=0;
+  DIMS.forEach(dim=>{
+    let hits=0;
+    document.querySelectorAll(`[data-dim="${dim}"]`).forEach(el=>{
+      const id=el.dataset.id;
+      const hit = r ? r[dim].includes(id) : false;
+      el.classList.toggle('hit',hit);
+      el.classList.toggle('miss',(r&&!hit)||(pick&&pick!==id));
+      el.classList.toggle('pick',pick===id);
+      if(hit)hits++;
+    });
+    if(dim==='comp') $('cnt-comp').textContent = r? `${hits} / ${ITEMS.comp.length}` : `${ITEMS.comp.length} / 38`;
+    else $('cnt-'+dim).textContent = r? `${hits} / ${ITEMS[dim].length}` : ITEMS[dim].length;
+    if(['comp','skill','exp'].includes(dim)) capHits+=hits; else idtHits+=hits;
+  });
+
+  $('zone-a').classList.toggle('lit',!!r);
+  $('zone-c').classList.toggle('lit',!!r&&capHits>0);
+  $('zone-i').classList.toggle('lit',!!r&&idtHits>0);
+
+  paint(r||TOTAL,!r);
+
+  $('resetBtn').classList.toggle('hot',!sel&&!pick);
+  if(r){
+    $('ctxPill').textContent=`Verantwortlichkeit ${RESP.indexOf(r)+1} / 5`;
+    $('ctxMsg').innerHTML=`<em>${r.t}</em> fordert <b>${capHits} Capability-</b> und <b>${idtHits} Identity-Elemente</b> und trägt <b>${r.share}%</b> zur Rolle bei. AI Impact dieser Aufgabe: <b>${r.ai}/100</b> — ${r.note}`;
+  } else if(pick){
+    const it=ITEMS[pickDim].find(x=>x.id===pick);
+    const rs=RESP.filter(x=>x[pickDim].includes(pick));
+    $('ctxPill').textContent='Rückwärts gelesen';
+    $('ctxMsg').innerHTML=`<em>${it.t}</em> (${LABEL[pickDim]}) wird von <b>${rs.length} von 5 Verantwortlichkeiten</b> gefordert: ${rs.map(x=>x.t).join(' · ')}`;
+  } else {
+    $('ctxPill').textContent='Gesamtprofil';
+    $('ctxMsg').innerHTML=`<b>Accountability</b> steuert alles: Aus den <b>5 Verantwortlichkeiten</b> leiten sich Kompetenzen, Skills, Experiences, Traits und Drivers ab – und die vier Role Insights. Klicken Sie links eine Verantwortlichkeit an.`;
+  }
+}
+
+$('resetBtn').onclick=()=>{sel=null;pick=null;render();};
 document.addEventListener('keydown',e=>{
-  const sec=document.getElementById('bestandteile').getBoundingClientRect();
-  const visible=sec.top<window.innerHeight*0.6 && sec.bottom>window.innerHeight*0.4;
-  if(!visible)return;
-  if(e.key==='ArrowRight')goStep(stepIdx+1);
-  if(e.key==='ArrowLeft')goStep(stepIdx-1);
-});
-renderStep();
-
-/* =========================================================
-   3) Wechselwirkungen – Graph
-   ========================================================= */
-const stage=document.getElementById('graphStage');
-const svg=document.getElementById('graphSvg');
-const graphSide=document.getElementById('graphSide');
-
-/* Positionen in % (x,y) – oben = Rolle, unten = Person */
-const POS={
-  resp:{x:50,y:12},
-  comp:{x:28,y:38},
-  skill:{x:72,y:38},
-  trait:{x:32,y:70},
-  drive:{x:68,y:70}
-};
-/* gerichtete Kanten: from → to */
-const EDGES=[
-  ['drive','trait'],['drive','comp'],['drive','skill'],
-  ['trait','comp'],
-  ['comp','resp'],['skill','resp'],
-  ['resp','comp'],['resp','skill']
-];
-
-/* SVG-Marker + Kanten aufbauen */
-function buildEdges(){
-  const ns='http://www.w3.org/2000/svg';
-  svg.innerHTML='';
-  const defs=document.createElementNS(ns,'defs');
-  COMPONENTS.forEach(c=>{
-    const m=document.createElementNS(ns,'marker');
-    m.setAttribute('id','arr-'+c.key);
-    m.setAttribute('viewBox','0 0 10 10');m.setAttribute('refX','8');m.setAttribute('refY','5');
-    m.setAttribute('markerWidth','5');m.setAttribute('markerHeight','5');m.setAttribute('orient','auto-start-reverse');
-    const p=document.createElementNS(ns,'path');
-    p.setAttribute('d','M0,0 L10,5 L0,10 z');
-    p.setAttribute('fill',`var(${c.var})`);
-    m.appendChild(p);defs.appendChild(m);
-  });
-  svg.appendChild(defs);
-  EDGES.forEach(([a,b])=>{
-    const from=POS[a],to=POS[b];
-    const line=document.createElementNS(ns,'line');
-    line.setAttribute('x1',from.x);line.setAttribute('y1',from.y);
-    line.setAttribute('x2',to.x);line.setAttribute('y2',to.y);
-    line.setAttribute('stroke',`var(${byKey[a].var})`);
-    line.setAttribute('stroke-width','0.5');
-    line.setAttribute('vector-effect','non-scaling-stroke');
-    line.setAttribute('marker-end','url(#arr-'+a+')');
-    line.setAttribute('opacity','0.16');
-    line.dataset.edge=a+'→'+b;
-    line.dataset.from=a;line.dataset.to=b;
-    svg.appendChild(line);
-  });
-}
-buildEdges();
-
-/* Nodes */
-COMPONENTS.forEach(c=>{
-  const n=document.createElement('div');
-  n.className='node';
-  n.style.left=POS[c.key].x+'%';
-  n.style.top=POS[c.key].y+'%';
-  n.style.setProperty('--nc',`var(${c.var})`);
-  n.dataset.key=c.key;
-  n.innerHTML=`<b>${c.name}</b><small>${c.en}</small>`;
-  n.addEventListener('click',()=>selectNode(c.key));
-  n.addEventListener('mouseenter',()=>highlightNode(c.key));
-  n.addEventListener('mouseleave',()=>{ if(selectedNode) highlightNode(selectedNode); else clearHighlight(); });
-  stage.appendChild(n);
+  if(e.key==='Escape'){sel=null;pick=null;render();}
+  const n=parseInt(e.key,10);
+  if(n>=1&&n<=RESP.length){pick=null;sel=RESP[n-1].id;render();}
 });
 
-let selectedNode=null;
-
-function clearHighlight(){
-  document.querySelectorAll('.node').forEach(n=>n.classList.remove('dim','sel'));
-  svg.querySelectorAll('line').forEach(l=>{l.setAttribute('opacity','0.16');l.setAttribute('stroke-width','0.5');});
-}
-function highlightNode(key){
-  const related=new Set([key]);
-  const activeEdges=[];
-  EDGES.forEach(([a,b])=>{ if(a===key||b===key){related.add(a);related.add(b);activeEdges.push(a+'→'+b);} });
-  document.querySelectorAll('.node').forEach(n=>{
-    n.classList.toggle('dim',!related.has(n.dataset.key));
-    n.classList.toggle('sel',n.dataset.key===key);
-  });
-  svg.querySelectorAll('line').forEach(l=>{
-    const on=activeEdges.includes(l.dataset.edge);
-    l.setAttribute('opacity',on?'0.95':'0.05');
-    l.setAttribute('stroke-width',on?'0.9':'0.4');
-  });
-}
-function selectNode(key){
-  selectedNode=key;
-  highlightNode(key);
-  const c=byKey[key], r=RELATIONS[key];
-  graphSide.style.setProperty('--nc',`var(${c.var})`);
-  graphSide.innerHTML=`
-    <div class="fade-swap">
-      <h3>${r.title}</h3>
-      <p class="gsub">${r.sub}</p>
-      <p>${r.text}</p>
-      <div class="influence">
-        ${r.inf.map(([b,t])=>`<div class="inf"><b>${b}</b> ${t}</div>`).join('')}
-      </div>
-    </div>`;
-}
-
-/* Startzustand der Seitenbox */
-graphSide.innerHTML=`
-  <h3>Wechselwirkungen erkunden</h3>
-  <p class="gsub">Knoten anklicken</p>
-  <p>Tippen Sie auf einen Baustein im Diagramm. Die Pfeile zeigen, <em>was er beeinflusst</em> und <em>woraus er gespeist wird</em>.</p>
-  <div class="influence">
-    <div class="inf"><b>Von unten nach oben</b> wächst eine Person: Drivers &amp; Traits tragen Kompetenzen &amp; Skills.</div>
-    <div class="inf"><b>Von oben nach unten</b> wird ausgewählt: Die Rolle bestimmt, was zählt.</div>
-  </div>
-  <p class="graph-hint">↑ Rolle &nbsp;·&nbsp; ↓ Person</p>`;
-
-/* =========================================================
-   Reveal on scroll
-   ========================================================= */
-const io=new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{ if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);} });
-},{threshold:0.12});
-document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+resetFoot();
+render();
 </script>
 </body>
 </html>
